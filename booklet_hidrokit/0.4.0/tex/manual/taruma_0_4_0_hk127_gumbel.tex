@@ -1,0 +1,1689 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{taruma\_0\_4\_0\_hk127\_gumbel}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    Berdasarkan isu
+\href{https://github.com/hidrokit/hidrokit/issues/127}{\#127}:
+\textbf{anfrek: Gumbel}
+
+Referensi Isu: - Soetopo, W., Montarcih, L., Press, U. B., \& Media, U.
+(2017). Rekayasa Statistika untuk Teknik Pengairan. Universitas
+Brawijaya Press. https://books.google.co.id/books?id=TzVTDwAAQBAJ -
+Limantara, L. (2018). Rekayasa Hidrologi. - Soewarno. (1995). hidrologi:
+Aplikasi Metode Statistik untuk Analisa Data.NOVA. - Al-Mashidani, G.,
+Lal, P. B. B., \& Mujda, M. F. (1978). A simple version of Gumbel's
+method for flood estimation / Version simplifiée de la méthode de Gumbel
+pour l'estimation des crues. Hydrological Sciences Bulletin, 23(3),
+373--380. https://doi.org/10.1080/02626667809491810 -
+https://github.com/anyarcherty/Seattle\_Rainfall/blob/master/Seattle\%20Weather.ipynb
+- Gumbel, E. J. (2012). Statistics of Extremes. Dover Publications.
+https://books.google.co.id/books?id=ku18nuinb4wC
+
+Deskripsi Isu: - Mencari nilai ekstrim dengan kala ulang tertentu.
+Penerapan ini bisa digunakan untuk hujan rancangan atau debit banjir
+rancangan.
+
+Diskusi Isu: -
+\href{https://github.com/hidrokit/hidrokit/discussions/156}{\#156} -
+Bagaimana menghitung periode ulang distribusi (analisis frekuensi) tanpa
+melihat tabel?
+
+Strategi: - Akan mengikuti fungsi log pearson
+\href{https://github.com/hidrokit/hidrokit/issues/126}{\#126} seperti
+pada
+\href{https://gist.github.com/taruma/60725ffca91dc6e741daee9a738a978b}{manual}.
+
+    \hypertarget{persiapan-dan-dataset}{%
+\section{PERSIAPAN DAN DATASET}\label{persiapan-dan-dataset}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+\PY{k+kn}{from} \PY{n+nn}{scipy} \PY{k+kn}{import} \PY{n}{stats}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} contoh data diambil dari buku}
+\PY{c+c1}{\PYZsh{} hidrologi: Aplikasi Metode Statistik untuk Analisa Data hal. 125}
+
+\PY{n}{\PYZus{}DEBIT} \PY{o}{=} \PY{p}{[}
+    \PY{l+m+mi}{244}\PY{p}{,} \PY{l+m+mi}{217}\PY{p}{,} \PY{l+m+mi}{285}\PY{p}{,} \PY{l+m+mi}{261}\PY{p}{,} \PY{l+m+mi}{295}\PY{p}{,} \PY{l+m+mi}{252}\PY{p}{,} \PY{l+m+mi}{275}\PY{p}{,} \PY{l+m+mi}{204}\PY{p}{,} \PY{l+m+mi}{208}\PY{p}{,} \PY{l+m+mi}{194}\PY{p}{,} \PY{l+m+mi}{256}\PY{p}{,} \PY{l+m+mi}{207}\PY{p}{,} \PY{l+m+mi}{354}\PY{p}{,} \PY{l+m+mi}{445}\PY{p}{,} 
+    \PY{l+m+mi}{350}\PY{p}{,} \PY{l+m+mi}{336}\PY{p}{,} \PY{l+m+mi}{328}\PY{p}{,} \PY{l+m+mi}{269}\PY{p}{,} \PY{l+m+mi}{323}\PY{p}{,} \PY{l+m+mi}{364}\PY{p}{,} \PY{l+m+mi}{247}\PY{p}{,} \PY{l+m+mi}{290}\PY{p}{,} \PY{l+m+mi}{302}\PY{p}{,} \PY{l+m+mi}{301}\PY{p}{,} \PY{l+m+mi}{284}\PY{p}{,} \PY{l+m+mi}{276}\PY{p}{,} \PY{l+m+mi}{261}\PY{p}{,} \PY{l+m+mi}{303}\PY{p}{,} 
+    \PY{l+m+mi}{335}\PY{p}{,} \PY{l+m+mi}{320}
+\PY{p}{]}
+
+\PY{n}{\PYZus{}TAHUN} \PY{o}{=} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1918}\PY{p}{,} \PY{l+m+mi}{1935}\PY{p}{)}\PY{p}{)} \PY{o}{+} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1973}\PY{p}{,} \PY{l+m+mi}{1986}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{data} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}
+    \PY{n}{data}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{stack}\PY{p}{(}\PY{p}{[}\PY{n}{\PYZus{}TAHUN}\PY{p}{,} \PY{n}{\PYZus{}DEBIT}\PY{p}{]}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,}
+    \PY{n}{columns}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{tahun}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{debit}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{p}{)}
+\PY{n}{data}\PY{o}{.}\PY{n}{tahun} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{to\PYZus{}datetime}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{tahun}\PY{p}{,} \PY{n+nb}{format}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZpc{}}\PY{l+s+s1}{Y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{data}\PY{o}{.}\PY{n}{set\PYZus{}index}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{tahun}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{data}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+            debit
+tahun
+1918-01-01    244
+1919-01-01    217
+1920-01-01    285
+1921-01-01    261
+1922-01-01    295
+1923-01-01    252
+1924-01-01    275
+1925-01-01    204
+1926-01-01    208
+1927-01-01    194
+1928-01-01    256
+1929-01-01    207
+1930-01-01    354
+1931-01-01    445
+1932-01-01    350
+1933-01-01    336
+1934-01-01    328
+1973-01-01    269
+1974-01-01    323
+1975-01-01    364
+1976-01-01    247
+1977-01-01    290
+1978-01-01    302
+1979-01-01    301
+1980-01-01    284
+1981-01-01    276
+1982-01-01    261
+1983-01-01    303
+1984-01-01    335
+1985-01-01    320
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{tabel}{%
+\section{TABEL}\label{tabel}}
+
+Terdapat 3 tabel untuk modul \texttt{hk127} yaitu: -
+\texttt{t\_gumbel\_gb}: Tabel nilai \(\bar{y}_N\) (\texttt{yn}) dan
+\(\sigma_N\) (\texttt{sn}) dari Tabel 6.2.3 \emph{Means and Standard
+Deviations of Reduced Extremes} hal. 228. Sumber: \emph{Statistics of
+Extremes} oleh Gumbel, E. J. (2012) - \texttt{t\_gumbel\_sw}: Tabel
+nilai Yn (\texttt{yn}) dan Sn (\texttt{sn}) dari Tabel 3.11A Hubungan
+Reduksi Variat Rata-rata (Yn) dengan Jumlah Data (n) dan Tabel 3.11B
+Hubungan antara deviasi standar dan reduksi variat dengan jumlah data.
+Sumber: hidrologi: \emph{Aplikasi Metode Statistik untuk Analisa Data}
+oleh Soewarno. (1995) - \texttt{t\_gumbel\_st}: Tabel nilai \(Y_n\)
+(\texttt{yn}) dan \(S_n\) (\texttt{sn}) dari Tabel 12.1. \(Y_n\) dan
+\(S_n\) Gumbel. Sumber: \emph{Rekayasa Statistika untuk Teknik
+Pengairan} oleh Soetopo, W., Montarcih, L., Press, U. B., \& Media, U.
+(2017).
+
+Dalam modul \texttt{hk127} nilai \(Y_n\) dan \(S_n\) akan menggunakan
+dari tabel \texttt{t\_gumbel\_gb} secara \texttt{default}. Mohon
+diperhatikan jika ingin menggunakan nilai \(Y_n\) dan \(S_n\) yang
+berasal dari sumber lain.
+
+Catatan: Sumber buku Gumbel dari yang tahun 1957.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} tabel dari gumbel}
+\PY{c+c1}{\PYZsh{} Statistics of Extremes oleh Gumbel p.228}
+
+\PY{c+c1}{\PYZsh{} KODE: GB}
+
+\PY{n}{\PYZus{}DATA\PYZus{}GB} \PY{o}{=} \PY{p}{[}
+    \PY{p}{[}\PY{l+m+mf}{0.48430}\PY{p}{,} \PY{l+m+mf}{0.90430}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.49020}\PY{p}{,} \PY{l+m+mf}{0.92880}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.49520}\PY{p}{,} \PY{l+m+mf}{0.94970}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.49960}\PY{p}{,} \PY{l+m+mf}{0.96760}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.50350}\PY{p}{,} \PY{l+m+mf}{0.98330}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.50700}\PY{p}{,} \PY{l+m+mf}{0.99720}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.51000}\PY{p}{,} \PY{l+m+mf}{1.00950}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.51280}\PY{p}{,} \PY{l+m+mf}{1.02057}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.51570}\PY{p}{,} \PY{l+m+mf}{1.03160}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.51810}\PY{p}{,} \PY{l+m+mf}{1.04110}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.52020}\PY{p}{,} \PY{l+m+mf}{1.04930}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.52200}\PY{p}{,} \PY{l+m+mf}{1.05660}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.52355}\PY{p}{,} \PY{l+m+mf}{1.06283}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.52520}\PY{p}{,} \PY{l+m+mf}{1.06960}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.52680}\PY{p}{,} \PY{l+m+mf}{1.07540}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.52830}\PY{p}{,} \PY{l+m+mf}{1.08110}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.52960}\PY{p}{,} \PY{l+m+mf}{1.08640}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.53086}\PY{p}{,} \PY{l+m+mf}{1.09145}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.53200}\PY{p}{,} \PY{l+m+mf}{1.09610}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.53320}\PY{p}{,} \PY{l+m+mf}{1.10040}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.53430}\PY{p}{,} \PY{l+m+mf}{1.10470}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.53530}\PY{p}{,} \PY{l+m+mf}{1.10860}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.53622}\PY{p}{,} \PY{l+m+mf}{1.11238}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.53710}\PY{p}{,} \PY{l+m+mf}{1.11590}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.53800}\PY{p}{,} \PY{l+m+mf}{1.11930}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.53880}\PY{p}{,} \PY{l+m+mf}{1.12260}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.53960}\PY{p}{,} \PY{l+m+mf}{1.12550}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.54034}\PY{p}{,} \PY{l+m+mf}{1.12847}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.54100}\PY{p}{,} \PY{l+m+mf}{1.13130}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.54180}\PY{p}{,} \PY{l+m+mf}{1.13390}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.54240}\PY{p}{,} \PY{l+m+mf}{1.13630}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.54300}\PY{p}{,} \PY{l+m+mf}{1.13880}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.54362}\PY{p}{,} \PY{l+m+mf}{1.14132}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.54420}\PY{p}{,} \PY{l+m+mf}{1.14360}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.54480}\PY{p}{,} \PY{l+m+mf}{1.14580}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.54530}\PY{p}{,} \PY{l+m+mf}{1.14800}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.54580}\PY{p}{,} \PY{l+m+mf}{1.14990}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.54630}\PY{p}{,} \PY{l+m+mf}{1.15185}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.54680}\PY{p}{,} \PY{l+m+mf}{1.15380}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.54730}\PY{p}{,} \PY{l+m+mf}{1.15570}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.54770}\PY{p}{,} \PY{l+m+mf}{1.15740}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.54810}\PY{p}{,} \PY{l+m+mf}{1.15900}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.54854}\PY{p}{,} \PY{l+m+mf}{1.16066}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.54890}\PY{p}{,} \PY{l+m+mf}{1.16230}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.54930}\PY{p}{,} \PY{l+m+mf}{1.16380}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.54970}\PY{p}{,} \PY{l+m+mf}{1.16530}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55010}\PY{p}{,} \PY{l+m+mf}{1.16670}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55040}\PY{p}{,} \PY{l+m+mf}{1.16810}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55080}\PY{p}{,} \PY{l+m+mf}{1.16960}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55110}\PY{p}{,} \PY{l+m+mf}{1.17080}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55150}\PY{p}{,} \PY{l+m+mf}{1.17210}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55180}\PY{p}{,} \PY{l+m+mf}{1.17340}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55208}\PY{p}{,} \PY{l+m+mf}{1.17467}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55270}\PY{p}{,} \PY{l+m+mf}{1.17700}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55330}\PY{p}{,} \PY{l+m+mf}{1.17930}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55380}\PY{p}{,} \PY{l+m+mf}{1.18140}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55430}\PY{p}{,} \PY{l+m+mf}{1.18340}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55477}\PY{p}{,} \PY{l+m+mf}{1.18536}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55520}\PY{p}{,} \PY{l+m+mf}{1.18730}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55570}\PY{p}{,} \PY{l+m+mf}{1.18900}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55610}\PY{p}{,} \PY{l+m+mf}{1.19060}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55650}\PY{p}{,} \PY{l+m+mf}{1.19230}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55688}\PY{p}{,} \PY{l+m+mf}{1.19382}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55720}\PY{p}{,} \PY{l+m+mf}{1.19530}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55760}\PY{p}{,} \PY{l+m+mf}{1.19670}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55800}\PY{p}{,} \PY{l+m+mf}{1.19800}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55830}\PY{p}{,} \PY{l+m+mf}{1.19940}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55860}\PY{p}{,} \PY{l+m+mf}{1.20073}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55890}\PY{p}{,} \PY{l+m+mf}{1.20200}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55920}\PY{p}{,} \PY{l+m+mf}{1.20320}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55950}\PY{p}{,} \PY{l+m+mf}{1.20440}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.55980}\PY{p}{,} \PY{l+m+mf}{1.20550}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.56002}\PY{p}{,} \PY{l+m+mf}{1.20649}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.56461}\PY{p}{,} \PY{l+m+mf}{1.22534}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.56715}\PY{p}{,} \PY{l+m+mf}{1.23598}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.56878}\PY{p}{,} \PY{l+m+mf}{1.24292}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.56993}\PY{p}{,} \PY{l+m+mf}{1.24786}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.57144}\PY{p}{,} \PY{l+m+mf}{1.25450}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.57240}\PY{p}{,} \PY{l+m+mf}{1.25880}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.57377}\PY{p}{,} \PY{l+m+mf}{1.26506}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.57450}\PY{p}{,} \PY{l+m+mf}{1.26851}\PY{p}{]}
+\PY{p}{]}
+
+\PY{n}{\PYZus{}INDEX\PYZus{}GB} \PY{o}{=} \PY{p}{(}
+    \PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{,} \PY{l+m+mi}{61}\PY{p}{)}\PY{p}{)} \PY{o}{+}
+    \PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{62}\PY{p}{,} \PY{l+m+mi}{101}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)} \PY{o}{+}
+    \PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{150}\PY{p}{,} \PY{l+m+mi}{301}\PY{p}{,} \PY{l+m+mi}{50}\PY{p}{)}\PY{p}{)} \PY{o}{+}
+    \PY{p}{[}\PY{l+m+mi}{400}\PY{p}{,} \PY{l+m+mi}{500}\PY{p}{,} \PY{l+m+mi}{750}\PY{p}{,} \PY{l+m+mi}{1000}\PY{p}{]}
+\PY{p}{)}
+
+\PY{n}{\PYZus{}COL\PYZus{}GB} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{yn}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sn}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{n}{t\PYZus{}gumbel\PYZus{}gb} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}
+    \PY{n}{data}\PY{o}{=}\PY{n}{\PYZus{}DATA\PYZus{}GB}\PY{p}{,} \PY{n}{index}\PY{o}{=}\PY{n}{\PYZus{}INDEX\PYZus{}GB}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{n}{\PYZus{}COL\PYZus{}GB}
+\PY{p}{)}
+\PY{n}{t\PYZus{}gumbel\PYZus{}gb}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+           yn       sn
+8     0.48430  0.90430
+9     0.49020  0.92880
+10    0.49520  0.94970
+11    0.49960  0.96760
+12    0.50350  0.98330
+{\ldots}       {\ldots}      {\ldots}
+300   0.56993  1.24786
+400   0.57144  1.25450
+500   0.57240  1.25880
+750   0.57377  1.26506
+1000  0.57450  1.26851
+
+[81 rows x 2 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} tabel dari soewarno}
+\PY{c+c1}{\PYZsh{} Tabel 3.11A \PYZam{} 3.11B p.129\PYZhy{}130}
+
+\PY{c+c1}{\PYZsh{} KODE: GB}
+
+\PY{n}{\PYZus{}DATA\PYZus{}SW} \PY{o}{=} \PY{p}{[}
+    \PY{p}{[}\PY{l+m+mf}{0.4592}\PY{p}{,} \PY{l+m+mf}{0.9496}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.4996}\PY{p}{,} \PY{l+m+mf}{0.9676}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5053}\PY{p}{,} \PY{l+m+mf}{0.9933}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5070}\PY{p}{,} \PY{l+m+mf}{0.9971}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5100}\PY{p}{,} \PY{l+m+mf}{1.0095}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5128}\PY{p}{,} \PY{l+m+mf}{1.0206}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5157}\PY{p}{,} \PY{l+m+mf}{1.0316}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5181}\PY{p}{,} \PY{l+m+mf}{1.0411}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5202}\PY{p}{,} \PY{l+m+mf}{1.0493}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5220}\PY{p}{,} \PY{l+m+mf}{1.0565}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5236}\PY{p}{,} \PY{l+m+mf}{1.0628}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5252}\PY{p}{,} \PY{l+m+mf}{1.0696}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5268}\PY{p}{,} \PY{l+m+mf}{1.0754}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5283}\PY{p}{,} \PY{l+m+mf}{1.0811}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5296}\PY{p}{,} \PY{l+m+mf}{1.0864}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5309}\PY{p}{,} \PY{l+m+mf}{1.0915}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5320}\PY{p}{,} \PY{l+m+mf}{1.1961}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5332}\PY{p}{,} \PY{l+m+mf}{1.1004}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5343}\PY{p}{,} \PY{l+m+mf}{1.1047}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5353}\PY{p}{,} \PY{l+m+mf}{1.1086}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5362}\PY{p}{,} \PY{l+m+mf}{1.1124}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5371}\PY{p}{,} \PY{l+m+mf}{1.1159}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5380}\PY{p}{,} \PY{l+m+mf}{1.1193}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5388}\PY{p}{,} \PY{l+m+mf}{1.1226}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5396}\PY{p}{,} \PY{l+m+mf}{1.1255}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5402}\PY{p}{,} \PY{l+m+mf}{1.1285}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5410}\PY{p}{,} \PY{l+m+mf}{1.1313}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5418}\PY{p}{,} \PY{l+m+mf}{1.1339}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5424}\PY{p}{,} \PY{l+m+mf}{1.1363}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5430}\PY{p}{,} \PY{l+m+mf}{1.1388}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5436}\PY{p}{,} \PY{l+m+mf}{1.1413}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5442}\PY{p}{,} \PY{l+m+mf}{1.1436}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5448}\PY{p}{,} \PY{l+m+mf}{1.1458}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5453}\PY{p}{,} \PY{l+m+mf}{1.1480}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5458}\PY{p}{,} \PY{l+m+mf}{1.1499}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5463}\PY{p}{,} \PY{l+m+mf}{1.1519}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5468}\PY{p}{,} \PY{l+m+mf}{1.1538}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5473}\PY{p}{,} \PY{l+m+mf}{1.1557}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5477}\PY{p}{,} \PY{l+m+mf}{1.1574}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5481}\PY{p}{,} \PY{l+m+mf}{1.1590}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5485}\PY{p}{,} \PY{l+m+mf}{1.1607}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5489}\PY{p}{,} \PY{l+m+mf}{1.1623}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5493}\PY{p}{,} \PY{l+m+mf}{1.1638}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5497}\PY{p}{,} \PY{l+m+mf}{1.1658}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5501}\PY{p}{,} \PY{l+m+mf}{1.1667}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5504}\PY{p}{,} \PY{l+m+mf}{1.1681}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5508}\PY{p}{,} \PY{l+m+mf}{1.1696}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5511}\PY{p}{,} \PY{l+m+mf}{1.1708}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5518}\PY{p}{,} \PY{l+m+mf}{1.1721}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5518}\PY{p}{,} \PY{l+m+mf}{1.1734}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5521}\PY{p}{,} \PY{l+m+mf}{1.1747}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5524}\PY{p}{,} \PY{l+m+mf}{1.1759}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5527}\PY{p}{,} \PY{l+m+mf}{1.1770}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5530}\PY{p}{,} \PY{l+m+mf}{1.1782}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5533}\PY{p}{,} \PY{l+m+mf}{1.1793}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5535}\PY{p}{,} \PY{l+m+mf}{1.1803}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5538}\PY{p}{,} \PY{l+m+mf}{1.1814}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5540}\PY{p}{,} \PY{l+m+mf}{1.1824}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5543}\PY{p}{,} \PY{l+m+mf}{1.1834}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5545}\PY{p}{,} \PY{l+m+mf}{1.1844}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5548}\PY{p}{,} \PY{l+m+mf}{1.1854}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5550}\PY{p}{,} \PY{l+m+mf}{1.1863}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5552}\PY{p}{,} \PY{l+m+mf}{1.1873}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5555}\PY{p}{,} \PY{l+m+mf}{1.1881}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5557}\PY{p}{,} \PY{l+m+mf}{1.1890}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5559}\PY{p}{,} \PY{l+m+mf}{1.1898}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5561}\PY{p}{,} \PY{l+m+mf}{1.1906}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5563}\PY{p}{,} \PY{l+m+mf}{1.1915}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5565}\PY{p}{,} \PY{l+m+mf}{1.1923}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5567}\PY{p}{,} \PY{l+m+mf}{1.1930}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5569}\PY{p}{,} \PY{l+m+mf}{1.1938}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5570}\PY{p}{,} \PY{l+m+mf}{1.1945}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5572}\PY{p}{,} \PY{l+m+mf}{1.1953}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5574}\PY{p}{,} \PY{l+m+mf}{1.1959}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5576}\PY{p}{,} \PY{l+m+mf}{1.1967}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5578}\PY{p}{,} \PY{l+m+mf}{1.1973}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5580}\PY{p}{,} \PY{l+m+mf}{1.1980}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5581}\PY{p}{,} \PY{l+m+mf}{1.1987}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5583}\PY{p}{,} \PY{l+m+mf}{1.1994}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5585}\PY{p}{,} \PY{l+m+mf}{1.2001}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5586}\PY{p}{,} \PY{l+m+mf}{1.2007}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5587}\PY{p}{,} \PY{l+m+mf}{1.2013}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5589}\PY{p}{,} \PY{l+m+mf}{1.2020}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5591}\PY{p}{,} \PY{l+m+mf}{1.2026}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5592}\PY{p}{,} \PY{l+m+mf}{1.2032}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5593}\PY{p}{,} \PY{l+m+mf}{1.2038}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5595}\PY{p}{,} \PY{l+m+mf}{1.2044}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5596}\PY{p}{,} \PY{l+m+mf}{1.2049}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5598}\PY{p}{,} \PY{l+m+mf}{1.2055}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5599}\PY{p}{,} \PY{l+m+mf}{1.2060}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5600}\PY{p}{,} \PY{l+m+mf}{1.2065}\PY{p}{]}\PY{p}{,}
+\PY{p}{]}
+
+\PY{n}{\PYZus{}INDEX\PYZus{}SW} \PY{o}{=} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{101}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{\PYZus{}COL\PYZus{}SW} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{yn}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sn}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{n}{t\PYZus{}gumbel\PYZus{}sw} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}
+    \PY{n}{data}\PY{o}{=}\PY{n}{\PYZus{}DATA\PYZus{}SW}\PY{p}{,} \PY{n}{index}\PY{o}{=}\PY{n}{\PYZus{}INDEX\PYZus{}SW}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{n}{\PYZus{}COL\PYZus{}SW}
+\PY{p}{)}
+\PY{n}{t\PYZus{}gumbel\PYZus{}sw}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+         yn      sn
+10   0.4592  0.9496
+11   0.4996  0.9676
+12   0.5053  0.9933
+13   0.5070  0.9971
+14   0.5100  1.0095
+..      {\ldots}     {\ldots}
+96   0.5595  1.2044
+97   0.5596  1.2049
+98   0.5598  1.2055
+99   0.5599  1.2060
+100  0.5600  1.2065
+
+[91 rows x 2 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Tabel dari Soetopo hal. 98}
+\PY{c+c1}{\PYZsh{} Tabel 12.1 Yn dan Sn Gumbel }
+
+\PY{c+c1}{\PYZsh{} KODE: ST}
+
+\PY{n}{\PYZus{}DATA\PYZus{}ST} \PY{o}{=} \PY{p}{[}
+    \PY{p}{[}\PY{l+m+mf}{0.4843}\PY{p}{,} \PY{l+m+mf}{0.9043}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.4902}\PY{p}{,} \PY{l+m+mf}{0.9288}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.4952}\PY{p}{,} \PY{l+m+mf}{0.9497}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.4996}\PY{p}{,} \PY{l+m+mf}{0.9676}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5035}\PY{p}{,} \PY{l+m+mf}{0.9833}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5070}\PY{p}{,} \PY{l+m+mf}{0.9972}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5100}\PY{p}{,} \PY{l+m+mf}{1.0095}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5128}\PY{p}{,} \PY{l+m+mf}{1.0205}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5157}\PY{p}{,} \PY{l+m+mf}{1.0316}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5181}\PY{p}{,} \PY{l+m+mf}{1.0411}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5202}\PY{p}{,} \PY{l+m+mf}{1.0493}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5220}\PY{p}{,} \PY{l+m+mf}{1.0566}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5235}\PY{p}{,} \PY{l+m+mf}{1.0628}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5252}\PY{p}{,} \PY{l+m+mf}{1.0696}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5268}\PY{p}{,} \PY{l+m+mf}{1.0754}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5283}\PY{p}{,} \PY{l+m+mf}{1.0811}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5296}\PY{p}{,} \PY{l+m+mf}{1.0864}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5309}\PY{p}{,} \PY{l+m+mf}{1.0915}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5320}\PY{p}{,} \PY{l+m+mf}{1.0961}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5332}\PY{p}{,} \PY{l+m+mf}{1.1004}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5343}\PY{p}{,} \PY{l+m+mf}{1.1047}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5353}\PY{p}{,} \PY{l+m+mf}{1.1086}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5362}\PY{p}{,} \PY{l+m+mf}{1.1124}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5371}\PY{p}{,} \PY{l+m+mf}{1.1159}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5380}\PY{p}{,} \PY{l+m+mf}{1.1193}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5388}\PY{p}{,} \PY{l+m+mf}{1.1226}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5396}\PY{p}{,} \PY{l+m+mf}{1.1255}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5402}\PY{p}{,} \PY{l+m+mf}{1.1285}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5410}\PY{p}{,} \PY{l+m+mf}{1.1313}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5418}\PY{p}{,} \PY{l+m+mf}{1.1339}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5424}\PY{p}{,} \PY{l+m+mf}{1.1363}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5430}\PY{p}{,} \PY{l+m+mf}{1.1388}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5436}\PY{p}{,} \PY{l+m+mf}{1.1413}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5442}\PY{p}{,} \PY{l+m+mf}{1.1436}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5448}\PY{p}{,} \PY{l+m+mf}{1.1458}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5453}\PY{p}{,} \PY{l+m+mf}{1.1480}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5458}\PY{p}{,} \PY{l+m+mf}{1.1499}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5463}\PY{p}{,} \PY{l+m+mf}{1.1519}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5468}\PY{p}{,} \PY{l+m+mf}{1.1538}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5473}\PY{p}{,} \PY{l+m+mf}{1.1557}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5477}\PY{p}{,} \PY{l+m+mf}{1.1574}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5481}\PY{p}{,} \PY{l+m+mf}{1.1590}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5485}\PY{p}{,} \PY{l+m+mf}{1.1607}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5489}\PY{p}{,} \PY{l+m+mf}{1.1623}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5493}\PY{p}{,} \PY{l+m+mf}{1.1638}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5497}\PY{p}{,} \PY{l+m+mf}{1.1658}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5501}\PY{p}{,} \PY{l+m+mf}{1.1667}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5504}\PY{p}{,} \PY{l+m+mf}{1.1681}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5508}\PY{p}{,} \PY{l+m+mf}{1.1696}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5511}\PY{p}{,} \PY{l+m+mf}{1.1708}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5515}\PY{p}{,} \PY{l+m+mf}{1.1721}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5518}\PY{p}{,} \PY{l+m+mf}{1.1734}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5521}\PY{p}{,} \PY{l+m+mf}{1.1747}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5524}\PY{p}{,} \PY{l+m+mf}{1.1759}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5527}\PY{p}{,} \PY{l+m+mf}{1.1770}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5530}\PY{p}{,} \PY{l+m+mf}{1.1782}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5533}\PY{p}{,} \PY{l+m+mf}{1.1793}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5535}\PY{p}{,} \PY{l+m+mf}{1.1803}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5538}\PY{p}{,} \PY{l+m+mf}{1.1814}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5540}\PY{p}{,} \PY{l+m+mf}{1.1824}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5543}\PY{p}{,} \PY{l+m+mf}{1.1834}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5545}\PY{p}{,} \PY{l+m+mf}{1.1844}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5548}\PY{p}{,} \PY{l+m+mf}{1.1854}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5550}\PY{p}{,} \PY{l+m+mf}{1.1863}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5552}\PY{p}{,} \PY{l+m+mf}{1.1873}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5555}\PY{p}{,} \PY{l+m+mf}{1.1881}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5557}\PY{p}{,} \PY{l+m+mf}{1.1890}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5559}\PY{p}{,} \PY{l+m+mf}{1.1898}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5561}\PY{p}{,} \PY{l+m+mf}{1.1906}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5563}\PY{p}{,} \PY{l+m+mf}{1.1915}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5565}\PY{p}{,} \PY{l+m+mf}{1.1923}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5567}\PY{p}{,} \PY{l+m+mf}{1.1930}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5569}\PY{p}{,} \PY{l+m+mf}{1.1938}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5570}\PY{p}{,} \PY{l+m+mf}{1.1945}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5572}\PY{p}{,} \PY{l+m+mf}{1.1953}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5574}\PY{p}{,} \PY{l+m+mf}{1.1959}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5576}\PY{p}{,} \PY{l+m+mf}{1.1967}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5578}\PY{p}{,} \PY{l+m+mf}{1.1973}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5580}\PY{p}{,} \PY{l+m+mf}{1.1980}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5581}\PY{p}{,} \PY{l+m+mf}{1.1987}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5583}\PY{p}{,} \PY{l+m+mf}{1.1994}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5585}\PY{p}{,} \PY{l+m+mf}{1.2001}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5586}\PY{p}{,} \PY{l+m+mf}{1.2007}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5587}\PY{p}{,} \PY{l+m+mf}{1.2013}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5589}\PY{p}{,} \PY{l+m+mf}{1.2020}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5591}\PY{p}{,} \PY{l+m+mf}{1.2026}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5592}\PY{p}{,} \PY{l+m+mf}{1.2032}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5593}\PY{p}{,} \PY{l+m+mf}{1.2038}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5595}\PY{p}{,} \PY{l+m+mf}{1.2044}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5596}\PY{p}{,} \PY{l+m+mf}{1.2049}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5598}\PY{p}{,} \PY{l+m+mf}{1.2055}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5599}\PY{p}{,} \PY{l+m+mf}{1.2060}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.5600}\PY{p}{,} \PY{l+m+mf}{1.2065}\PY{p}{]}\PY{p}{,}
+\PY{p}{]}
+
+\PY{n}{\PYZus{}INDEX\PYZus{}ST} \PY{o}{=} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{,} \PY{l+m+mi}{101}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{\PYZus{}COL\PYZus{}ST} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{yn}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sn}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{n}{t\PYZus{}gumbel\PYZus{}st} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}
+    \PY{n}{data}\PY{o}{=}\PY{n}{\PYZus{}DATA\PYZus{}ST}\PY{p}{,} \PY{n}{index}\PY{o}{=}\PY{n}{\PYZus{}INDEX\PYZus{}ST}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{n}{\PYZus{}COL\PYZus{}ST}
+\PY{p}{)}
+\PY{n}{t\PYZus{}gumbel\PYZus{}st}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+         yn      sn
+8    0.4843  0.9043
+9    0.4902  0.9288
+10   0.4952  0.9497
+11   0.4996  0.9676
+12   0.5035  0.9833
+..      {\ldots}     {\ldots}
+96   0.5595  1.2044
+97   0.5596  1.2049
+98   0.5598  1.2055
+99   0.5599  1.2060
+100  0.5600  1.2065
+
+[93 rows x 2 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{kode}{%
+\section{KODE}\label{kode}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{\PYZus{}find\PYZus{}in\PYZus{}table}\PY{p}{(}\PY{n}{val}\PY{p}{,} \PY{n}{table}\PY{p}{,} \PY{n}{y\PYZus{}col}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n}{x\PYZus{}col}\PY{o}{=}\PY{k+kc}{None}\PY{p}{)}\PY{p}{:}
+    \PY{n}{x} \PY{o}{=} \PY{n}{table}\PY{o}{.}\PY{n}{index} \PY{k}{if} \PY{n}{x\PYZus{}col} \PY{o+ow}{is} \PY{k+kc}{None} \PY{k}{else} \PY{n}{table}\PY{p}{[}\PY{n}{x\PYZus{}col}\PY{p}{]}
+    \PY{n}{y} \PY{o}{=} \PY{n}{table}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]} \PY{k}{if} \PY{n}{y\PYZus{}col} \PY{o+ow}{is} \PY{k+kc}{None} \PY{k}{else} \PY{n}{table}\PY{p}{[}\PY{n}{y\PYZus{}col}\PY{p}{]}
+    \PY{k}{return} \PY{n}{np}\PY{o}{.}\PY{n}{interp}\PY{p}{(}\PY{n}{val}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}
+
+\PY{k}{def} \PY{n+nf}{\PYZus{}find\PYZus{}Yn\PYZus{}Sn}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{table}\PY{p}{)}\PY{p}{:}
+    \PY{n}{yn} \PY{o}{=} \PY{n}{\PYZus{}find\PYZus{}in\PYZus{}table}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{table}\PY{p}{,} \PY{n}{y\PYZus{}col}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{yn}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n}{sn} \PY{o}{=} \PY{n}{\PYZus{}find\PYZus{}in\PYZus{}table}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{table}\PY{p}{,} \PY{n}{y\PYZus{}col}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sn}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{k}{return} \PY{n}{yn}\PY{p}{,} \PY{n}{sn}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{find\PYZus{}coef}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gumbel}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gumbel}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+        \PY{k}{return} \PY{n}{\PYZus{}find\PYZus{}Yn\PYZus{}Sn}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{t\PYZus{}gumbel\PYZus{}gb}\PY{p}{)}
+    \PY{k}{if} \PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soewarno}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+        \PY{k}{return} \PY{n}{\PYZus{}find\PYZus{}Yn\PYZus{}Sn}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{t\PYZus{}gumbel\PYZus{}sw}\PY{p}{)}
+    \PY{k}{if} \PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soetopo}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+        \PY{k}{return} \PY{n}{\PYZus{}find\PYZus{}Yn\PYZus{}Sn}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{t\PYZus{}gumbel\PYZus{}st}\PY{p}{)}
+
+\PY{k}{def} \PY{n+nf}{calc\PYZus{}K}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{return\PYZus{}period}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gumbel}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{show\PYZus{}stat}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{:}
+    \PY{n}{return\PYZus{}period} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{return\PYZus{}period}\PY{p}{)}
+
+    \PY{k}{if} \PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{scipy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{} todo: perhitungan probabilitasnya belum dapat dipastikan formulanya}
+        \PY{n}{prob} \PY{o}{=} \PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{o}{/}\PY{n}{return\PYZus{}period}
+        \PY{c+c1}{\PYZsh{} prob = 1 \PYZhy{} np.log(return\PYZus{}period/(return\PYZus{}period\PYZhy{}1))}
+        \PY{k}{return} \PY{n}{stats}\PY{o}{.}\PY{n}{gumbel\PYZus{}r}\PY{o}{.}\PY{n}{ppf}\PY{p}{(}\PY{n}{prob}\PY{p}{)}
+    \PY{k}{elif} \PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{powell}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+        \PY{k}{return} \PY{o}{\PYZhy{}}\PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{6}\PY{p}{)}\PY{o}{/}\PY{n}{np}\PY{o}{.}\PY{n}{pi} \PY{o}{*}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{euler\PYZus{}gamma}\PY{o}{+}\PY{n}{np}\PY{o}{.}\PY{n}{log}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{log}\PY{p}{(}\PY{n}{return\PYZus{}period}\PY{o}{/}\PY{p}{(}\PY{n}{return\PYZus{}period}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+    \PY{k}{else}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{} dibuku Soewarno dinyatakan T\PYZgt{}=20 menggunakan}
+        \PY{c+c1}{\PYZsh{} ln(T), tapi dicontohnya tidak mengikuti formula tersebut}
+        \PY{c+c1}{\PYZsh{} jadi yang digunakan rumus umumnya saja.}
+        \PY{c+c1}{\PYZsh{} if source.lower() == \PYZsq{}soewarno\PYZsq{}:}
+        \PY{c+c1}{\PYZsh{}     yt = []}
+        \PY{c+c1}{\PYZsh{}     for t in return\PYZus{}period:}
+        \PY{c+c1}{\PYZsh{}         if t \PYZlt{}= 20:}
+        \PY{c+c1}{\PYZsh{}             yt += [\PYZhy{}np.log(\PYZhy{}np.log((t \PYZhy{} 1)/t))]}
+        \PY{c+c1}{\PYZsh{}         else:}
+        \PY{c+c1}{\PYZsh{}             yt += [np.log(t)]}
+        \PY{c+c1}{\PYZsh{}     yt = np.array(yt)}
+        \PY{c+c1}{\PYZsh{} else:}
+        \PY{c+c1}{\PYZsh{}     yt = \PYZhy{}np.log(\PYZhy{}np.log((return\PYZus{}period \PYZhy{} 1)/return\PYZus{}period))}
+
+        \PY{n}{yn}\PY{p}{,} \PY{n}{sn} \PY{o}{=} \PY{n}{find\PYZus{}coef}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{n}{source}\PY{p}{)}
+        \PY{n}{yt} \PY{o}{=} \PY{o}{\PYZhy{}}\PY{n}{np}\PY{o}{.}\PY{n}{log}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{np}\PY{o}{.}\PY{n}{log}\PY{p}{(}\PY{p}{(}\PY{n}{return\PYZus{}period} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{)}\PY{o}{/}\PY{n}{return\PYZus{}period}\PY{p}{)}\PY{p}{)}
+        \PY{n}{K} \PY{o}{=} \PY{p}{(}\PY{n}{yt} \PY{o}{\PYZhy{}} \PY{n}{yn}\PY{p}{)} \PY{o}{/} \PY{n}{sn}
+
+        \PY{k}{if} \PY{n}{show\PYZus{}stat}\PY{p}{:}
+            \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{y\PYZus{}n = }\PY{l+s+si}{\PYZob{}}\PY{n}{yn}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+            \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{s\PYZus{}n = }\PY{l+s+si}{\PYZob{}}\PY{n}{sn}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+            \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{y\PYZus{}t = }\PY{l+s+si}{\PYZob{}}\PY{n}{yt}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{k}{return} \PY{n}{K}
+
+\PY{k}{def} \PY{n+nf}{calc\PYZus{}x\PYZus{}gumbel}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{return\PYZus{}period}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{5}\PY{p}{]}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gumbel}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{show\PYZus{}stat}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{:}
+
+    \PY{n}{x\PYZus{}mean} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+    \PY{n}{x\PYZus{}std} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{std}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{ddof}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+    \PY{n}{n} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+    \PY{n}{k} \PY{o}{=} \PY{n}{calc\PYZus{}K}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{return\PYZus{}period}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{n}{source}\PY{p}{,} \PY{n}{show\PYZus{}stat}\PY{o}{=}\PY{n}{show\PYZus{}stat}\PY{p}{)}
+
+    \PY{k}{if} \PY{n}{show\PYZus{}stat}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{x\PYZus{}mean = }\PY{l+s+si}{\PYZob{}}\PY{n}{x\PYZus{}mean}\PY{l+s+si}{:}\PY{l+s+s1}{.5f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{x\PYZus{}std = }\PY{l+s+si}{\PYZob{}}\PY{n}{x\PYZus{}std}\PY{l+s+si}{:}\PY{l+s+s1}{.5f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{k = }\PY{l+s+si}{\PYZob{}}\PY{n}{k}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    
+    \PY{n}{val\PYZus{}x} \PY{o}{=} \PY{n}{x\PYZus{}mean} \PY{o}{+} \PY{n}{k} \PY{o}{*} \PY{n}{x\PYZus{}std}
+    \PY{k}{return} \PY{n}{val\PYZus{}x}
+
+\PY{k}{def} \PY{n+nf}{freq\PYZus{}gumbel}\PY{p}{(}
+    \PY{n}{df}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,}
+    \PY{n}{return\PYZus{}period}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{25}\PY{p}{,} \PY{l+m+mi}{50}\PY{p}{,} \PY{l+m+mi}{100}\PY{p}{]}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gumbel}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{show\PYZus{}stat}\PY{o}{=}\PY{k+kc}{False}\PY{p}{,}
+    \PY{n}{col\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Gumbel}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{index\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Kala Ulang}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+
+    \PY{n}{col} \PY{o}{=} \PY{n}{df}\PY{o}{.}\PY{n}{columns}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{k}{if} \PY{n}{col} \PY{o+ow}{is} \PY{k+kc}{None} \PY{k}{else} \PY{n}{col}
+
+    \PY{n}{x} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+
+    \PY{n}{arr} \PY{o}{=} \PY{n}{calc\PYZus{}x\PYZus{}gumbel}\PY{p}{(}
+        \PY{n}{x}\PY{p}{,} \PY{n}{return\PYZus{}period}\PY{o}{=}\PY{n}{return\PYZus{}period}\PY{p}{,} \PY{n}{show\PYZus{}stat}\PY{o}{=}\PY{n}{show\PYZus{}stat}\PY{p}{,}
+        \PY{n}{source}\PY{o}{=}\PY{n}{source}
+    \PY{p}{)}
+
+    \PY{n}{result} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}
+        \PY{n}{data}\PY{o}{=}\PY{n}{arr}\PY{p}{,} \PY{n}{index}\PY{o}{=}\PY{n}{return\PYZus{}period}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{p}{[}\PY{n}{col\PYZus{}name}\PY{p}{]}
+    \PY{p}{)}
+
+    \PY{n}{result}\PY{o}{.}\PY{n}{index}\PY{o}{.}\PY{n}{name} \PY{o}{=} \PY{n}{index\PYZus{}name}
+    \PY{k}{return} \PY{n}{result}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{\PYZus{}calc\PYZus{}T}\PY{p}{(}\PY{n}{P}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{l+m+mi}{1} \PY{o}{/} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{np}\PY{o}{.}\PY{n}{exp}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{np}\PY{o}{.}\PY{n}{exp}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{P}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+
+\PY{k}{def} \PY{n+nf}{\PYZus{}calc\PYZus{}prob\PYZus{}from\PYZus{}table}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{n}{n}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gumbel}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+    \PY{n}{yn}\PY{p}{,} \PY{n}{sn} \PY{o}{=} \PY{n}{find\PYZus{}coef}\PY{p}{(}\PY{n}{n}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{n}{source}\PY{p}{)}
+    \PY{n}{P} \PY{o}{=} \PY{n}{k} \PY{o}{*} \PY{n}{sn} \PY{o}{+} \PY{n}{yn}
+    \PY{n}{T} \PY{o}{=} \PY{n}{\PYZus{}calc\PYZus{}T}\PY{p}{(}\PY{n}{P}\PY{p}{)}
+    \PY{k}{return} \PY{n}{np}\PY{o}{.}\PY{n}{around}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{o}{/}\PY{n}{T}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}
+
+\PY{k}{def} \PY{n+nf}{calc\PYZus{}prob}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{n}{n}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gumbel}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gumbel}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+        \PY{k}{return} \PY{n}{\PYZus{}calc\PYZus{}prob\PYZus{}from\PYZus{}table}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{n}{n}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{n}{source}\PY{p}{)}
+    \PY{k}{if} \PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soewarno}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+        \PY{k}{return} \PY{n}{\PYZus{}calc\PYZus{}prob\PYZus{}from\PYZus{}table}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{n}{n}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{n}{source}\PY{p}{)}
+    \PY{k}{if} \PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soetopo}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+        \PY{k}{return} \PY{n}{\PYZus{}calc\PYZus{}prob\PYZus{}from\PYZus{}table}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{n}{n}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{n}{source}\PY{p}{)}
+    \PY{k}{if} \PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{scipy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+        \PY{k}{return} \PY{n}{stats}\PY{o}{.}\PY{n}{gumbel\PYZus{}r}\PY{o}{.}\PY{n}{cdf}\PY{p}{(}\PY{n}{k}\PY{p}{)}
+    \PY{k}{if} \PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{powell}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{} persamaan ini ditemukan menggunakan wolfram alpha}
+        \PY{c+c1}{\PYZsh{} x = e\PYZca{}(e\PYZca{}(\PYZhy{}(π K)/sqrt(6) \PYZhy{} p))/(e\PYZca{}(e\PYZca{}(\PYZhy{}(π K)/sqrt(6) \PYZhy{} p)) \PYZhy{} 1)}
+        \PY{n}{\PYZus{}top} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{exp}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{exp}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{pi}\PY{o}{*}\PY{n}{k}\PY{p}{)}\PY{o}{/}\PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{6}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{n}{np}\PY{o}{.}\PY{n}{euler\PYZus{}gamma}\PY{p}{)}\PY{p}{)}
+        \PY{n}{\PYZus{}bot} \PY{o}{=} \PY{n}{\PYZus{}top} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}
+        \PY{n}{T} \PY{o}{=} \PY{n}{\PYZus{}top} \PY{o}{/} \PY{n}{\PYZus{}bot}
+        \PY{k}{return} \PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{o}{/}\PY{n}{T}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{fungsi}{%
+\section{FUNGSI}\label{fungsi}}
+
+    \hypertarget{fungsi-find_coefn-...}{%
+\subsection{\texorpdfstring{Fungsi
+\texttt{find\_coef(n,\ ...)}}{Fungsi find\_coef(n, ...)}}\label{fungsi-find_coefn-...}}
+
+Function:
+\texttt{find\_coef(n,\ source=\textquotesingle{}gumbel\textquotesingle{})}
+
+Fungsi \texttt{find\_coef(...)} digunakan untuk mencari nilai \(Y_n\)
+dan \(S_n\) dari berbagai sumber berdasarkan nilai \(n\) yaitu jumlah
+banyaknya data.
+
+\begin{itemize}
+\tightlist
+\item
+  Argumen Posisi:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{n}: jumlah banyaknya data.
+  \end{itemize}
+\item
+  Argumen Opsional:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{source}: sumber nilai \(Y_n\) dan \(S_n\),
+    \texttt{\textquotesingle{}gumbel\textquotesingle{}} (default).
+    Sumber yang dapat digunakan antara lain: Soewarno
+    (\texttt{\textquotesingle{}soewarno\textquotesingle{}}), Soetopo
+    (\texttt{\textquotesingle{}soetopo\textquotesingle{}}).
+  \end{itemize}
+\end{itemize}
+
+Perlu dicatat bahwa batas jumlah data \(N\) untuk masing-masing sumber
+berbeda-beda. - Untuk
+\texttt{\textquotesingle{}gumbel\textquotesingle{}} batasan dimulai dari
+\([8, ∞]\) akan tetapi pada tabel hanya sampai \(1000\). - Untuk
+\texttt{\textquotesingle{}soewarno\textquotesingle{}} batasan dimulai
+dari \([10, 100]\). - Untuk
+\texttt{\textquotesingle{}soetopo\textquotesingle{}} batasan dimulai
+dari \([10, 100]\).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{find\PYZus{}coef}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+(0.4952, 0.9497)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{find\PYZus{}coef}\PY{p}{(}\PY{l+m+mi}{30}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soetopo}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}  \PY{c+c1}{\PYZsh{} menggunakan tabel dari soetopo}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+(0.5362, 1.1124)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} perbandingan antara masing\PYZhy{}masing sumber}
+
+\PY{n}{\PYZus{}n} \PY{o}{=} \PY{l+m+mi}{25}
+\PY{n}{source\PYZus{}test} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gumbel}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soewarno}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soetopo}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{k}{for} \PY{n}{\PYZus{}source} \PY{o+ow}{in} \PY{n}{source\PYZus{}test}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Yn, Sn }\PY{l+s+si}{\PYZob{}}\PY{n}{\PYZus{}source}\PY{l+s+si}{:}\PY{l+s+s1}{10}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{= }\PY{l+s+si}{\PYZob{}}\PY{n}{find\PYZus{}coef}\PY{p}{(}\PY{n}{\PYZus{}n}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{n}{\PYZus{}source}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Yn, Sn gumbel    = (0.53086, 1.09145)
+Yn, Sn soewarno  = (0.5309, 1.0915)
+Yn, Sn soetopo   = (0.5309, 1.0915)
+    \end{Verbatim}
+
+    \hypertarget{fungsi-calc_kn-return_period-...}{%
+\subsection{\texorpdfstring{Fungsi
+\texttt{calc\_K(n,\ return\_period,\ ...)}:}{Fungsi calc\_K(n, return\_period, ...):}}\label{fungsi-calc_kn-return_period-...}}
+
+Function:
+\texttt{calc\_K(n,\ return\_period,\ source=\textquotesingle{}gumbel\textquotesingle{},\ show\_stat=False)}
+
+Fungsi \texttt{calc\_K(...)} digunakan untuk menghitung nilai frequency
+factor \(K\) yang digunakan untuk menghitung nilai \(X\) pada kala ulang
+tertentu.
+
+\begin{itemize}
+\tightlist
+\item
+  Argumen Posisi:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{n}: jumlah banyaknya data.
+  \item
+    \texttt{return\_period}: kala ulang. Bisa dalam skalar ataupun
+    \emph{array\_like}.
+  \end{itemize}
+\item
+  Argumen Opsional:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{source}: sumber nilai \(Y_n\) dan \(S_n\) (untuk
+    \texttt{\textquotesingle{}gumbel\textquotesingle{}},
+    \texttt{\textquotesingle{}soewarno\textquotesingle{}}, dan
+    \texttt{\textquotesingle{}soetopo\textquotesingle{}}),
+    \texttt{\textquotesingle{}gumbel\textquotesingle{}} (default).
+    Sumber yang dapat digunakan antara lain: Soewarno
+    (\texttt{\textquotesingle{}soewarno\textquotesingle{}}), Soetopo
+    (\texttt{\textquotesingle{}soetopo\textquotesingle{}}), fungsi
+    \texttt{stats.gumbel\_r.ppf} dari Scipy
+    (\texttt{\textquotesingle{}scipy\textquotesingle{}}), dan metode
+    Powell (\texttt{\textquotesingle{}powell\textquotesingle{}}).
+  \item
+    \texttt{show\_stat}: menampilkan parameter statistik. \texttt{False}
+    (default).
+  \end{itemize}
+\end{itemize}
+
+Catatan: Untuk metode Powell
+(\texttt{\textquotesingle{}powell\textquotesingle{}}) menggunakan
+persamaan:
+\[K = - \frac{\sqrt{6}}{\pi} \left( \gamma + \ln{\ln\left({\frac{T}{T-1}}\right)}\right)\]
+dengan \(\gamma = 0.5772\) (\texttt{np.euler\_gamma}) atau merupakan
+bilangan
+\href{https://en.wikipedia.org/wiki/Euler\%27s_constant}{\textbf{Euler--Mascheroni
+constant}}.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{calc\PYZus{}K}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+1.8481281744892548
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{calc\PYZus{}K}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{50}\PY{p}{]}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soetopo}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([1.84812817, 2.60608113, 3.58717348])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{calc\PYZus{}K}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{50}\PY{p}{]}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soewarno}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{show\PYZus{}stat}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+y\_n = 0.4592
+s\_n = 0.9496
+y\_t = [2.25036733 2.97019525 3.90193866]
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([1.8862335 , 2.64426627, 3.62546194])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{fungsi-calc_x_gumbelx-...}{%
+\subsection{\texorpdfstring{Fungsi
+\texttt{calc\_x\_gumbel(x,\ ...)}}{Fungsi calc\_x\_gumbel(x, ...)}}\label{fungsi-calc_x_gumbelx-...}}
+
+Function:
+\texttt{calc\_x\_gumbel(x,\ return\_period={[}5{]},\ source=\textquotesingle{}gumbel\textquotesingle{},\ show\_stat=False)}
+
+Fungsi \texttt{calc\_x\_gumbel(...)} digunakan untuk mencari besar \(X\)
+berdasarkan kala ulang (\emph{return period}), yang hasilnya dalam
+bentuk \texttt{numpy.array}.
+
+\begin{itemize}
+\tightlist
+\item
+  Argumen Posisi:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{x}: \emph{array}.
+  \end{itemize}
+\item
+  Argumen Opsional:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{return\_period}: Kala Ulang (Tahun). \texttt{{[}5{]}}
+    (default).
+  \item
+    \texttt{source}: sumber nilai \(K\),
+    \texttt{\textquotesingle{}gumbel\textquotesingle{}} (default).
+    Sumber yang dapat digunakan antara lain: Soewarno
+    (\texttt{\textquotesingle{}soewarno\textquotesingle{}}), Soetopo
+    (\texttt{\textquotesingle{}soetopo\textquotesingle{}}), fungsi
+    \texttt{stats.gumbel\_r.ppf} dari Scipy
+    (\texttt{\textquotesingle{}scipy\textquotesingle{}}), dan metode
+    Powell (\texttt{\textquotesingle{}powell\textquotesingle{}}).
+  \item
+    \texttt{show\_stat}: menampilkan parameter statistik. \texttt{False}
+    (default).
+  \end{itemize}
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{calc\PYZus{}x\PYZus{}gumbel}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{debit}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([334.33496634])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{calc\PYZus{}x\PYZus{}gumbel}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{debit}\PY{p}{,} \PY{n}{show\PYZus{}stat}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+y\_n = 0.53622
+s\_n = 1.11238
+y\_t = [1.49993999]
+x\_mean = 286.20000
+x\_std = 55.56009
+k = [0.86635861]
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([334.33496634])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{calc\PYZus{}x\PYZus{}gumbel}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{debit}\PY{p}{,} \PY{n}{return\PYZus{}period}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{21}\PY{p}{]}\PY{p}{,} \PY{n}{show\PYZus{}stat}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+y\_n = 0.53622
+s\_n = 1.11238
+y\_t = [1.49993999 2.25036733 2.67375209 2.97019525 3.02022654]
+x\_mean = 286.20000
+x\_std = 55.56009
+k = [0.86635861 1.5409728  1.92158443 2.18807894 2.23305574]
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([334.33496634, 371.81659511, 392.96341332, 407.7698733 ,
+       410.2687885 ])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{fungsi-freq_gumbeldf-...}{%
+\subsection{\texorpdfstring{Fungsi
+\texttt{freq\_gumbel(df,\ ...)}}{Fungsi freq\_gumbel(df, ...)}}\label{fungsi-freq_gumbeldf-...}}
+
+Function:
+\texttt{freq\_gumbel(df,\ col=None,\ return\_period={[}2,\ 5,\ 10,\ 20,\ 25,\ 50,\ 100{]},\ source=\textquotesingle{}gumbel\textquotesingle{},\ show\_stat=False,\ col\_name=\textquotesingle{}Gumbel\textquotesingle{})}
+
+Fungsi \texttt{freq\_gumbel(...)} merupakan fungsi kembangan lebih
+lanjut dari \texttt{calc\_x\_gumbel(...)} yang menerima input
+\texttt{pandas.DataFrame} dan memiliki luaran berupa
+\texttt{pandas.DataFrame}.
+
+\begin{itemize}
+\tightlist
+\item
+  Argumen Posisi:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{df}: \texttt{pandas.DataFrame}.
+  \end{itemize}
+\item
+  Argumen Opsional:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{col}: nama kolom, \texttt{None} (default). Jika tidak diisi
+    menggunakan kolom pertama dalam \texttt{df} sebagai data masukan.
+  \item
+    \texttt{return\_period}: Kala Ulang (Tahun),
+    \texttt{{[}2,\ 5,\ 10,\ 20,\ 25,\ 50,\ 100{]}} (default).
+  \item
+    \texttt{source}: sumber nilai \(K\),
+    \texttt{\textquotesingle{}gumbel\textquotesingle{}} (default).
+    Sumber yang dapat digunakan antara lain: Soewarno
+    (\texttt{\textquotesingle{}soewarno\textquotesingle{}}), Soetopo
+    (\texttt{\textquotesingle{}soetopo\textquotesingle{}}), fungsi
+    \texttt{stats.gumbel\_r.ppf} dari Scipy
+    (\texttt{\textquotesingle{}scipy\textquotesingle{}}), dan metode
+    Powell (\texttt{\textquotesingle{}powell\textquotesingle{}}).
+  \item
+    \texttt{show\_stat}: menampilkan parameter statistik. \texttt{False}
+    (default).
+  \item
+    \texttt{col\_name}: Nama kolom luaran, \texttt{Gumbel} (default).
+  \end{itemize}
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{freq\PYZus{}gumbel}\PY{p}{(}\PY{n}{data}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                Gumbel
+Kala Ulang
+2           277.723633
+5           334.334966
+10          371.816595
+20          407.769873
+25          419.174732
+50          454.307704
+100         489.181259
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{freq\PYZus{}gumbel}\PY{p}{(}\PY{n}{data}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soewarno}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{col\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Gumbel (Soewarno)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+            Gumbel (Soewarno)
+Kala Ulang
+2                  277.724784
+5                  334.335100
+10                 371.816055
+20                 407.768686
+25                 419.173341
+50                 454.305681
+100                489.178609
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{freq\PYZus{}gumbel}\PY{p}{(}\PY{n}{data}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{debit}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soetopo}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{col\PYZus{}name}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{LP3 (soetopo)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{show\PYZus{}stat}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+y\_n = 0.5362
+s\_n = 1.1124
+y\_t = [0.36651292 1.49993999 2.25036733 2.97019525 3.19853426 3.90193866
+ 4.60014923]
+x\_mean = 286.20000
+x\_std = 55.56009
+k = [-0.15254142  0.86636101  1.54096308  2.18805758  2.39332458  3.02565503
+  3.65331646]
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+            LP3 (soetopo)
+Kala Ulang
+2              277.724784
+5              334.335100
+10             371.816055
+20             407.768686
+25             419.173341
+50             454.305681
+100            489.178609
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{\PYZus{}res} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+
+\PY{k}{for} \PY{n}{\PYZus{}s} \PY{o+ow}{in} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gumbel}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soewarno}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soetopo}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{powell}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{scipy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{p}{]}\PY{p}{:}
+    \PY{n}{\PYZus{}res} \PY{o}{+}\PY{o}{=} \PY{p}{[}\PY{n}{freq\PYZus{}gumbel}\PY{p}{(}\PY{n}{data}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{debit}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{n}{\PYZus{}s}\PY{p}{,} \PY{n}{col\PYZus{}name}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Gumbel (}\PY{l+s+si}{\PYZob{}}\PY{n}{\PYZus{}s}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{]}
+
+\PY{n}{pd}\PY{o}{.}\PY{n}{concat}\PY{p}{(}\PY{n}{\PYZus{}res}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+            Gumbel (gumbel)  Gumbel (soewarno)  Gumbel (soetopo)  \textbackslash{}
+Kala Ulang
+2                277.723633         277.724784        277.724784
+5                334.334966         334.335100        334.335100
+10               371.816595         371.816055        371.816055
+20               407.769873         407.768686        407.768686
+25               419.174732         419.173341        419.173341
+50               454.307704         454.305681        454.305681
+100              489.181259         489.178609        489.178609
+
+            Gumbel (powell)  Gumbel (scipy)
+Kala Ulang
+2                277.072351      306.563493
+5                326.172444      369.536808
+10               358.680977      411.230622
+20               389.863943      451.224330
+25               399.755596      463.910867
+50               430.227094      502.992082
+100              460.473595      541.784727
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{fungsi-calc_probk-n-...}{%
+\subsection{\texorpdfstring{Fungsi
+\texttt{calc\_prob(k,\ n,\ ...)}}{Fungsi calc\_prob(k, n, ...)}}\label{fungsi-calc_probk-n-...}}
+
+Function:
+\texttt{calc\_prob(k,\ n,\ source=\textquotesingle{}gumbel\textquotesingle{})}
+
+Fungsi \texttt{calc\_prob(...)} digunakan untuk menghitung nilai
+probabilitas/peluang berdasarkan nilai \(K\) (\emph{frequency factor}).
+
+\begin{itemize}
+\tightlist
+\item
+  Argumen Posisi:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{k}: nilai \(K\) (\emph{frequency factor}). Nilai \(K\)
+    diperoleh menggunakan persamaan \(K = \frac{x - \bar{x}}{s}\)
+  \item
+    \texttt{n}: jumlah banyaknya data.
+  \end{itemize}
+\item
+  Argumen Opsional:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{source}: sumber nilai \(Y_n\) dan \(S_n\) (untuk
+    \texttt{\textquotesingle{}gumbel\textquotesingle{}},
+    \texttt{\textquotesingle{}soewarno\textquotesingle{}}, dan
+    \texttt{\textquotesingle{}soetopo\textquotesingle{}}),
+    \texttt{\textquotesingle{}gumbel\textquotesingle{}} (default).
+    Sumber yang dapat digunakan antara lain: Soewarno
+    (\texttt{\textquotesingle{}soewarno\textquotesingle{}}), Soetopo
+    (\texttt{\textquotesingle{}soetopo\textquotesingle{}}), fungsi
+    \texttt{stats.gumbel\_r.ppf} dari Scipy
+    (\texttt{\textquotesingle{}scipy\textquotesingle{}}), dan metode
+    Powell (\texttt{\textquotesingle{}powell\textquotesingle{}}).
+  \end{itemize}
+\end{itemize}
+
+Catatan:
+
+\begin{itemize}
+\item
+  Metode tabel
+  (\texttt{\textquotesingle{}gumbel\textquotesingle{},\ \textquotesingle{}soewarno\textquotesingle{},\ \textquotesingle{}soetopo\textquotesingle{}})
+
+  Nilai probabilitas/peluang diperoleh menggunakan formula
+  \(P=1-\frac{1}{T}\)
+\item
+  Metode Powell (\texttt{\textquotesingle{}powell\textquotesingle{}})
+
+  Nilai kala ulang \(T\) (Tahun) untuk metode Powell menggunakan
+  persamaan berikut:
+  \[T=\frac{e^{e^{-\left(\pi k\right)/\sqrt{6}-\gamma}}}{e^{e^{-\left(\pi k\right)/\sqrt{6}-\gamma}}-1}\]
+  dengan \(\gamma = 0.5772\) (\texttt{np.euler\_gamma}) atau merupakan
+  bilangan
+  \href{https://en.wikipedia.org/wiki/Euler\%27s_constant}{\textbf{Euler--Mascheroni
+  constant}}.
+
+  Nilai probabilitas/peluang diperoleh menggunakan formula
+  \(P=1-\frac{1}{T}\)
+\item
+  Metode scipy (\texttt{\textquotesingle{}scipy\textquotesingle{}})
+
+  Nilai probabilitas diperoleh menggunakan fungsi
+  \texttt{stats.gumbel\_r.cdf(...)}.
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{\PYZus{}k} \PY{o}{=} \PY{n}{calc\PYZus{}K}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{size}\PY{p}{,} \PY{p}{[}\PY{l+m+mf}{1.001}\PY{p}{,} \PY{l+m+mf}{1.005}\PY{p}{,} \PY{l+m+mf}{1.01}\PY{p}{,} \PY{l+m+mf}{1.05}\PY{p}{,} \PY{l+m+mf}{1.11}\PY{p}{,} \PY{l+m+mf}{1.25}\PY{p}{,} \PY{l+m+mf}{1.33}\PY{p}{,} \PY{l+m+mf}{1.43}\PY{p}{,} \PY{l+m+mf}{1.67}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mf}{2.5}\PY{p}{,} \PY{l+m+mf}{3.33}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{50}\PY{p}{,} \PY{l+m+mi}{100}\PY{p}{,} \PY{l+m+mi}{200}\PY{p}{,} \PY{l+m+mi}{500}\PY{p}{,} \PY{l+m+mi}{1000}\PY{p}{]}\PY{p}{)}
+\PY{n}{\PYZus{}k}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([-2.21957372, -1.98183192, -1.85688162, -1.48291416, -1.23534677,
+       -0.90985544, -0.78056388, -0.64718086, -0.40052   , -0.15256215,
+        0.12181718,  0.44365066,  0.63798281,  0.86635861,  1.5409728 ,
+        2.18807894,  3.02569145,  3.65336416,  4.2787466 ,  5.10381998,
+        5.72739088])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{calc\PYZus{}prob}\PY{p}{(}\PY{n}{\PYZus{}k}\PY{p}{,} \PY{n}{data}\PY{o}{.}\PY{n}{size}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([0.001, 0.005, 0.01 , 0.048, 0.099, 0.2  , 0.248, 0.301, 0.401,
+       0.5  , 0.6  , 0.7  , 0.75 , 0.8  , 0.9  , 0.95 , 0.98 , 0.99 ,
+       0.995, 0.998, 0.999])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{calc\PYZus{}prob}\PY{p}{(}\PY{n}{\PYZus{}k}\PY{p}{,} \PY{n}{data}\PY{o}{.}\PY{n}{size}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{scipy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{round}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([0.   , 0.001, 0.002, 0.012, 0.032, 0.083, 0.113, 0.148, 0.225,
+       0.312, 0.413, 0.526, 0.59 , 0.657, 0.807, 0.894, 0.953, 0.974,
+       0.986, 0.994, 0.997])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{calc\PYZus{}prob}\PY{p}{(}\PY{n}{\PYZus{}k}\PY{p}{,} \PY{n}{data}\PY{o}{.}\PY{n}{size}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{powell}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{round}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([0.   , 0.001, 0.002, 0.023, 0.065, 0.165, 0.217, 0.276, 0.391,
+       0.505, 0.619, 0.728, 0.781, 0.831, 0.925, 0.967, 0.988, 0.995,
+       0.998, 0.999, 1.   ])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{calc\PYZus{}prob}\PY{p}{(}\PY{n}{\PYZus{}k}\PY{p}{,} \PY{n}{data}\PY{o}{.}\PY{n}{size}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soewarno}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([0.001, 0.005, 0.01 , 0.048, 0.099, 0.2  , 0.248, 0.301, 0.401,
+       0.5  , 0.6  , 0.7  , 0.75 , 0.8  , 0.9  , 0.95 , 0.98 , 0.99 ,
+       0.995, 0.998, 0.999])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{changelog}{%
+\section{Changelog}\label{changelog}}
+
+\begin{verbatim}
+- 20220323 - 1.1.0 - tambah argumen index_name="Kala Ulang" pada fungsi freq_gumbel() untuk penamaan index
+- 20220315 - 1.0.1 - Tambah fungsi `calc_prob(...)`
+- 20220310 - 1.0.0 - Initial
+\end{verbatim}
+
+\hypertarget{copyright-2022-taruma-sakti-megariansyah}{%
+\paragraph{\texorpdfstring{Copyright © 2022
+\href{https://taruma.github.io}{Taruma Sakti
+Megariansyah}}{Copyright © 2022 Taruma Sakti Megariansyah}}\label{copyright-2022-taruma-sakti-megariansyah}}
+
+Source code in this notebook is licensed under a
+\href{https://choosealicense.com/licenses/mit/}{MIT License}. Data in
+this notebook is licensed under a
+\href{https://creativecommons.org/licenses/by/4.0/}{Creative Common
+Attribution 4.0 International}.
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}

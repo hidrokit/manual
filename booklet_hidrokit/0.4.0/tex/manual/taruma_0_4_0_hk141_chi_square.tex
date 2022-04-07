@@ -1,0 +1,955 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{taruma\_0\_4\_0\_hk141\_chi\_square}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    Berdasarkan isu
+\href{https://github.com/hidrokit/hidrokit/issues/141}{\#141}:
+\textbf{Uji Chi-Square}
+
+Referensi Isu: - Soetopo, W., Montarcih, L., Press, U. B., \& Media, U.
+(2017). Rekayasa Statistika untuk Teknik Pengairan. Universitas
+Brawijaya Press. https://books.google.co.id/books?id=TzVTDwAAQBAJ -
+Soewarno. (1995). hidrologi: Aplikasi Metode Statistik untuk Analisa
+Data. NOVA. - Limantara, L. (2018). Rekayasa Hidrologi.
+
+Deskripsi Isu: - Melakukan Uji Kecocokan Distribusi menggunakan Uji
+Chi-Square.
+
+Diskusi Isu: -
+\href{https://github.com/hidrokit/hidrokit/discussions/182}{\#182} -
+Formula pada perhitungan Chi Square (Uji Kecocokan Distribusi).
+
+Strategi: - Tidak dibandingkan dengan fungsi
+\texttt{scipy.stats.chisquare}.
+
+    \hypertarget{persiapan-dan-dataset}{%
+\section{PERSIAPAN DAN DATASET}\label{persiapan-dan-dataset}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{try}\PY{p}{:}
+    \PY{k+kn}{import} \PY{n+nn}{hidrokit}
+\PY{k}{except} \PY{n+ne}{ModuleNotFoundError}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{} saat dibuat menggunakan cabang @dev/dev0.3.7}
+    \PY{err}{!}\PY{n}{pip} \PY{n}{install} \PY{n}{git}\PY{o}{+}\PY{n}{https}\PY{p}{:}\PY{o}{/}\PY{o}{/}\PY{n}{github}\PY{o}{.}\PY{n}{com}\PY{o}{/}\PY{n}{taruma}\PY{o}{/}\PY{n}{hidrokit}\PY{o}{.}\PY{n}{git}\PY{n+nd}{@dev}\PY{o}{/}\PY{n}{dev0}\PY{l+m+mf}{.3}\PY{l+m+mf}{.7} \PY{o}{\PYZhy{}}\PY{n}{q}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+\PY{k+kn}{from} \PY{n+nn}{scipy} \PY{k+kn}{import} \PY{n}{stats}
+\PY{k+kn}{from} \PY{n+nn}{hidrokit}\PY{n+nn}{.}\PY{n+nn}{contrib}\PY{n+nn}{.}\PY{n+nn}{taruma} \PY{k+kn}{import} \PY{n}{hk172}\PY{p}{,} \PY{n}{hk124}\PY{p}{,} \PY{n}{hk127}\PY{p}{,} \PY{n}{hk126} 
+
+\PY{n}{frek\PYZus{}normal}\PY{p}{,} \PY{n}{frek\PYZus{}lognormal}\PY{p}{,} \PY{n}{frek\PYZus{}gumbel}\PY{p}{,} \PY{n}{frek\PYZus{}logpearson3} \PY{o}{=} \PY{n}{hk172}\PY{p}{,} \PY{n}{hk124}\PY{p}{,} \PY{n}{hk127}\PY{p}{,} \PY{n}{hk126}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} contoh data diambil dari buku}
+\PY{c+c1}{\PYZsh{} limantara hal. 118}
+
+\PY{n}{\PYZus{}HUJAN} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{85}\PY{p}{,} \PY{l+m+mi}{92}\PY{p}{,} \PY{l+m+mi}{115}\PY{p}{,} \PY{l+m+mi}{116}\PY{p}{,} \PY{l+m+mi}{122}\PY{p}{,} \PY{l+m+mi}{52}\PY{p}{,} \PY{l+m+mi}{69}\PY{p}{,} \PY{l+m+mi}{95}\PY{p}{,} \PY{l+m+mi}{96}\PY{p}{,} \PY{l+m+mi}{105}\PY{p}{]}\PY{p}{)}
+\PY{n}{\PYZus{}TAHUN} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{1998}\PY{p}{,} \PY{l+m+mi}{2008}\PY{p}{)} \PY{c+c1}{\PYZsh{} 1998\PYZhy{}2007}
+
+\PY{n}{data} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}
+    \PY{n}{data}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{stack}\PY{p}{(}\PY{p}{[}\PY{n}{\PYZus{}TAHUN}\PY{p}{,} \PY{n}{\PYZus{}HUJAN}\PY{p}{]}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,}
+    \PY{n}{columns}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{tahun}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{hujan}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{p}{)}
+
+\PY{n}{data}\PY{o}{.}\PY{n}{tahun} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{to\PYZus{}datetime}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{tahun}\PY{p}{,} \PY{n+nb}{format}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZpc{}}\PY{l+s+s1}{Y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{data}\PY{o}{.}\PY{n}{set\PYZus{}index}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{tahun}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{data}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+            hujan
+tahun
+1998-01-01     85
+1999-01-01     92
+2000-01-01    115
+2001-01-01    116
+2002-01-01    122
+2003-01-01     52
+2004-01-01     69
+2005-01-01     95
+2006-01-01     96
+2007-01-01    105
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{tabel}{%
+\section{TABEL}\label{tabel}}
+
+Terdapat 1 tabel untuk modul \texttt{hk141} yaitu: -
+\texttt{t\_chi\_lm}: Tabel nilai kritis untuk Distribusi Chi Square
+(\(X^2\)) dari buku Rekayasa Hidrologi oleh Limantara.
+
+Dalam modul \texttt{hk141} nilai kritis \(X^2\) akan dibangkitkan
+menggunakan fungsi \texttt{scipy.stats.chi2.isf} secara
+\texttt{default}. Mohon diperhatikan jika ingin menggunakan nilai
+\(X^2\) yang berasal dari sumber lain.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} tabel dari limantara hal. 117}
+\PY{c+c1}{\PYZsh{} Tabel Nilai Kritis untuk Distribusi Chi Square (X\PYZca{}2)}
+
+\PY{c+c1}{\PYZsh{} KODE: LM}
+
+\PY{n}{\PYZus{}DATA\PYZus{}LM} \PY{o}{=} \PY{p}{[}
+    \PY{p}{[}\PY{l+m+mf}{0.039}\PY{p}{,} \PY{l+m+mf}{0.016}\PY{p}{,} \PY{l+m+mf}{0.698}\PY{p}{,} \PY{l+m+mf}{0.393}\PY{p}{,} \PY{l+m+mf}{3.841}\PY{p}{,} \PY{l+m+mf}{5.024}\PY{p}{,} \PY{l+m+mf}{6.635}\PY{p}{,} \PY{l+m+mf}{7.879}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.100}\PY{p}{,} \PY{l+m+mf}{0.201}\PY{p}{,} \PY{l+m+mf}{0.506}\PY{p}{,} \PY{l+m+mf}{0.103}\PY{p}{,} \PY{l+m+mf}{5.991}\PY{p}{,} \PY{l+m+mf}{0.738}\PY{p}{,} \PY{l+m+mf}{9.210}\PY{p}{,} \PY{l+m+mf}{10.597}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.717}\PY{p}{,} \PY{l+m+mf}{0.115}\PY{p}{,} \PY{l+m+mf}{0.216}\PY{p}{,} \PY{l+m+mf}{0.352}\PY{p}{,} \PY{l+m+mf}{7.815}\PY{p}{,} \PY{l+m+mf}{9.348}\PY{p}{,} \PY{l+m+mf}{11.345}\PY{p}{,} \PY{l+m+mf}{12.838}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.207}\PY{p}{,} \PY{l+m+mf}{0.297}\PY{p}{,} \PY{l+m+mf}{0.484}\PY{p}{,} \PY{l+m+mf}{0.711}\PY{p}{,} \PY{l+m+mf}{9.488}\PY{p}{,} \PY{l+m+mf}{11.143}\PY{p}{,} \PY{l+m+mf}{13.277}\PY{p}{,} \PY{l+m+mf}{14.860}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.412}\PY{p}{,} \PY{l+m+mf}{0.554}\PY{p}{,} \PY{l+m+mf}{0.831}\PY{p}{,} \PY{l+m+mf}{1.145}\PY{p}{,} \PY{l+m+mf}{11.070}\PY{p}{,} \PY{l+m+mf}{12.832}\PY{p}{,} \PY{l+m+mf}{15.086}\PY{p}{,} \PY{l+m+mf}{16.750}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.676}\PY{p}{,} \PY{l+m+mf}{0.872}\PY{p}{,} \PY{l+m+mf}{1.237}\PY{p}{,} \PY{l+m+mf}{1.635}\PY{p}{,} \PY{l+m+mf}{12.592}\PY{p}{,} \PY{l+m+mf}{14.449}\PY{p}{,} \PY{l+m+mf}{16.812}\PY{p}{,} \PY{l+m+mf}{18.548}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.989}\PY{p}{,} \PY{l+m+mf}{1.239}\PY{p}{,} \PY{l+m+mf}{1.690}\PY{p}{,} \PY{l+m+mf}{2.167}\PY{p}{,} \PY{l+m+mf}{14.067}\PY{p}{,} \PY{l+m+mf}{16.013}\PY{p}{,} \PY{l+m+mf}{18.475}\PY{p}{,} \PY{l+m+mf}{20.278}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{1.344}\PY{p}{,} \PY{l+m+mf}{1.646}\PY{p}{,} \PY{l+m+mf}{2.180}\PY{p}{,} \PY{l+m+mf}{2.733}\PY{p}{,} \PY{l+m+mf}{15.507}\PY{p}{,} \PY{l+m+mf}{17.535}\PY{p}{,} \PY{l+m+mf}{20.090}\PY{p}{,} \PY{l+m+mf}{21.955}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{1.735}\PY{p}{,} \PY{l+m+mf}{2.088}\PY{p}{,} \PY{l+m+mf}{2.700}\PY{p}{,} \PY{l+m+mf}{3.325}\PY{p}{,} \PY{l+m+mf}{16.919}\PY{p}{,} \PY{l+m+mf}{19.023}\PY{p}{,} \PY{l+m+mf}{21.666}\PY{p}{,} \PY{l+m+mf}{23.589}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{2.156}\PY{p}{,} \PY{l+m+mf}{2.558}\PY{p}{,} \PY{l+m+mf}{3.247}\PY{p}{,} \PY{l+m+mf}{3.940}\PY{p}{,} \PY{l+m+mf}{18.307}\PY{p}{,} \PY{l+m+mf}{20.483}\PY{p}{,} \PY{l+m+mf}{23.209}\PY{p}{,} \PY{l+m+mf}{25.188}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{2.603}\PY{p}{,} \PY{l+m+mf}{3.053}\PY{p}{,} \PY{l+m+mf}{3.816}\PY{p}{,} \PY{l+m+mf}{4.575}\PY{p}{,} \PY{l+m+mf}{19.675}\PY{p}{,} \PY{l+m+mf}{21.920}\PY{p}{,} \PY{l+m+mf}{24.725}\PY{p}{,} \PY{l+m+mf}{26.757}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{3.074}\PY{p}{,} \PY{l+m+mf}{3.571}\PY{p}{,} \PY{l+m+mf}{4.404}\PY{p}{,} \PY{l+m+mf}{5.226}\PY{p}{,} \PY{l+m+mf}{21.026}\PY{p}{,} \PY{l+m+mf}{23.337}\PY{p}{,} \PY{l+m+mf}{26.217}\PY{p}{,} \PY{l+m+mf}{28.300}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{3.565}\PY{p}{,} \PY{l+m+mf}{4.107}\PY{p}{,} \PY{l+m+mf}{5.009}\PY{p}{,} \PY{l+m+mf}{5.892}\PY{p}{,} \PY{l+m+mf}{22.362}\PY{p}{,} \PY{l+m+mf}{24.736}\PY{p}{,} \PY{l+m+mf}{27.688}\PY{p}{,} \PY{l+m+mf}{29.819}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{4.075}\PY{p}{,} \PY{l+m+mf}{4.660}\PY{p}{,} \PY{l+m+mf}{5.629}\PY{p}{,} \PY{l+m+mf}{6.571}\PY{p}{,} \PY{l+m+mf}{23.685}\PY{p}{,} \PY{l+m+mf}{26.119}\PY{p}{,} \PY{l+m+mf}{29.141}\PY{p}{,} \PY{l+m+mf}{31.319}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{4.601}\PY{p}{,} \PY{l+m+mf}{5.229}\PY{p}{,} \PY{l+m+mf}{6.262}\PY{p}{,} \PY{l+m+mf}{7.261}\PY{p}{,} \PY{l+m+mf}{24.996}\PY{p}{,} \PY{l+m+mf}{27.488}\PY{p}{,} \PY{l+m+mf}{30.578}\PY{p}{,} \PY{l+m+mf}{32.801}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{5.142}\PY{p}{,} \PY{l+m+mf}{5.812}\PY{p}{,} \PY{l+m+mf}{6.908}\PY{p}{,} \PY{l+m+mf}{7.962}\PY{p}{,} \PY{l+m+mf}{26.296}\PY{p}{,} \PY{l+m+mf}{28.845}\PY{p}{,} \PY{l+m+mf}{32.000}\PY{p}{,} \PY{l+m+mf}{34.267}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{5.697}\PY{p}{,} \PY{l+m+mf}{6.408}\PY{p}{,} \PY{l+m+mf}{7.564}\PY{p}{,} \PY{l+m+mf}{8.672}\PY{p}{,} \PY{l+m+mf}{27.587}\PY{p}{,} \PY{l+m+mf}{30.191}\PY{p}{,} \PY{l+m+mf}{33.409}\PY{p}{,} \PY{l+m+mf}{35.718}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{6.265}\PY{p}{,} \PY{l+m+mf}{7.015}\PY{p}{,} \PY{l+m+mf}{8.231}\PY{p}{,} \PY{l+m+mf}{9.390}\PY{p}{,} \PY{l+m+mf}{28.869}\PY{p}{,} \PY{l+m+mf}{31.526}\PY{p}{,} \PY{l+m+mf}{34.805}\PY{p}{,} \PY{l+m+mf}{37.156}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{6.884}\PY{p}{,} \PY{l+m+mf}{7.633}\PY{p}{,} \PY{l+m+mf}{8.907}\PY{p}{,} \PY{l+m+mf}{10.117}\PY{p}{,} \PY{l+m+mf}{30.144}\PY{p}{,} \PY{l+m+mf}{32.852}\PY{p}{,} \PY{l+m+mf}{36.191}\PY{p}{,} \PY{l+m+mf}{38.582}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{7.434}\PY{p}{,} \PY{l+m+mf}{8.260}\PY{p}{,} \PY{l+m+mf}{9.591}\PY{p}{,} \PY{l+m+mf}{10.851}\PY{p}{,} \PY{l+m+mf}{31.410}\PY{p}{,} \PY{l+m+mf}{34.170}\PY{p}{,} \PY{l+m+mf}{37.566}\PY{p}{,} \PY{l+m+mf}{39.997}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{8.034}\PY{p}{,} \PY{l+m+mf}{8.897}\PY{p}{,} \PY{l+m+mf}{10.283}\PY{p}{,} \PY{l+m+mf}{11.591}\PY{p}{,} \PY{l+m+mf}{32.671}\PY{p}{,} \PY{l+m+mf}{35.479}\PY{p}{,} \PY{l+m+mf}{38.932}\PY{p}{,} \PY{l+m+mf}{41.401}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{8.643}\PY{p}{,} \PY{l+m+mf}{9.542}\PY{p}{,} \PY{l+m+mf}{10.982}\PY{p}{,} \PY{l+m+mf}{12.338}\PY{p}{,} \PY{l+m+mf}{33.924}\PY{p}{,} \PY{l+m+mf}{36.781}\PY{p}{,} \PY{l+m+mf}{40.289}\PY{p}{,} \PY{l+m+mf}{42.796}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{9.260}\PY{p}{,} \PY{l+m+mf}{10.196}\PY{p}{,} \PY{l+m+mf}{11.689}\PY{p}{,} \PY{l+m+mf}{13.091}\PY{p}{,} \PY{l+m+mf}{36.172}\PY{p}{,} \PY{l+m+mf}{38.076}\PY{p}{,} \PY{l+m+mf}{41.638}\PY{p}{,} \PY{l+m+mf}{44.181}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{9.886}\PY{p}{,} \PY{l+m+mf}{10.856}\PY{p}{,} \PY{l+m+mf}{12.401}\PY{p}{,} \PY{l+m+mf}{13.848}\PY{p}{,} \PY{l+m+mf}{36.415}\PY{p}{,} \PY{l+m+mf}{39.364}\PY{p}{,} \PY{l+m+mf}{42.980}\PY{p}{,} \PY{l+m+mf}{45.558}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{10.520}\PY{p}{,} \PY{l+m+mf}{11.524}\PY{p}{,} \PY{l+m+mf}{13.120}\PY{p}{,} \PY{l+m+mf}{14.611}\PY{p}{,} \PY{l+m+mf}{37.652}\PY{p}{,} \PY{l+m+mf}{40.646}\PY{p}{,} \PY{l+m+mf}{44.314}\PY{p}{,} \PY{l+m+mf}{46.928}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{11.160}\PY{p}{,} \PY{l+m+mf}{12.198}\PY{p}{,} \PY{l+m+mf}{13.844}\PY{p}{,} \PY{l+m+mf}{15.379}\PY{p}{,} \PY{l+m+mf}{38.885}\PY{p}{,} \PY{l+m+mf}{41.923}\PY{p}{,} \PY{l+m+mf}{45.642}\PY{p}{,} \PY{l+m+mf}{48.290}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{11.808}\PY{p}{,} \PY{l+m+mf}{12.879}\PY{p}{,} \PY{l+m+mf}{14.573}\PY{p}{,} \PY{l+m+mf}{16.151}\PY{p}{,} \PY{l+m+mf}{40.113}\PY{p}{,} \PY{l+m+mf}{43.194}\PY{p}{,} \PY{l+m+mf}{46.963}\PY{p}{,} \PY{l+m+mf}{49.645}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{12.461}\PY{p}{,} \PY{l+m+mf}{13.565}\PY{p}{,} \PY{l+m+mf}{15.308}\PY{p}{,} \PY{l+m+mf}{16.928}\PY{p}{,} \PY{l+m+mf}{41.337}\PY{p}{,} \PY{l+m+mf}{44.461}\PY{p}{,} \PY{l+m+mf}{48.278}\PY{p}{,} \PY{l+m+mf}{50.993}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{13.121}\PY{p}{,} \PY{l+m+mf}{14.256}\PY{p}{,} \PY{l+m+mf}{16.047}\PY{p}{,} \PY{l+m+mf}{17.708}\PY{p}{,} \PY{l+m+mf}{42.557}\PY{p}{,} \PY{l+m+mf}{45.722}\PY{p}{,} \PY{l+m+mf}{49.588}\PY{p}{,} \PY{l+m+mf}{52.336}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{13.787}\PY{p}{,} \PY{l+m+mf}{14.953}\PY{p}{,} \PY{l+m+mf}{16.791}\PY{p}{,} \PY{l+m+mf}{18.493}\PY{p}{,} \PY{l+m+mf}{43.773}\PY{p}{,} \PY{l+m+mf}{46.979}\PY{p}{,} \PY{l+m+mf}{50.892}\PY{p}{,} \PY{l+m+mf}{53.672}\PY{p}{]}\PY{p}{,}
+\PY{p}{]}
+
+\PY{n}{\PYZus{}INDEX\PYZus{}LM} \PY{o}{=} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{31}\PY{p}{)}
+
+\PY{n}{\PYZus{}COL\PYZus{}LM} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{0.995}\PY{p}{,} \PY{l+m+mf}{.99}\PY{p}{,} \PY{l+m+mf}{.975}\PY{p}{,} \PY{l+m+mf}{.95}\PY{p}{,} \PY{l+m+mf}{.05}\PY{p}{,} \PY{l+m+mf}{.025}\PY{p}{,} \PY{l+m+mf}{0.01}\PY{p}{,} \PY{l+m+mf}{0.005}\PY{p}{]}
+
+\PY{n}{t\PYZus{}chi\PYZus{}lm} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}
+    \PY{n}{data}\PY{o}{=}\PY{n}{\PYZus{}DATA\PYZus{}LM}\PY{p}{,} \PY{n}{index}\PY{o}{=}\PY{n}{\PYZus{}INDEX\PYZus{}LM}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{n}{\PYZus{}COL\PYZus{}LM}
+\PY{p}{)}
+\PY{n}{t\PYZus{}chi\PYZus{}lm}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+     0.995   0.990   0.975   0.950   0.050   0.025   0.010   0.005
+1    0.039   0.016   0.698   0.393   3.841   5.024   6.635   7.879
+2    0.100   0.201   0.506   0.103   5.991   0.738   9.210  10.597
+3    0.717   0.115   0.216   0.352   7.815   9.348  11.345  12.838
+4    0.207   0.297   0.484   0.711   9.488  11.143  13.277  14.860
+5    0.412   0.554   0.831   1.145  11.070  12.832  15.086  16.750
+6    0.676   0.872   1.237   1.635  12.592  14.449  16.812  18.548
+7    0.989   1.239   1.690   2.167  14.067  16.013  18.475  20.278
+8    1.344   1.646   2.180   2.733  15.507  17.535  20.090  21.955
+9    1.735   2.088   2.700   3.325  16.919  19.023  21.666  23.589
+10   2.156   2.558   3.247   3.940  18.307  20.483  23.209  25.188
+11   2.603   3.053   3.816   4.575  19.675  21.920  24.725  26.757
+12   3.074   3.571   4.404   5.226  21.026  23.337  26.217  28.300
+13   3.565   4.107   5.009   5.892  22.362  24.736  27.688  29.819
+14   4.075   4.660   5.629   6.571  23.685  26.119  29.141  31.319
+15   4.601   5.229   6.262   7.261  24.996  27.488  30.578  32.801
+16   5.142   5.812   6.908   7.962  26.296  28.845  32.000  34.267
+17   5.697   6.408   7.564   8.672  27.587  30.191  33.409  35.718
+18   6.265   7.015   8.231   9.390  28.869  31.526  34.805  37.156
+19   6.884   7.633   8.907  10.117  30.144  32.852  36.191  38.582
+20   7.434   8.260   9.591  10.851  31.410  34.170  37.566  39.997
+21   8.034   8.897  10.283  11.591  32.671  35.479  38.932  41.401
+22   8.643   9.542  10.982  12.338  33.924  36.781  40.289  42.796
+23   9.260  10.196  11.689  13.091  36.172  38.076  41.638  44.181
+24   9.886  10.856  12.401  13.848  36.415  39.364  42.980  45.558
+25  10.520  11.524  13.120  14.611  37.652  40.646  44.314  46.928
+26  11.160  12.198  13.844  15.379  38.885  41.923  45.642  48.290
+27  11.808  12.879  14.573  16.151  40.113  43.194  46.963  49.645
+28  12.461  13.565  15.308  16.928  41.337  44.461  48.278  50.993
+29  13.121  14.256  16.047  17.708  42.557  45.722  49.588  52.336
+30  13.787  14.953  16.791  18.493  43.773  46.979  50.892  53.672
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{kode}{%
+\section{KODE}\label{kode}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{scipy} \PY{k+kn}{import} \PY{n}{interpolate}
+
+\PY{k}{def} \PY{n+nf}{\PYZus{}func\PYZus{}interp\PYZus{}bivariate}\PY{p}{(}\PY{n}{df}\PY{p}{)}\PY{p}{:}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Membuat fungsi dari tabel untuk interpolasi bilinear}\PY{l+s+s2}{\PYZdq{}}
+    \PY{n}{table} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{df}\PY{o}{.}\PY{n}{columns}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{p}{)}\PY{p}{]}\PY{o}{.}\PY{n}{sort\PYZus{}index}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+
+    \PY{n}{x} \PY{o}{=} \PY{n}{table}\PY{o}{.}\PY{n}{index}
+    \PY{n}{y} \PY{o}{=} \PY{n}{table}\PY{o}{.}\PY{n}{columns}
+    \PY{n}{z} \PY{o}{=} \PY{n}{table}\PY{o}{.}\PY{n}{to\PYZus{}numpy}\PY{p}{(}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{} penggunaan kx=1, ky=1 untuk interpolasi linear antara 2 titik}
+    \PY{c+c1}{\PYZsh{} tidak menggunakan (cubic) spline interpolation}
+    \PY{k}{return} \PY{n}{interpolate}\PY{o}{.}\PY{n}{RectBivariateSpline}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{z}\PY{p}{,} \PY{n}{kx}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{ky}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+
+\PY{k}{def} \PY{n+nf}{\PYZus{}as\PYZus{}value}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{dec}\PY{o}{=}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{:}
+    \PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{around}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{dec}\PY{p}{)}
+    \PY{k}{return} \PY{n}{x}\PY{o}{.}\PY{n}{flatten}\PY{p}{(}\PY{p}{)} \PY{k}{if} \PY{n}{x}\PY{o}{.}\PY{n}{size} \PY{o}{\PYZgt{}} \PY{l+m+mi}{1} \PY{k}{else} \PY{n}{x}\PY{o}{.}\PY{n}{item}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{table\PYZus{}source} \PY{o}{=} \PY{p}{\PYZob{}}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{limantara}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{t\PYZus{}chi\PYZus{}lm}
+\PY{p}{\PYZcb{}}
+
+\PY{n}{anfrek} \PY{o}{=} \PY{p}{\PYZob{}}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{normal}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{frek\PYZus{}normal}\PY{o}{.}\PY{n}{calc\PYZus{}x\PYZus{}normal}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{lognormal}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{frek\PYZus{}lognormal}\PY{o}{.}\PY{n}{calc\PYZus{}x\PYZus{}lognormal}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gumbel}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{frek\PYZus{}gumbel}\PY{o}{.}\PY{n}{calc\PYZus{}x\PYZus{}gumbel}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{logpearson3}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{frek\PYZus{}logpearson3}\PY{o}{.}\PY{n}{calc\PYZus{}x\PYZus{}lp3}\PY{p}{,}
+\PY{p}{\PYZcb{}}
+
+\PY{k}{def} \PY{n+nf}{\PYZus{}calc\PYZus{}k}\PY{p}{(}\PY{n}{n}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{np}\PY{o}{.}\PY{n}{floor}\PY{p}{(}\PY{l+m+mi}{1} \PY{o}{+} \PY{l+m+mf}{3.22} \PY{o}{*} \PY{n}{np}\PY{o}{.}\PY{n}{log10}\PY{p}{(}\PY{n}{n}\PY{p}{)}\PY{p}{)}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{int}\PY{p}{)}
+
+\PY{k}{def} \PY{n+nf}{\PYZus{}calc\PYZus{}dk}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{n}{m}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{k} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{m}
+
+\PY{k}{def} \PY{n+nf}{calc\PYZus{}xcr}\PY{p}{(}\PY{n}{alpha}\PY{p}{,} \PY{n}{dk}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{scipy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+    \PY{n}{alpha} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{alpha}\PY{p}{)}
+
+    \PY{k}{if} \PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o+ow}{in} \PY{n}{table\PYZus{}source}\PY{o}{.}\PY{n}{keys}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+        \PY{n}{func\PYZus{}table} \PY{o}{=} \PY{n}{\PYZus{}func\PYZus{}interp\PYZus{}bivariate}\PY{p}{(}\PY{n}{table\PYZus{}source}\PY{p}{[}\PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)}\PY{p}{]}\PY{p}{)}
+        \PY{k}{return} \PY{n}{\PYZus{}as\PYZus{}value}\PY{p}{(}\PY{n}{func\PYZus{}table}\PY{p}{(}\PY{n}{dk}\PY{p}{,} \PY{n}{alpha}\PY{p}{,} \PY{n}{grid}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}
+    \PY{k}{if} \PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{scipy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{}ref: https://stackoverflow.com/questions/32301698}
+        \PY{k}{return} \PY{n}{stats}\PY{o}{.}\PY{n}{chi2}\PY{o}{.}\PY{n}{isf}\PY{p}{(}\PY{n}{alpha}\PY{p}{,} \PY{n}{dk}\PY{p}{)}
+
+\PY{k}{def} \PY{n+nf}{chisquare}\PY{p}{(}
+    \PY{n}{df}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n}{dist}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{normal}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{source\PYZus{}dist}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{scipy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+    \PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.05}\PY{p}{,} \PY{n}{source\PYZus{}xcr}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{scipy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{show\PYZus{}stat}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}
+    \PY{p}{)}\PY{p}{:}
+
+    \PY{n}{source\PYZus{}dist} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gumbel}\PY{l+s+s1}{\PYZsq{}} \PY{k}{if} \PY{n}{dist}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gumbel}\PY{l+s+s1}{\PYZsq{}} \PY{k}{else} \PY{n}{source\PYZus{}dist}
+
+    \PY{n}{col} \PY{o}{=} \PY{n}{df}\PY{o}{.}\PY{n}{columns}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{k}{if} \PY{n}{col} \PY{o+ow}{is} \PY{k+kc}{None} \PY{k}{else} \PY{n}{col}
+    \PY{n}{data} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+    \PY{n}{n} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n}{data}\PY{p}{)}
+    \PY{n}{data} \PY{o}{=} \PY{n}{data}\PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{p}{\PYZob{}}\PY{n}{col}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{x}\PY{l+s+s1}{\PYZsq{}}\PY{p}{\PYZcb{}}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+
+    \PY{k}{if} \PY{n}{dist}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o+ow}{in} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{lognormal}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{logpearson3}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{:}
+        \PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{log\PYZus{}x}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{log10}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{x}\PY{p}{)}
+
+    \PY{n}{k} \PY{o}{=} \PY{n}{\PYZus{}calc\PYZus{}k}\PY{p}{(}\PY{n}{n}\PY{p}{)}
+    \PY{n}{prob\PYZus{}class} \PY{o}{=} \PY{l+m+mi}{1} \PY{o}{/} \PY{n}{k}
+    \PY{n}{prob\PYZus{}list} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{n}{k}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{[}\PY{p}{:}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}
+    \PY{n}{prob\PYZus{}seq} \PY{o}{=} \PY{n}{prob\PYZus{}list}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}
+
+    \PY{n}{func} \PY{o}{=} \PY{n}{anfrek}\PY{p}{[}\PY{n}{dist}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)}\PY{p}{]}
+
+    \PY{n}{T} \PY{o}{=} \PY{l+m+mi}{1} \PY{o}{/} \PY{n}{prob\PYZus{}seq}
+    \PY{n}{val\PYZus{}x} \PY{o}{=} \PY{n}{func}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{x}\PY{p}{,} \PY{n}{return\PYZus{}period}\PY{o}{=}\PY{n}{T}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{n}{source\PYZus{}dist}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{} Chi Square Table}
+    \PY{n}{calc\PYZus{}df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{)}
+    \PY{n+nb}{min} \PY{o}{=} \PY{n}{data}\PY{o}{.}\PY{n}{x}\PY{o}{.}\PY{n}{min}\PY{p}{(}\PY{p}{)}
+    \PY{n+nb}{max} \PY{o}{=} \PY{n}{data}\PY{o}{.}\PY{n}{x}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{p}{)}
+    \PY{n}{seq\PYZus{}x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{concatenate}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{n+nb}{min}\PY{p}{]}\PY{p}{,} \PY{n}{val\PYZus{}x}\PY{p}{,} \PY{p}{[}\PY{n+nb}{max}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+
+    \PY{n}{calc\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{no}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{k}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}
+
+    \PY{n}{class\PYZus{}text} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{seq\PYZus{}x}\PY{o}{.}\PY{n}{size}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+        \PY{k}{if} \PY{n}{i} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{:}
+            \PY{n}{class\PYZus{}text} \PY{o}{+}\PY{o}{=} \PY{p}{[}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{X \PYZlt{}= }\PY{l+s+si}{\PYZob{}}\PY{n}{seq\PYZus{}x}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{l+s+si}{:}\PY{l+s+s1}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+        \PY{k}{elif} \PY{n}{i} \PY{o}{==} \PY{n}{seq\PYZus{}x}\PY{o}{.}\PY{n}{size}\PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{:}
+            \PY{n}{class\PYZus{}text} \PY{o}{+}\PY{o}{=} \PY{p}{[}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{X \PYZgt{} }\PY{l+s+si}{\PYZob{}}\PY{n}{seq\PYZus{}x}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{l+s+si}{:}\PY{l+s+s1}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+        \PY{k}{else}\PY{p}{:}
+            \PY{n}{class\PYZus{}text} \PY{o}{+}\PY{o}{=} \PY{p}{[}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{seq\PYZus{}x}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{l+s+si}{:}\PY{l+s+s1}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{ \PYZlt{} X \PYZlt{}= }\PY{l+s+si}{\PYZob{}}\PY{n}{seq\PYZus{}x}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{l+s+si}{:}\PY{l+s+s1}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+    \PY{n}{calc\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{batas\PYZus{}kelas}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{class\PYZus{}text}
+
+    \PY{c+c1}{\PYZsh{} calculate fe}
+    \PY{n}{fe} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{seq\PYZus{}x}\PY{o}{.}\PY{n}{size}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+        \PY{k}{if} \PY{n}{i} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{:}
+            \PY{n}{fe} \PY{o}{+}\PY{o}{=} \PY{p}{[}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{x} \PY{o}{\PYZlt{}}\PY{o}{=} \PY{n}{seq\PYZus{}x}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}\PY{p}{]}
+        \PY{k}{elif} \PY{n}{i} \PY{o}{==} \PY{n}{seq\PYZus{}x}\PY{o}{.}\PY{n}{size}\PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{:}
+            \PY{n}{fe} \PY{o}{+}\PY{o}{=} \PY{p}{[}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{x} \PY{o}{\PYZgt{}} \PY{n}{seq\PYZus{}x}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}\PY{p}{]}
+        \PY{k}{else}\PY{p}{:}
+            \PY{n}{fe} \PY{o}{+}\PY{o}{=} \PY{p}{[}\PY{n}{data}\PY{o}{.}\PY{n}{x}\PY{o}{.}\PY{n}{between}\PY{p}{(}\PY{n}{seq\PYZus{}x}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,} \PY{n}{seq\PYZus{}x}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{inclusive}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{right}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}\PY{p}{]}
+    \PY{n}{calc\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{fe}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{fe}
+
+    \PY{n}{ft} \PY{o}{=} \PY{n}{prob\PYZus{}class} \PY{o}{*} \PY{n}{n}
+    \PY{n}{calc\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ft}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{p}{[}\PY{n}{ft}\PY{p}{]}\PY{o}{*}\PY{n}{k}
+
+    \PY{k}{if} \PY{n}{dist}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o+ow}{in} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{normal}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gumbel}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{lognormal}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{:}
+        \PY{n}{dk} \PY{o}{=} \PY{n}{\PYZus{}calc\PYZus{}dk}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}
+    \PY{k}{elif} \PY{n}{dist}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o+ow}{in} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{logpearson3}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{} di buku soetopo nilai m nya diberi angka 3}
+        \PY{n}{dk} \PY{o}{=} \PY{n}{\PYZus{}calc\PYZus{}dk}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}
+
+    \PY{n}{X\PYZus{}calc} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{power}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{p}{(}\PY{n}{calc\PYZus{}df}\PY{o}{.}\PY{n}{fe}\PY{o}{\PYZhy{}}\PY{n}{calc\PYZus{}df}\PY{o}{.}\PY{n}{ft}\PY{p}{)}\PY{p}{)}\PY{o}{/}\PY{n}{calc\PYZus{}df}\PY{o}{.}\PY{n}{ft}\PY{p}{)}
+    \PY{n}{X\PYZus{}critical} \PY{o}{=} \PY{n}{calc\PYZus{}xcr}\PY{p}{(}\PY{n}{alpha}\PY{o}{=}\PY{n}{alpha}\PY{p}{,} \PY{n}{dk}\PY{o}{=}\PY{n}{dk}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{n}{source\PYZus{}xcr}\PY{p}{)}
+    \PY{n}{result} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{X\PYZus{}calc} \PY{o}{\PYZlt{}} \PY{n}{X\PYZus{}critical}\PY{p}{)}
+    \PY{n}{result\PYZus{}text} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Distribusi Tidak Diterima}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Distribusi Diterima}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+    \PY{n}{calc\PYZus{}df}\PY{o}{.}\PY{n}{set\PYZus{}index}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{no}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+
+    \PY{k}{if} \PY{n}{show\PYZus{}stat}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Periksa Kecocokan Distribusi }\PY{l+s+si}{\PYZob{}}\PY{n}{dist}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Jumlah Kelas = }\PY{l+s+si}{\PYZob{}}\PY{n}{k}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Dk = }\PY{l+s+si}{\PYZob{}}\PY{n}{dk}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{X\PYZca{}2\PYZus{}hitungan = }\PY{l+s+si}{\PYZob{}}\PY{n}{X\PYZus{}calc}\PY{l+s+si}{:}\PY{l+s+s1}{.3f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{X\PYZca{}2\PYZus{}kritis = }\PY{l+s+si}{\PYZob{}}\PY{n}{X\PYZus{}critical}\PY{l+s+si}{:}\PY{l+s+s1}{.3f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Result (X2\PYZus{}calc \PYZlt{} X2\PYZus{}cr) = }\PY{l+s+si}{\PYZob{}}\PY{n}{result\PYZus{}text}\PY{p}{[}\PY{n}{result}\PY{p}{]}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+    \PY{k}{return} \PY{n}{calc\PYZus{}df}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{fungsi}{%
+\section{FUNGSI}\label{fungsi}}
+
+    \hypertarget{fungsi-calc_xcralpha-dk-...}{%
+\subsection{\texorpdfstring{Fungsi
+\texttt{calc\_xcr(alpha,\ dk,\ ...)}}{Fungsi calc\_xcr(alpha, dk, ...)}}\label{fungsi-calc_xcralpha-dk-...}}
+
+Function:
+\texttt{calc\_xcr(alpha,\ dk,\ source=\textquotesingle{}scipy\textquotesingle{})}
+
+Fungsi \texttt{calc\_xcr(...)} digunakan untuk mencari nilai
+\(X^2_{kritis}\) dari berbagai sumber berdasarkan nilai derajat
+kepercayaan \(\alpha\) dan nilai \(DK\).
+
+\begin{itemize}
+\tightlist
+\item
+  Argumen Posisi:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{alpha}: Nilai \emph{level of significance} \(\alpha\). Dalam
+    satuan desimal.
+  \item
+    \texttt{dk}: Nilai \(DK\) hasil perhitungan antara \(K\) (jumlah
+    kelas) dan parameter distribusi \(m\).
+  \end{itemize}
+\item
+  Argumen Opsional:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{source}: sumber nilai \(X^2_{kritis}\).
+    \texttt{\textquotesingle{}scipy\textquotesingle{}} (default). Sumber
+    yang dapat digunakan antara lain: Limantara
+    (\texttt{\textquotesingle{}limantara\textquotesingle{}}).
+  \end{itemize}
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{calc\PYZus{}xcr}\PY{p}{(}\PY{l+m+mf}{0.05}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+7.814727903251178
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{calc\PYZus{}xcr}\PY{p}{(}\PY{p}{[}\PY{l+m+mf}{0.05}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{p}{,} \PY{l+m+mf}{0.2}\PY{p}{]}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{limantara}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([11.07 , 10.519,  9.416])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} perbandingan antara nilai tabel dan fungsi scipy}
+
+\PY{n}{source\PYZus{}test} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{limantara}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{scipy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{n}{\PYZus{}dk} \PY{o}{=} \PY{l+m+mi}{5}
+\PY{n}{\PYZus{}alpha} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{0.2}\PY{p}{,} \PY{l+m+mf}{0.15}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{p}{,} \PY{l+m+mf}{0.07}\PY{p}{,} \PY{l+m+mf}{0.05}\PY{p}{,} \PY{l+m+mf}{0.01}\PY{p}{]}
+
+\PY{k}{for} \PY{n}{\PYZus{}source} \PY{o+ow}{in} \PY{n}{source\PYZus{}test}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Xcr }\PY{l+s+si}{\PYZob{}}\PY{n}{\PYZus{}source}\PY{l+s+si}{:}\PY{l+s+s1}{\PYZlt{}12}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{=}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{calc\PYZus{}xcr}\PY{p}{(}\PY{n}{\PYZus{}alpha}\PY{p}{,} \PY{n}{\PYZus{}dk}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{n}{\PYZus{}source}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Xcr limantara   = [ 9.416  9.967 10.519 10.849 11.07  15.086]
+Xcr scipy       = [ 7.28927613  8.11519941  9.2363569  10.19102791 11.07049769
+15.08627247]
+    \end{Verbatim}
+
+    \hypertarget{fungsi-chisquaredf-...}{%
+\subsection{\texorpdfstring{Fungsi
+\texttt{chisquare(df,\ ...)}}{Fungsi chisquare(df, ...)}}\label{fungsi-chisquaredf-...}}
+
+Function:
+\texttt{chisquare(df,\ col=None,\ dist=\textquotesingle{}normal\textquotesingle{},\ source\_dist=\textquotesingle{}scipy\textquotesingle{},\ alpha=0.05,\ source\_xcr=\textquotesingle{}scipy\textquotesingle{},\ show\_stat=True)}
+
+Fungsi \texttt{chisquare(...)} merupakan fungsi untuk melakukan uji chi
+square terhadap distribusi yang dibandingkan. Fungsi ini mengeluarkan
+objek \texttt{pandas.DataFrame}.
+
+\begin{itemize}
+\tightlist
+\item
+  Argumen Posisi:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{df}: \texttt{pandas.DataFrame}.
+  \end{itemize}
+\item
+  Argumen Opsional:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{col}: nama kolom, \texttt{None} (default). Jika tidak diisi
+    menggunakan kolom pertama dalam \texttt{df} sebagai data masukan.
+  \item
+    \texttt{dist}: distribusi yang dibandingkan,
+    \texttt{\textquotesingle{}normal\textquotesingle{}} (distribusi
+    normal) (default). Distribusi yang dapat digunakan antara lain: Log
+    Normal (\texttt{\textquotesingle{}lognormal\textquotesingle{}}),
+    Gumbel (\texttt{\textquotesingle{}gumbel\textquotesingle{}}), Log
+    Pearson 3
+    (\texttt{\textquotesingle{}logpearson3\textquotesingle{}}).
+  \item
+    \texttt{source\_dist}: sumber perhitungan distribusi,
+    \texttt{\textquotesingle{}scipy\textquotesingle{}} (default). Lihat
+    masing-masing modul analisis frekuensi untuk lebih jelasnya.
+  \item
+    \texttt{alpha}: nilai \(\alpha\), \texttt{0.05} (default).
+  \item
+    \texttt{source\_xcr}: sumber nilai \(X^2_{kritis}\),
+    \texttt{\textquotesingle{}scipy\textquotesingle{}} (default). Sumber
+    yang dapat digunakan antara lain: Limantara
+    (\texttt{\textquotesingle{}limantara\textquotesingle{}}).
+  \item
+    \texttt{show\_stat}: menampilkan hasil luaran uji, \texttt{True}
+    (default).
+  \end{itemize}
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{chisquare}\PY{p}{(}\PY{n}{data}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Periksa Kecocokan Distribusi Normal
+Jumlah Kelas = 4
+Dk = 1
+X\^{}2\_hitungan = 1.697
+X\^{}2\_kritis = 3.841
+Result (X2\_calc < X2\_cr) = Distribusi Diterima
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                batas\_kelas  fe   ft
+no
+1              X <= 79.9499   2  2.5
+2    79.9499 < X <= 94.7000   2  2.5
+3   94.7000 < X <= 109.4501   3  2.5
+4              X > 109.4501   3  2.5
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{chisquare}\PY{p}{(}\PY{n}{data}\PY{p}{,} \PY{n}{dist}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gumbel}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{source\PYZus{}dist}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soetopo}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Periksa Kecocokan Distribusi Gumbel
+Jumlah Kelas = 4
+Dk = 1
+X\^{}2\_hitungan = 2.121
+X\^{}2\_kritis = 3.841
+Result (X2\_calc < X2\_cr) = Distribusi Diterima
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                batas\_kelas  fe   ft
+no
+1              X <= 75.7758   2  2.5
+2    75.7758 < X <= 91.7367   1  2.5
+3   91.7367 < X <= 111.9862   4  2.5
+4              X > 111.9862   3  2.5
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{chisquare}\PY{p}{(}\PY{n}{data}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{hujan}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{dist}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{logpearson3}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.2}\PY{p}{,} \PY{n}{source\PYZus{}xcr}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{limantara}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Periksa Kecocokan Distribusi Logpearson3
+Jumlah Kelas = 4
+Dk = 1
+X\^{}2\_hitungan = 2.121
+X\^{}2\_kritis = 3.266
+Result (X2\_calc < X2\_cr) = Distribusi Diterima
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                batas\_kelas  fe   ft
+no
+1              X <= 80.4303   2  2.5
+2    80.4303 < X <= 97.1113   4  2.5
+3   97.1113 < X <= 111.6241   1  2.5
+4              X > 111.6241   3  2.5
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{changelog}{%
+\section{Changelog}\label{changelog}}
+
+\begin{verbatim}
+- 20220317 - 1.0.0 - Initial
+\end{verbatim}
+
+\hypertarget{copyright-2022-taruma-sakti-megariansyah}{%
+\paragraph{\texorpdfstring{Copyright © 2022
+\href{https://taruma.github.io}{Taruma Sakti
+Megariansyah}}{Copyright © 2022 Taruma Sakti Megariansyah}}\label{copyright-2022-taruma-sakti-megariansyah}}
+
+Source code in this notebook is licensed under a
+\href{https://choosealicense.com/licenses/mit/}{MIT License}. Data in
+this notebook is licensed under a
+\href{https://creativecommons.org/licenses/by/4.0/}{Creative Common
+Attribution 4.0 International}.
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}

@@ -1,0 +1,1428 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{taruma\_0\_4\_0\_hk126\_log\_pearson3}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    Berdasarkan isu
+\href{https://github.com/hidrokit/hidrokit/issues/126}{\#126}:
+\textbf{anfrek: Log Pearson III}
+
+Referensi Isu: - Soetopo, W., Montarcih, L., Press, U. B., \& Media, U.
+(2017). Rekayasa Statistika untuk Teknik Pengairan. Universitas
+Brawijaya Press. https://books.google.co.id/books?id=TzVTDwAAQBAJ -
+Limantara, L. (2018). Rekayasa Hidrologi. - Soewarno. (1995). hidrologi:
+Aplikasi Metode Statistik untuk Analisa Data. NOVA.
+
+Deskripsi Isu: - Mencari nilai ekstrim dengan kala ulang tertentu
+menggunakan distribusi Log Pearson III. Penerapan ini bisa digunakan
+untuk hujan rancangan atau debit banjir rancangan.
+
+Diskusi Isu: -
+\href{https://github.com/hidrokit/hidrokit/discussions/156}{\#156} -
+Bagaimana menghitung periode ulang distribusi (analisis frekuensi) tanpa
+melihat tabel?
+
+Strategi: - Luaran dari fungsi merupakan tabel atau array dengan kala
+ulang yang dapat dijadikan sebagai input, jika tidak menggunakan kala
+ulang yang umum (2, 5, \ldots, 100) - Buat hasil perhitungan berdasarkan
+manual (tabel) dan menggunakan fungsi yang tersedia (\texttt{scipy}).
+
+    \hypertarget{persiapan-dan-dataset}{%
+\section{PERSIAPAN DAN DATASET}\label{persiapan-dan-dataset}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+\PY{k+kn}{from} \PY{n+nn}{scipy} \PY{k+kn}{import} \PY{n}{stats}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} contoh data diambil dari buku}
+\PY{c+c1}{\PYZsh{} Rekayasa Hidrologi hal. 109}
+
+\PY{n}{\PYZus{}HUJAN} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{85}\PY{p}{,} \PY{l+m+mi}{92}\PY{p}{,} \PY{l+m+mi}{115}\PY{p}{,} \PY{l+m+mi}{116}\PY{p}{,} \PY{l+m+mi}{122}\PY{p}{,} \PY{l+m+mi}{52}\PY{p}{,} \PY{l+m+mi}{69}\PY{p}{,} \PY{l+m+mi}{95}\PY{p}{,} \PY{l+m+mi}{96}\PY{p}{,} \PY{l+m+mi}{105}\PY{p}{]}\PY{p}{)}
+\PY{n}{\PYZus{}TAHUN} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{1998}\PY{p}{,} \PY{l+m+mi}{2008}\PY{p}{)} \PY{c+c1}{\PYZsh{} 1998\PYZhy{}2007}
+
+\PY{n}{data} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}
+    \PY{n}{data}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{stack}\PY{p}{(}\PY{p}{[}\PY{n}{\PYZus{}TAHUN}\PY{p}{,} \PY{n}{\PYZus{}HUJAN}\PY{p}{]}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,}
+    \PY{n}{columns}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{tahun}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{hujan}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{p}{)}
+\PY{n}{data}\PY{o}{.}\PY{n}{tahun} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{to\PYZus{}datetime}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{tahun}\PY{p}{,} \PY{n+nb}{format}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZpc{}}\PY{l+s+s1}{Y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{data}\PY{o}{.}\PY{n}{set\PYZus{}index}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{tahun}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{data}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+            hujan
+tahun
+1998-01-01     85
+1999-01-01     92
+2000-01-01    115
+2001-01-01    116
+2002-01-01    122
+2003-01-01     52
+2004-01-01     69
+2005-01-01     95
+2006-01-01     96
+2007-01-01    105
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{tabel}{%
+\section{TABEL}\label{tabel}}
+
+Terdapat 2 tabel untuk modul \texttt{hk126} yaitu: -
+\texttt{t\_pearson3\_sw}: Tabel Nilai \(K\) Distribusi Pearson Tipe III
+dari buku \emph{hidrologi: Aplikasi Metode Statistik untuk Analisa Data}
+oleh Soewarno. - \texttt{t\_pearson3\_st}: Tabel Distribusi Pearson Type
+III (nilai \(K\)) dari buku \emph{Rekayasa Statistika untuk Teknik
+Pengairan}. - \texttt{t\_pearson3\_lm}: Tabel Distribusi Log Pearson
+Tipe III Nilai G untuk Cs Positif dan Negatif
+
+Dalam modul \texttt{hk126} nilai \(K\) akan dibangkitkan menggunakan
+fungsi \texttt{scipy.stats.pearson3.ppf} secara \texttt{default}. Mohon
+diperhatikan jika ingin menggunakan nilai \(K\) yang berasal dari sumber
+lain.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} tabel dari Soewarno, hal. 219}
+\PY{c+c1}{\PYZsh{} lampiran tabel III\PYZhy{}3, Nilai k Distribusi Pearson tipe III}
+\PY{c+c1}{\PYZsh{} dan Log Pearson ti}
+
+\PY{c+c1}{\PYZsh{} kode: SW}
+
+\PY{n}{\PYZus{}DATA\PYZus{}SW} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.360}\PY{p}{,} \PY{l+m+mf}{0.420}\PY{p}{,} \PY{l+m+mf}{1.180}\PY{p}{,} \PY{l+m+mf}{2.278}\PY{p}{,} \PY{l+m+mf}{3.152}\PY{p}{,} \PY{l+m+mf}{4.051}\PY{p}{,} \PY{l+m+mf}{4.970}\PY{p}{,} \PY{l+m+mf}{7.250}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.360}\PY{p}{,} \PY{l+m+mf}{0.518}\PY{p}{,} \PY{l+m+mf}{1.250}\PY{p}{,} \PY{l+m+mf}{2.262}\PY{p}{,} \PY{l+m+mf}{3.048}\PY{p}{,} \PY{l+m+mf}{3.845}\PY{p}{,} \PY{l+m+mf}{4.652}\PY{p}{,} \PY{l+m+mf}{6.600}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.330}\PY{p}{,} \PY{l+m+mf}{0.574}\PY{p}{,} \PY{l+m+mf}{1.284}\PY{p}{,} \PY{l+m+mf}{2.240}\PY{p}{,} \PY{l+m+mf}{2.970}\PY{p}{,} \PY{l+m+mf}{3.705}\PY{p}{,} \PY{l+m+mf}{4.444}\PY{p}{,} \PY{l+m+mf}{6.200}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.307}\PY{p}{,} \PY{l+m+mf}{0.609}\PY{p}{,} \PY{l+m+mf}{1.302}\PY{p}{,} \PY{l+m+mf}{2.219}\PY{p}{,} \PY{l+m+mf}{2.912}\PY{p}{,} \PY{l+m+mf}{3.605}\PY{p}{,} \PY{l+m+mf}{4.298}\PY{p}{,} \PY{l+m+mf}{5.910}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.282}\PY{p}{,} \PY{l+m+mf}{0.643}\PY{p}{,} \PY{l+m+mf}{1.318}\PY{p}{,} \PY{l+m+mf}{2.193}\PY{p}{,} \PY{l+m+mf}{2.848}\PY{p}{,} \PY{l+m+mf}{3.499}\PY{p}{,} \PY{l+m+mf}{4.147}\PY{p}{,} \PY{l+m+mf}{5.660}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.254}\PY{p}{,} \PY{l+m+mf}{0.675}\PY{p}{,} \PY{l+m+mf}{1.329}\PY{p}{,} \PY{l+m+mf}{2.163}\PY{p}{,} \PY{l+m+mf}{2.780}\PY{p}{,} \PY{l+m+mf}{3.388}\PY{p}{,} \PY{l+m+mf}{3.990}\PY{p}{,} \PY{l+m+mf}{5.390}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.225}\PY{p}{,} \PY{l+m+mf}{0.705}\PY{p}{,} \PY{l+m+mf}{1.337}\PY{p}{,} \PY{l+m+mf}{2.128}\PY{p}{,} \PY{l+m+mf}{2.706}\PY{p}{,} \PY{l+m+mf}{3.271}\PY{p}{,} \PY{l+m+mf}{3.828}\PY{p}{,} \PY{l+m+mf}{5.110}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.195}\PY{p}{,} \PY{l+m+mf}{0.732}\PY{p}{,} \PY{l+m+mf}{1.340}\PY{p}{,} \PY{l+m+mf}{2.087}\PY{p}{,} \PY{l+m+mf}{2.626}\PY{p}{,} \PY{l+m+mf}{3.149}\PY{p}{,} \PY{l+m+mf}{3.661}\PY{p}{,} \PY{l+m+mf}{4.820}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.164}\PY{p}{,} \PY{l+m+mf}{0.758}\PY{p}{,} \PY{l+m+mf}{1.340}\PY{p}{,} \PY{l+m+mf}{2.043}\PY{p}{,} \PY{l+m+mf}{2.542}\PY{p}{,} \PY{l+m+mf}{3.022}\PY{p}{,} \PY{l+m+mf}{3.489}\PY{p}{,} \PY{l+m+mf}{4.540}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.148}\PY{p}{,} \PY{l+m+mf}{0.769}\PY{p}{,} \PY{l+m+mf}{1.339}\PY{p}{,} \PY{l+m+mf}{2.018}\PY{p}{,} \PY{l+m+mf}{2.498}\PY{p}{,} \PY{l+m+mf}{2.957}\PY{p}{,} \PY{l+m+mf}{3.401}\PY{p}{,} \PY{l+m+mf}{4.395}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.132}\PY{p}{,} \PY{l+m+mf}{0.780}\PY{p}{,} \PY{l+m+mf}{1.336}\PY{p}{,} \PY{l+m+mf}{1.998}\PY{p}{,} \PY{l+m+mf}{2.453}\PY{p}{,} \PY{l+m+mf}{2.891}\PY{p}{,} \PY{l+m+mf}{3.312}\PY{p}{,} \PY{l+m+mf}{4.250}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.116}\PY{p}{,} \PY{l+m+mf}{0.790}\PY{p}{,} \PY{l+m+mf}{1.333}\PY{p}{,} \PY{l+m+mf}{1.967}\PY{p}{,} \PY{l+m+mf}{2.407}\PY{p}{,} \PY{l+m+mf}{2.824}\PY{p}{,} \PY{l+m+mf}{3.223}\PY{p}{,} \PY{l+m+mf}{4.105}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.099}\PY{p}{,} \PY{l+m+mf}{0.800}\PY{p}{,} \PY{l+m+mf}{1.328}\PY{p}{,} \PY{l+m+mf}{1.939}\PY{p}{,} \PY{l+m+mf}{2.359}\PY{p}{,} \PY{l+m+mf}{2.755}\PY{p}{,} \PY{l+m+mf}{3.132}\PY{p}{,} \PY{l+m+mf}{3.960}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.083}\PY{p}{,} \PY{l+m+mf}{0.808}\PY{p}{,} \PY{l+m+mf}{1.323}\PY{p}{,} \PY{l+m+mf}{1.910}\PY{p}{,} \PY{l+m+mf}{2.311}\PY{p}{,} \PY{l+m+mf}{2.686}\PY{p}{,} \PY{l+m+mf}{3.041}\PY{p}{,} \PY{l+m+mf}{3.815}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.066}\PY{p}{,} \PY{l+m+mf}{0.816}\PY{p}{,} \PY{l+m+mf}{1.317}\PY{p}{,} \PY{l+m+mf}{1.880}\PY{p}{,} \PY{l+m+mf}{2.261}\PY{p}{,} \PY{l+m+mf}{2.615}\PY{p}{,} \PY{l+m+mf}{2.949}\PY{p}{,} \PY{l+m+mf}{3.670}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.050}\PY{p}{,} \PY{l+m+mf}{0.824}\PY{p}{,} \PY{l+m+mf}{1.309}\PY{p}{,} \PY{l+m+mf}{1.849}\PY{p}{,} \PY{l+m+mf}{2.211}\PY{p}{,} \PY{l+m+mf}{2.544}\PY{p}{,} \PY{l+m+mf}{2.856}\PY{p}{,} \PY{l+m+mf}{3.525}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.033}\PY{p}{,} \PY{l+m+mf}{0.830}\PY{p}{,} \PY{l+m+mf}{1.301}\PY{p}{,} \PY{l+m+mf}{1.818}\PY{p}{,} \PY{l+m+mf}{2.159}\PY{p}{,} \PY{l+m+mf}{2.472}\PY{p}{,} \PY{l+m+mf}{2.763}\PY{p}{,} \PY{l+m+mf}{3.380}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.017}\PY{p}{,} \PY{l+m+mf}{0.836}\PY{p}{,} \PY{l+m+mf}{1.292}\PY{p}{,} \PY{l+m+mf}{1.785}\PY{p}{,} \PY{l+m+mf}{2.107}\PY{p}{,} \PY{l+m+mf}{2.400}\PY{p}{,} \PY{l+m+mf}{2.670}\PY{p}{,} \PY{l+m+mf}{3.235}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.000}\PY{p}{,} \PY{l+m+mf}{0.842}\PY{p}{,} \PY{l+m+mf}{1.282}\PY{p}{,} \PY{l+m+mf}{1.751}\PY{p}{,} \PY{l+m+mf}{2.054}\PY{p}{,} \PY{l+m+mf}{2.326}\PY{p}{,} \PY{l+m+mf}{2.576}\PY{p}{,} \PY{l+m+mf}{3.090}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.017}\PY{p}{,} \PY{l+m+mf}{0.836}\PY{p}{,} \PY{l+m+mf}{1.270}\PY{p}{,} \PY{l+m+mf}{1.761}\PY{p}{,} \PY{l+m+mf}{2.000}\PY{p}{,} \PY{l+m+mf}{2.252}\PY{p}{,} \PY{l+m+mf}{2.482}\PY{p}{,} \PY{l+m+mf}{3.950}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.033}\PY{p}{,} \PY{l+m+mf}{0.850}\PY{p}{,} \PY{l+m+mf}{1.258}\PY{p}{,} \PY{l+m+mf}{1.680}\PY{p}{,} \PY{l+m+mf}{1.945}\PY{p}{,} \PY{l+m+mf}{2.178}\PY{p}{,} \PY{l+m+mf}{2.388}\PY{p}{,} \PY{l+m+mf}{2.810}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.050}\PY{p}{,} \PY{l+m+mf}{0.853}\PY{p}{,} \PY{l+m+mf}{1.245}\PY{p}{,} \PY{l+m+mf}{1.643}\PY{p}{,} \PY{l+m+mf}{1.890}\PY{p}{,} \PY{l+m+mf}{2.104}\PY{p}{,} \PY{l+m+mf}{2.294}\PY{p}{,} \PY{l+m+mf}{2.675}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.066}\PY{p}{,} \PY{l+m+mf}{0.855}\PY{p}{,} \PY{l+m+mf}{1.231}\PY{p}{,} \PY{l+m+mf}{1.606}\PY{p}{,} \PY{l+m+mf}{1.834}\PY{p}{,} \PY{l+m+mf}{2.029}\PY{p}{,} \PY{l+m+mf}{2.201}\PY{p}{,} \PY{l+m+mf}{2.540}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.083}\PY{p}{,} \PY{l+m+mf}{0.856}\PY{p}{,} \PY{l+m+mf}{1.216}\PY{p}{,} \PY{l+m+mf}{1.567}\PY{p}{,} \PY{l+m+mf}{1.777}\PY{p}{,} \PY{l+m+mf}{1.955}\PY{p}{,} \PY{l+m+mf}{2.108}\PY{p}{,} \PY{l+m+mf}{2.400}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.099}\PY{p}{,} \PY{l+m+mf}{0.857}\PY{p}{,} \PY{l+m+mf}{1.200}\PY{p}{,} \PY{l+m+mf}{1.528}\PY{p}{,} \PY{l+m+mf}{1.720}\PY{p}{,} \PY{l+m+mf}{1.880}\PY{p}{,} \PY{l+m+mf}{2.016}\PY{p}{,} \PY{l+m+mf}{2.275}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.116}\PY{p}{,} \PY{l+m+mf}{0.857}\PY{p}{,} \PY{l+m+mf}{1.183}\PY{p}{,} \PY{l+m+mf}{1.488}\PY{p}{,} \PY{l+m+mf}{1.663}\PY{p}{,} \PY{l+m+mf}{1.806}\PY{p}{,} \PY{l+m+mf}{1.926}\PY{p}{,} \PY{l+m+mf}{2.150}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.132}\PY{p}{,} \PY{l+m+mf}{0.856}\PY{p}{,} \PY{l+m+mf}{1.166}\PY{p}{,} \PY{l+m+mf}{1.448}\PY{p}{,} \PY{l+m+mf}{1.606}\PY{p}{,} \PY{l+m+mf}{1.733}\PY{p}{,} \PY{l+m+mf}{1.837}\PY{p}{,} \PY{l+m+mf}{2.035}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.148}\PY{p}{,} \PY{l+m+mf}{0.854}\PY{p}{,} \PY{l+m+mf}{1.147}\PY{p}{,} \PY{l+m+mf}{1.407}\PY{p}{,} \PY{l+m+mf}{1.549}\PY{p}{,} \PY{l+m+mf}{1.660}\PY{p}{,} \PY{l+m+mf}{1.749}\PY{p}{,} \PY{l+m+mf}{1.910}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.164}\PY{p}{,} \PY{l+m+mf}{0.852}\PY{p}{,} \PY{l+m+mf}{1.128}\PY{p}{,} \PY{l+m+mf}{1.366}\PY{p}{,} \PY{l+m+mf}{1.492}\PY{p}{,} \PY{l+m+mf}{1.588}\PY{p}{,} \PY{l+m+mf}{1.664}\PY{p}{,} \PY{l+m+mf}{1.800}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.195}\PY{p}{,} \PY{l+m+mf}{0.844}\PY{p}{,} \PY{l+m+mf}{1.086}\PY{p}{,} \PY{l+m+mf}{1.282}\PY{p}{,} \PY{l+m+mf}{1.379}\PY{p}{,} \PY{l+m+mf}{1.449}\PY{p}{,} \PY{l+m+mf}{1.501}\PY{p}{,} \PY{l+m+mf}{1.625}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.225}\PY{p}{,} \PY{l+m+mf}{0.832}\PY{p}{,} \PY{l+m+mf}{1.041}\PY{p}{,} \PY{l+m+mf}{1.198}\PY{p}{,} \PY{l+m+mf}{1.270}\PY{p}{,} \PY{l+m+mf}{1.318}\PY{p}{,} \PY{l+m+mf}{1.351}\PY{p}{,} \PY{l+m+mf}{1.465}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.254}\PY{p}{,} \PY{l+m+mf}{0.817}\PY{p}{,} \PY{l+m+mf}{0.994}\PY{p}{,} \PY{l+m+mf}{1.116}\PY{p}{,} \PY{l+m+mf}{1.166}\PY{p}{,} \PY{l+m+mf}{1.197}\PY{p}{,} \PY{l+m+mf}{1.216}\PY{p}{,} \PY{l+m+mf}{1.280}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.282}\PY{p}{,} \PY{l+m+mf}{0.799}\PY{p}{,} \PY{l+m+mf}{0.945}\PY{p}{,} \PY{l+m+mf}{1.035}\PY{p}{,} \PY{l+m+mf}{1.069}\PY{p}{,} \PY{l+m+mf}{1.087}\PY{p}{,} \PY{l+m+mf}{1.097}\PY{p}{,} \PY{l+m+mf}{1.130}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.307}\PY{p}{,} \PY{l+m+mf}{0.777}\PY{p}{,} \PY{l+m+mf}{0.895}\PY{p}{,} \PY{l+m+mf}{0.959}\PY{p}{,} \PY{l+m+mf}{0.980}\PY{p}{,} \PY{l+m+mf}{0.990}\PY{p}{,} \PY{l+m+mf}{1.995}\PY{p}{,} \PY{l+m+mf}{1.000}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.330}\PY{p}{,} \PY{l+m+mf}{0.752}\PY{p}{,} \PY{l+m+mf}{0.844}\PY{p}{,} \PY{l+m+mf}{0.888}\PY{p}{,} \PY{l+m+mf}{0.900}\PY{p}{,} \PY{l+m+mf}{0.905}\PY{p}{,} \PY{l+m+mf}{0.907}\PY{p}{,} \PY{l+m+mf}{0.910}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.360}\PY{p}{,} \PY{l+m+mf}{0.711}\PY{p}{,} \PY{l+m+mf}{0.771}\PY{p}{,} \PY{l+m+mf}{0.793}\PY{p}{,} \PY{l+m+mf}{0.798}\PY{p}{,} \PY{l+m+mf}{0.799}\PY{p}{,} \PY{l+m+mf}{0.800}\PY{p}{,} \PY{l+m+mf}{0.802}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mf}{0.396}\PY{p}{,} \PY{l+m+mf}{0.636}\PY{p}{,} \PY{l+m+mf}{0.660}\PY{p}{,} \PY{l+m+mf}{0.666}\PY{p}{,} \PY{l+m+mf}{0.666}\PY{p}{,} \PY{l+m+mf}{0.667}\PY{p}{,} \PY{l+m+mf}{0.667}\PY{p}{,} \PY{l+m+mf}{0.668}\PY{p}{]}\PY{p}{]}
+\PY{p}{)}
+
+\PY{n}{\PYZus{}INDEX\PYZus{}SW} \PY{o}{=} \PY{p}{[}
+    \PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mf}{2.5}\PY{p}{,} \PY{l+m+mf}{2.2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mf}{1.8}\PY{p}{,} \PY{l+m+mf}{1.6}\PY{p}{,} \PY{l+m+mf}{1.4}\PY{p}{,} \PY{l+m+mf}{1.2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,}
+    \PY{l+m+mf}{0.9}\PY{p}{,} \PY{l+m+mf}{0.8}\PY{p}{,} \PY{l+m+mf}{0.7}\PY{p}{,} \PY{l+m+mf}{0.6}\PY{p}{,} \PY{l+m+mf}{0.5}\PY{p}{,} \PY{l+m+mf}{0.4}\PY{p}{,} \PY{l+m+mf}{0.3}\PY{p}{,} \PY{l+m+mf}{0.2}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,}
+    \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.2}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.3}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.4}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.5}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.6}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.7}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.8}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}
+    \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.2}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.4}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.6}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.8}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.} \PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.2}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.5}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{3.}
+\PY{p}{]}
+
+\PY{n}{\PYZus{}COL\PYZus{}SW} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{0.5}\PY{p}{,} \PY{l+m+mf}{0.2}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{p}{,} \PY{l+m+mf}{0.04}\PY{p}{,} \PY{l+m+mf}{0.02}\PY{p}{,} \PY{l+m+mf}{0.01}\PY{p}{,} \PY{l+m+mf}{0.005}\PY{p}{,} \PY{l+m+mf}{0.001}\PY{p}{]}
+
+\PY{n}{t\PYZus{}pearson3\PYZus{}sw} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{\PYZus{}DATA\PYZus{}SW}\PY{p}{,} \PY{n}{index}\PY{o}{=}\PY{n}{\PYZus{}INDEX\PYZus{}SW}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{n}{\PYZus{}COL\PYZus{}SW}\PY{p}{)}
+\PY{n}{t\PYZus{}pearson3\PYZus{}sw}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+      0.500  0.200  0.100  0.040  0.020  0.010  0.005  0.001
+ 3.0 -0.360  0.420  1.180  2.278  3.152  4.051  4.970  7.250
+ 2.5 -0.360  0.518  1.250  2.262  3.048  3.845  4.652  6.600
+ 2.2 -0.330  0.574  1.284  2.240  2.970  3.705  4.444  6.200
+ 2.0 -0.307  0.609  1.302  2.219  2.912  3.605  4.298  5.910
+ 1.8 -0.282  0.643  1.318  2.193  2.848  3.499  4.147  5.660
+ 1.6 -0.254  0.675  1.329  2.163  2.780  3.388  3.990  5.390
+ 1.4 -0.225  0.705  1.337  2.128  2.706  3.271  3.828  5.110
+ 1.2 -0.195  0.732  1.340  2.087  2.626  3.149  3.661  4.820
+ 1.0 -0.164  0.758  1.340  2.043  2.542  3.022  3.489  4.540
+ 0.9 -0.148  0.769  1.339  2.018  2.498  2.957  3.401  4.395
+ 0.8 -0.132  0.780  1.336  1.998  2.453  2.891  3.312  4.250
+ 0.7 -0.116  0.790  1.333  1.967  2.407  2.824  3.223  4.105
+ 0.6  0.099  0.800  1.328  1.939  2.359  2.755  3.132  3.960
+ 0.5 -0.083  0.808  1.323  1.910  2.311  2.686  3.041  3.815
+ 0.4 -0.066  0.816  1.317  1.880  2.261  2.615  2.949  3.670
+ 0.3 -0.050  0.824  1.309  1.849  2.211  2.544  2.856  3.525
+ 0.2 -0.033  0.830  1.301  1.818  2.159  2.472  2.763  3.380
+ 0.1 -0.017  0.836  1.292  1.785  2.107  2.400  2.670  3.235
+ 0.0  0.000  0.842  1.282  1.751  2.054  2.326  2.576  3.090
+-0.1  0.017  0.836  1.270  1.761  2.000  2.252  2.482  3.950
+-0.2  0.033  0.850  1.258  1.680  1.945  2.178  2.388  2.810
+-0.3  0.050  0.853  1.245  1.643  1.890  2.104  2.294  2.675
+-0.4  0.066  0.855  1.231  1.606  1.834  2.029  2.201  2.540
+-0.5  0.083  0.856  1.216  1.567  1.777  1.955  2.108  2.400
+-0.6  0.099  0.857  1.200  1.528  1.720  1.880  2.016  2.275
+-0.7  0.116  0.857  1.183  1.488  1.663  1.806  1.926  2.150
+-0.8  0.132  0.856  1.166  1.448  1.606  1.733  1.837  2.035
+-0.9  0.148  0.854  1.147  1.407  1.549  1.660  1.749  1.910
+-1.0  0.164  0.852  1.128  1.366  1.492  1.588  1.664  1.800
+-1.2  0.195  0.844  1.086  1.282  1.379  1.449  1.501  1.625
+-1.4  0.225  0.832  1.041  1.198  1.270  1.318  1.351  1.465
+-1.6  0.254  0.817  0.994  1.116  1.166  1.197  1.216  1.280
+-1.8  0.282  0.799  0.945  1.035  1.069  1.087  1.097  1.130
+-2.0  0.307  0.777  0.895  0.959  0.980  0.990  1.995  1.000
+-2.2  0.330  0.752  0.844  0.888  0.900  0.905  0.907  0.910
+-2.5  0.360  0.711  0.771  0.793  0.798  0.799  0.800  0.802
+-3.0  0.396  0.636  0.660  0.666  0.666  0.667  0.667  0.668
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Tabel dari Soetopo hal. 105}
+\PY{c+c1}{\PYZsh{} Tabel Distribusi Pearson Type III (nilai K)}
+
+\PY{c+c1}{\PYZsh{} KODE: ST}
+
+\PY{n}{\PYZus{}DATA\PYZus{}ST} \PY{o}{=} \PY{p}{[}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{4.051}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.003}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.180}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.420}\PY{p}{,} \PY{l+m+mf}{0.396}\PY{p}{,} \PY{l+m+mf}{0.636}\PY{p}{,} \PY{l+m+mf}{0.660}\PY{p}{,} \PY{l+m+mf}{0.666}\PY{p}{,} \PY{l+m+mf}{0.666}\PY{p}{,} \PY{l+m+mf}{0.667}\PY{p}{,} \PY{l+m+mf}{0.667}\PY{p}{,} \PY{l+m+mf}{0.667}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{4.013}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.007}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.195}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.440}\PY{p}{,} \PY{l+m+mf}{0.390}\PY{p}{,} \PY{l+m+mf}{0.651}\PY{p}{,} \PY{l+m+mf}{0.681}\PY{p}{,} \PY{l+m+mf}{0.688}\PY{p}{,} \PY{l+m+mf}{0.689}\PY{p}{,} \PY{l+m+mf}{0.690}\PY{p}{,} \PY{l+m+mf}{0.690}\PY{p}{,} \PY{l+m+mf}{0.690}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.973}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.010}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.210}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.460}\PY{p}{,} \PY{l+m+mf}{0.384}\PY{p}{,} \PY{l+m+mf}{0.666}\PY{p}{,} \PY{l+m+mf}{0.702}\PY{p}{,} \PY{l+m+mf}{0.712}\PY{p}{,} \PY{l+m+mf}{0.714}\PY{p}{,} \PY{l+m+mf}{0.714}\PY{p}{,} \PY{l+m+mf}{0.714}\PY{p}{,} \PY{l+m+mf}{0.714}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.932}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.012}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.224}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.479}\PY{p}{,} \PY{l+m+mf}{0.376}\PY{p}{,} \PY{l+m+mf}{0.681}\PY{p}{,} \PY{l+m+mf}{0.724}\PY{p}{,} \PY{l+m+mf}{0.738}\PY{p}{,} \PY{l+m+mf}{0.740}\PY{p}{,} \PY{l+m+mf}{0.740}\PY{p}{,} \PY{l+m+mf}{0.741}\PY{p}{,} \PY{l+m+mf}{0.741}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.889}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.013}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.238}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.499}\PY{p}{,} \PY{l+m+mf}{0.369}\PY{p}{,} \PY{l+m+mf}{0.696}\PY{p}{,} \PY{l+m+mf}{0.747}\PY{p}{,} \PY{l+m+mf}{0.765}\PY{p}{,} \PY{l+m+mf}{0.768}\PY{p}{,} \PY{l+m+mf}{0.769}\PY{p}{,} \PY{l+m+mf}{0.769}\PY{p}{,} \PY{l+m+mf}{0.769}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.845}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.012}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.250}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.518}\PY{p}{,} \PY{l+m+mf}{0.360}\PY{p}{,} \PY{l+m+mf}{0.711}\PY{p}{,} \PY{l+m+mf}{0.771}\PY{p}{,} \PY{l+m+mf}{0.793}\PY{p}{,} \PY{l+m+mf}{0.798}\PY{p}{,} \PY{l+m+mf}{0.799}\PY{p}{,} \PY{l+m+mf}{0.800}\PY{p}{,} \PY{l+m+mf}{0.800}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.800}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.011}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.262}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.537}\PY{p}{,} \PY{l+m+mf}{0.351}\PY{p}{,} \PY{l+m+mf}{0.725}\PY{p}{,} \PY{l+m+mf}{0.795}\PY{p}{,} \PY{l+m+mf}{0.823}\PY{p}{,} \PY{l+m+mf}{0.830}\PY{p}{,} \PY{l+m+mf}{0.832}\PY{p}{,} \PY{l+m+mf}{0.833}\PY{p}{,} \PY{l+m+mf}{0.833}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.753}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.009}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.274}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.555}\PY{p}{,} \PY{l+m+mf}{0.341}\PY{p}{,} \PY{l+m+mf}{0.739}\PY{p}{,} \PY{l+m+mf}{0.819}\PY{p}{,} \PY{l+m+mf}{0.855}\PY{p}{,} \PY{l+m+mf}{0.864}\PY{p}{,} \PY{l+m+mf}{0.867}\PY{p}{,} \PY{l+m+mf}{0.869}\PY{p}{,} \PY{l+m+mf}{0.869}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.705}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.006}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.284}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.574}\PY{p}{,} \PY{l+m+mf}{0.330}\PY{p}{,} \PY{l+m+mf}{0.752}\PY{p}{,} \PY{l+m+mf}{0.844}\PY{p}{,} \PY{l+m+mf}{0.888}\PY{p}{,} \PY{l+m+mf}{0.900}\PY{p}{,} \PY{l+m+mf}{0.905}\PY{p}{,} \PY{l+m+mf}{0.907}\PY{p}{,} \PY{l+m+mf}{0.909}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.656}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.001}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.294}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.592}\PY{p}{,} \PY{l+m+mf}{0.319}\PY{p}{,} \PY{l+m+mf}{0.765}\PY{p}{,} \PY{l+m+mf}{0.869}\PY{p}{,} \PY{l+m+mf}{0.923}\PY{p}{,} \PY{l+m+mf}{0.939}\PY{p}{,} \PY{l+m+mf}{0.946}\PY{p}{,} \PY{l+m+mf}{0.949}\PY{p}{,} \PY{l+m+mf}{0.952}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.605}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.996}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.303}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.609}\PY{p}{,} \PY{l+m+mf}{0.307}\PY{p}{,} \PY{l+m+mf}{0.777}\PY{p}{,} \PY{l+m+mf}{0.895}\PY{p}{,} \PY{l+m+mf}{0.959}\PY{p}{,} \PY{l+m+mf}{0.980}\PY{p}{,} \PY{l+m+mf}{0.990}\PY{p}{,} \PY{l+m+mf}{0.995}\PY{p}{,} \PY{l+m+mf}{0.999}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.553}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.989}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.311}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.627}\PY{p}{,} \PY{l+m+mf}{0.294}\PY{p}{,} \PY{l+m+mf}{0.788}\PY{p}{,} \PY{l+m+mf}{0.920}\PY{p}{,} \PY{l+m+mf}{0.997}\PY{p}{,} \PY{l+m+mf}{1.023}\PY{p}{,} \PY{l+m+mf}{1.037}\PY{p}{,} \PY{l+m+mf}{1.044}\PY{p}{,} \PY{l+m+mf}{1.051}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.499}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.981}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.318}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.643}\PY{p}{,} \PY{l+m+mf}{0.282}\PY{p}{,} \PY{l+m+mf}{0.799}\PY{p}{,} \PY{l+m+mf}{0.945}\PY{p}{,} \PY{l+m+mf}{1.035}\PY{p}{,} \PY{l+m+mf}{1.069}\PY{p}{,} \PY{l+m+mf}{1.087}\PY{p}{,} \PY{l+m+mf}{1.097}\PY{p}{,} \PY{l+m+mf}{1.107}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.444}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.972}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.324}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.660}\PY{p}{,} \PY{l+m+mf}{0.268}\PY{p}{,} \PY{l+m+mf}{0.808}\PY{p}{,} \PY{l+m+mf}{0.970}\PY{p}{,} \PY{l+m+mf}{1.075}\PY{p}{,} \PY{l+m+mf}{1.116}\PY{p}{,} \PY{l+m+mf}{1.140}\PY{p}{,} \PY{l+m+mf}{1.155}\PY{p}{,} \PY{l+m+mf}{1.170}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.388}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.962}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.329}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.675}\PY{p}{,} \PY{l+m+mf}{0.254}\PY{p}{,} \PY{l+m+mf}{0.817}\PY{p}{,} \PY{l+m+mf}{0.994}\PY{p}{,} \PY{l+m+mf}{1.116}\PY{p}{,} \PY{l+m+mf}{1.166}\PY{p}{,} \PY{l+m+mf}{1.197}\PY{p}{,} \PY{l+m+mf}{1.216}\PY{p}{,} \PY{l+m+mf}{1.238}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.330}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.951}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.333}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.691}\PY{p}{,} \PY{l+m+mf}{0.240}\PY{p}{,} \PY{l+m+mf}{0.825}\PY{p}{,} \PY{l+m+mf}{1.018}\PY{p}{,} \PY{l+m+mf}{1.157}\PY{p}{,} \PY{l+m+mf}{1.217}\PY{p}{,} \PY{l+m+mf}{1.256}\PY{p}{,} \PY{l+m+mf}{1.282}\PY{p}{,} \PY{l+m+mf}{1.313}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.271}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.938}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.337}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.705}\PY{p}{,} \PY{l+m+mf}{0.225}\PY{p}{,} \PY{l+m+mf}{0.832}\PY{p}{,} \PY{l+m+mf}{1.041}\PY{p}{,} \PY{l+m+mf}{1.198}\PY{p}{,} \PY{l+m+mf}{1.270}\PY{p}{,} \PY{l+m+mf}{1.318}\PY{p}{,} \PY{l+m+mf}{1.351}\PY{p}{,} \PY{l+m+mf}{1.394}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.211}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.925}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.339}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.719}\PY{p}{,} \PY{l+m+mf}{0.210}\PY{p}{,} \PY{l+m+mf}{0.838}\PY{p}{,} \PY{l+m+mf}{1.064}\PY{p}{,} \PY{l+m+mf}{1.240}\PY{p}{,} \PY{l+m+mf}{1.324}\PY{p}{,} \PY{l+m+mf}{1.383}\PY{p}{,} \PY{l+m+mf}{1.424}\PY{p}{,} \PY{l+m+mf}{1.482}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.149}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.910}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.340}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.733}\PY{p}{,} \PY{l+m+mf}{0.195}\PY{p}{,} \PY{l+m+mf}{0.844}\PY{p}{,} \PY{l+m+mf}{1.086}\PY{p}{,} \PY{l+m+mf}{1.282}\PY{p}{,} \PY{l+m+mf}{1.379}\PY{p}{,} \PY{l+m+mf}{1.449}\PY{p}{,} \PY{l+m+mf}{1.501}\PY{p}{,} \PY{l+m+mf}{1.577}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.087}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.894}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.341}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.745}\PY{p}{,} \PY{l+m+mf}{0.180}\PY{p}{,} \PY{l+m+mf}{0.848}\PY{p}{,} \PY{l+m+mf}{1.107}\PY{p}{,} \PY{l+m+mf}{1.324}\PY{p}{,} \PY{l+m+mf}{1.435}\PY{p}{,} \PY{l+m+mf}{1.518}\PY{p}{,} \PY{l+m+mf}{1.581}\PY{p}{,} \PY{l+m+mf}{1.678}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.023}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.877}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.340}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.758}\PY{p}{,} \PY{l+m+mf}{0.164}\PY{p}{,} \PY{l+m+mf}{0.852}\PY{p}{,} \PY{l+m+mf}{1.128}\PY{p}{,} \PY{l+m+mf}{1.366}\PY{p}{,} \PY{l+m+mf}{1.492}\PY{p}{,} \PY{l+m+mf}{1.588}\PY{p}{,} \PY{l+m+mf}{1.664}\PY{p}{,} \PY{l+m+mf}{1.786}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.957}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.859}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.339}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.769}\PY{p}{,} \PY{l+m+mf}{0.148}\PY{p}{,} \PY{l+m+mf}{0.854}\PY{p}{,} \PY{l+m+mf}{1.147}\PY{p}{,} \PY{l+m+mf}{1.407}\PY{p}{,} \PY{l+m+mf}{1.549}\PY{p}{,} \PY{l+m+mf}{1.660}\PY{p}{,} \PY{l+m+mf}{1.749}\PY{p}{,} \PY{l+m+mf}{1.899}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.891}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.839}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.336}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.780}\PY{p}{,} \PY{l+m+mf}{0.132}\PY{p}{,} \PY{l+m+mf}{0.856}\PY{p}{,} \PY{l+m+mf}{1.166}\PY{p}{,} \PY{l+m+mf}{1.448}\PY{p}{,} \PY{l+m+mf}{1.606}\PY{p}{,} \PY{l+m+mf}{1.733}\PY{p}{,} \PY{l+m+mf}{1.837}\PY{p}{,} \PY{l+m+mf}{2.017}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.824}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.819}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.333}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.790}\PY{p}{,} \PY{l+m+mf}{0.116}\PY{p}{,} \PY{l+m+mf}{0.857}\PY{p}{,} \PY{l+m+mf}{1.183}\PY{p}{,} \PY{l+m+mf}{1.489}\PY{p}{,} \PY{l+m+mf}{1.663}\PY{p}{,} \PY{l+m+mf}{1.806}\PY{p}{,} \PY{l+m+mf}{1.926}\PY{p}{,} \PY{l+m+mf}{2.141}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.755}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.797}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.329}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.800}\PY{p}{,} \PY{l+m+mf}{0.099}\PY{p}{,} \PY{l+m+mf}{0.857}\PY{p}{,} \PY{l+m+mf}{1.200}\PY{p}{,} \PY{l+m+mf}{1.528}\PY{p}{,} \PY{l+m+mf}{1.720}\PY{p}{,} \PY{l+m+mf}{1.880}\PY{p}{,} \PY{l+m+mf}{2.016}\PY{p}{,} \PY{l+m+mf}{2.268}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.686}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.774}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.323}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.808}\PY{p}{,} \PY{l+m+mf}{0.083}\PY{p}{,} \PY{l+m+mf}{0.857}\PY{p}{,} \PY{l+m+mf}{1.216}\PY{p}{,} \PY{l+m+mf}{1.567}\PY{p}{,} \PY{l+m+mf}{1.777}\PY{p}{,} \PY{l+m+mf}{1.955}\PY{p}{,} \PY{l+m+mf}{2.108}\PY{p}{,} \PY{l+m+mf}{2.399}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.615}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.750}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.317}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.816}\PY{p}{,} \PY{l+m+mf}{0.067}\PY{p}{,} \PY{l+m+mf}{0.855}\PY{p}{,} \PY{l+m+mf}{1.231}\PY{p}{,} \PY{l+m+mf}{1.606}\PY{p}{,} \PY{l+m+mf}{1.834}\PY{p}{,} \PY{l+m+mf}{2.029}\PY{p}{,} \PY{l+m+mf}{2.201}\PY{p}{,} \PY{l+m+mf}{2.533}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.544}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.726}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.309}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.824}\PY{p}{,} \PY{l+m+mf}{0.050}\PY{p}{,} \PY{l+m+mf}{0.853}\PY{p}{,} \PY{l+m+mf}{1.245}\PY{p}{,} \PY{l+m+mf}{1.643}\PY{p}{,} \PY{l+m+mf}{1.890}\PY{p}{,} \PY{l+m+mf}{2.104}\PY{p}{,} \PY{l+m+mf}{2.294}\PY{p}{,} \PY{l+m+mf}{2.669}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.472}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.700}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.301}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.830}\PY{p}{,} \PY{l+m+mf}{0.033}\PY{p}{,} \PY{l+m+mf}{0.850}\PY{p}{,} \PY{l+m+mf}{1.258}\PY{p}{,} \PY{l+m+mf}{1.680}\PY{p}{,} \PY{l+m+mf}{1.945}\PY{p}{,} \PY{l+m+mf}{2.178}\PY{p}{,} \PY{l+m+mf}{2.388}\PY{p}{,} \PY{l+m+mf}{2.808}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.400}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.673}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.292}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.836}\PY{p}{,} \PY{l+m+mf}{0.017}\PY{p}{,} \PY{l+m+mf}{0.846}\PY{p}{,} \PY{l+m+mf}{1.270}\PY{p}{,} \PY{l+m+mf}{1.716}\PY{p}{,} \PY{l+m+mf}{2.000}\PY{p}{,} \PY{l+m+mf}{2.253}\PY{p}{,} \PY{l+m+mf}{2.482}\PY{p}{,} \PY{l+m+mf}{2.948}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.326}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.645}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.282}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.842}\PY{p}{,} \PY{l+m+mf}{0.000}\PY{p}{,} \PY{l+m+mf}{0.842}\PY{p}{,} \PY{l+m+mf}{1.282}\PY{p}{,} \PY{l+m+mf}{1.751}\PY{p}{,} \PY{l+m+mf}{2.054}\PY{p}{,} \PY{l+m+mf}{2.326}\PY{p}{,} \PY{l+m+mf}{2.576}\PY{p}{,} \PY{l+m+mf}{3.090}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.253}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.616}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.270}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.846}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.017}\PY{p}{,} \PY{l+m+mf}{0.836}\PY{p}{,} \PY{l+m+mf}{1.292}\PY{p}{,} \PY{l+m+mf}{1.785}\PY{p}{,} \PY{l+m+mf}{2.107}\PY{p}{,} \PY{l+m+mf}{2.400}\PY{p}{,} \PY{l+m+mf}{2.670}\PY{p}{,} \PY{l+m+mf}{3.233}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.178}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.586}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.258}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.850}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.033}\PY{p}{,} \PY{l+m+mf}{0.830}\PY{p}{,} \PY{l+m+mf}{1.301}\PY{p}{,} \PY{l+m+mf}{1.818}\PY{p}{,} \PY{l+m+mf}{2.159}\PY{p}{,} \PY{l+m+mf}{2.472}\PY{p}{,} \PY{l+m+mf}{2.763}\PY{p}{,} \PY{l+m+mf}{3.377}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.104}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.555}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.245}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.853}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.050}\PY{p}{,} \PY{l+m+mf}{0.824}\PY{p}{,} \PY{l+m+mf}{1.309}\PY{p}{,} \PY{l+m+mf}{1.849}\PY{p}{,} \PY{l+m+mf}{2.211}\PY{p}{,} \PY{l+m+mf}{2.544}\PY{p}{,} \PY{l+m+mf}{2.856}\PY{p}{,} \PY{l+m+mf}{3.521}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.029}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.524}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.231}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.855}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.067}\PY{p}{,} \PY{l+m+mf}{0.816}\PY{p}{,} \PY{l+m+mf}{1.317}\PY{p}{,} \PY{l+m+mf}{1.880}\PY{p}{,} \PY{l+m+mf}{2.261}\PY{p}{,} \PY{l+m+mf}{2.615}\PY{p}{,} \PY{l+m+mf}{2.949}\PY{p}{,} \PY{l+m+mf}{3.666}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.955}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.491}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.216}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.857}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.083}\PY{p}{,} \PY{l+m+mf}{0.808}\PY{p}{,} \PY{l+m+mf}{1.323}\PY{p}{,} \PY{l+m+mf}{1.910}\PY{p}{,} \PY{l+m+mf}{2.311}\PY{p}{,} \PY{l+m+mf}{2.686}\PY{p}{,} \PY{l+m+mf}{3.041}\PY{p}{,} \PY{l+m+mf}{3.811}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.880}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.458}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.200}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.857}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.099}\PY{p}{,} \PY{l+m+mf}{0.800}\PY{p}{,} \PY{l+m+mf}{1.329}\PY{p}{,} \PY{l+m+mf}{1.939}\PY{p}{,} \PY{l+m+mf}{2.359}\PY{p}{,} \PY{l+m+mf}{2.755}\PY{p}{,} \PY{l+m+mf}{3.132}\PY{p}{,} \PY{l+m+mf}{3.956}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.806}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.423}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.183}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.857}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.116}\PY{p}{,} \PY{l+m+mf}{0.790}\PY{p}{,} \PY{l+m+mf}{1.333}\PY{p}{,} \PY{l+m+mf}{1.967}\PY{p}{,} \PY{l+m+mf}{2.407}\PY{p}{,} \PY{l+m+mf}{2.824}\PY{p}{,} \PY{l+m+mf}{3.223}\PY{p}{,} \PY{l+m+mf}{4.100}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.733}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.389}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.166}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.856}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.132}\PY{p}{,} \PY{l+m+mf}{0.780}\PY{p}{,} \PY{l+m+mf}{1.336}\PY{p}{,} \PY{l+m+mf}{1.993}\PY{p}{,} \PY{l+m+mf}{2.453}\PY{p}{,} \PY{l+m+mf}{2.891}\PY{p}{,} \PY{l+m+mf}{3.312}\PY{p}{,} \PY{l+m+mf}{4.244}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.660}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.353}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.147}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.854}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.148}\PY{p}{,} \PY{l+m+mf}{0.769}\PY{p}{,} \PY{l+m+mf}{1.339}\PY{p}{,} \PY{l+m+mf}{2.018}\PY{p}{,} \PY{l+m+mf}{2.498}\PY{p}{,} \PY{l+m+mf}{2.957}\PY{p}{,} \PY{l+m+mf}{3.401}\PY{p}{,} \PY{l+m+mf}{4.388}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.588}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.317}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.128}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.852}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.164}\PY{p}{,} \PY{l+m+mf}{0.758}\PY{p}{,} \PY{l+m+mf}{1.340}\PY{p}{,} \PY{l+m+mf}{2.043}\PY{p}{,} \PY{l+m+mf}{2.542}\PY{p}{,} \PY{l+m+mf}{3.023}\PY{p}{,} \PY{l+m+mf}{3.489}\PY{p}{,} \PY{l+m+mf}{4.531}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.518}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.280}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.107}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.848}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.180}\PY{p}{,} \PY{l+m+mf}{0.745}\PY{p}{,} \PY{l+m+mf}{1.341}\PY{p}{,} \PY{l+m+mf}{2.066}\PY{p}{,} \PY{l+m+mf}{2.585}\PY{p}{,} \PY{l+m+mf}{3.087}\PY{p}{,} \PY{l+m+mf}{3.575}\PY{p}{,} \PY{l+m+mf}{4.673}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.449}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.243}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.086}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.844}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.195}\PY{p}{,} \PY{l+m+mf}{0.733}\PY{p}{,} \PY{l+m+mf}{1.340}\PY{p}{,} \PY{l+m+mf}{2.088}\PY{p}{,} \PY{l+m+mf}{2.626}\PY{p}{,} \PY{l+m+mf}{3.149}\PY{p}{,} \PY{l+m+mf}{3.661}\PY{p}{,} \PY{l+m+mf}{4.815}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.383}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.206}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.064}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.838}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.210}\PY{p}{,} \PY{l+m+mf}{0.719}\PY{p}{,} \PY{l+m+mf}{1.339}\PY{p}{,} \PY{l+m+mf}{2.108}\PY{p}{,} \PY{l+m+mf}{2.667}\PY{p}{,} \PY{l+m+mf}{3.211}\PY{p}{,} \PY{l+m+mf}{3.745}\PY{p}{,} \PY{l+m+mf}{4.955}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.318}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.168}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.041}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.832}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.225}\PY{p}{,} \PY{l+m+mf}{0.705}\PY{p}{,} \PY{l+m+mf}{1.337}\PY{p}{,} \PY{l+m+mf}{2.128}\PY{p}{,} \PY{l+m+mf}{2.706}\PY{p}{,} \PY{l+m+mf}{3.271}\PY{p}{,} \PY{l+m+mf}{3.828}\PY{p}{,} \PY{l+m+mf}{5.095}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.256}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.131}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.018}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.825}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.240}\PY{p}{,} \PY{l+m+mf}{0.691}\PY{p}{,} \PY{l+m+mf}{1.333}\PY{p}{,} \PY{l+m+mf}{2.146}\PY{p}{,} \PY{l+m+mf}{2.743}\PY{p}{,} \PY{l+m+mf}{3.330}\PY{p}{,} \PY{l+m+mf}{3.910}\PY{p}{,} \PY{l+m+mf}{5.234}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.197}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.093}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.994}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.817}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.254}\PY{p}{,} \PY{l+m+mf}{0.675}\PY{p}{,} \PY{l+m+mf}{1.329}\PY{p}{,} \PY{l+m+mf}{2.163}\PY{p}{,} \PY{l+m+mf}{2.780}\PY{p}{,} \PY{l+m+mf}{3.388}\PY{p}{,} \PY{l+m+mf}{3.990}\PY{p}{,} \PY{l+m+mf}{5.371}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.140}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.056}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.970}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.808}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.268}\PY{p}{,} \PY{l+m+mf}{0.660}\PY{p}{,} \PY{l+m+mf}{1.324}\PY{p}{,} \PY{l+m+mf}{2.179}\PY{p}{,} \PY{l+m+mf}{2.815}\PY{p}{,} \PY{l+m+mf}{3.444}\PY{p}{,} \PY{l+m+mf}{4.069}\PY{p}{,} \PY{l+m+mf}{5.507}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.087}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.020}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.945}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.799}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.282}\PY{p}{,} \PY{l+m+mf}{0.643}\PY{p}{,} \PY{l+m+mf}{1.318}\PY{p}{,} \PY{l+m+mf}{2.193}\PY{p}{,} \PY{l+m+mf}{2.848}\PY{p}{,} \PY{l+m+mf}{3.499}\PY{p}{,} \PY{l+m+mf}{4.147}\PY{p}{,} \PY{l+m+mf}{5.642}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.037}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.984}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.920}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.788}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.294}\PY{p}{,} \PY{l+m+mf}{0.627}\PY{p}{,} \PY{l+m+mf}{1.311}\PY{p}{,} \PY{l+m+mf}{2.207}\PY{p}{,} \PY{l+m+mf}{2.881}\PY{p}{,} \PY{l+m+mf}{3.553}\PY{p}{,} \PY{l+m+mf}{4.223}\PY{p}{,} \PY{l+m+mf}{5.775}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.990}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.949}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.895}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.777}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.307}\PY{p}{,} \PY{l+m+mf}{0.609}\PY{p}{,} \PY{l+m+mf}{1.303}\PY{p}{,} \PY{l+m+mf}{2.219}\PY{p}{,} \PY{l+m+mf}{2.912}\PY{p}{,} \PY{l+m+mf}{3.605}\PY{p}{,} \PY{l+m+mf}{4.298}\PY{p}{,} \PY{l+m+mf}{5.908}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.946}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.915}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.869}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.765}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.319}\PY{p}{,} \PY{l+m+mf}{0.592}\PY{p}{,} \PY{l+m+mf}{1.294}\PY{p}{,} \PY{l+m+mf}{2.230}\PY{p}{,} \PY{l+m+mf}{2.942}\PY{p}{,} \PY{l+m+mf}{3.656}\PY{p}{,} \PY{l+m+mf}{4.372}\PY{p}{,} \PY{l+m+mf}{6.039}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.905}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.882}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.844}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.752}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.330}\PY{p}{,} \PY{l+m+mf}{0.574}\PY{p}{,} \PY{l+m+mf}{1.284}\PY{p}{,} \PY{l+m+mf}{2.240}\PY{p}{,} \PY{l+m+mf}{2.970}\PY{p}{,} \PY{l+m+mf}{3.705}\PY{p}{,} \PY{l+m+mf}{4.444}\PY{p}{,} \PY{l+m+mf}{6.168}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.867}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.850}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.819}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.739}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.341}\PY{p}{,} \PY{l+m+mf}{0.555}\PY{p}{,} \PY{l+m+mf}{1.274}\PY{p}{,} \PY{l+m+mf}{2.248}\PY{p}{,} \PY{l+m+mf}{2.997}\PY{p}{,} \PY{l+m+mf}{3.753}\PY{p}{,} \PY{l+m+mf}{4.515}\PY{p}{,} \PY{l+m+mf}{6.296}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.832}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.819}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.795}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.725}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.351}\PY{p}{,} \PY{l+m+mf}{0.537}\PY{p}{,} \PY{l+m+mf}{1.262}\PY{p}{,} \PY{l+m+mf}{2.256}\PY{p}{,} \PY{l+m+mf}{3.023}\PY{p}{,} \PY{l+m+mf}{3.800}\PY{p}{,} \PY{l+m+mf}{4.584}\PY{p}{,} \PY{l+m+mf}{6.423}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.799}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.790}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.771}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.711}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.360}\PY{p}{,} \PY{l+m+mf}{0.518}\PY{p}{,} \PY{l+m+mf}{1.250}\PY{p}{,} \PY{l+m+mf}{2.262}\PY{p}{,} \PY{l+m+mf}{3.048}\PY{p}{,} \PY{l+m+mf}{3.845}\PY{p}{,} \PY{l+m+mf}{4.652}\PY{p}{,} \PY{l+m+mf}{6.548}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.769}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.762}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.747}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.696}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.369}\PY{p}{,} \PY{l+m+mf}{0.499}\PY{p}{,} \PY{l+m+mf}{1.238}\PY{p}{,} \PY{l+m+mf}{2.267}\PY{p}{,} \PY{l+m+mf}{3.071}\PY{p}{,} \PY{l+m+mf}{3.889}\PY{p}{,} \PY{l+m+mf}{4.718}\PY{p}{,} \PY{l+m+mf}{6.672}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.740}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.736}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.724}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.681}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.376}\PY{p}{,} \PY{l+m+mf}{0.479}\PY{p}{,} \PY{l+m+mf}{1.224}\PY{p}{,} \PY{l+m+mf}{2.272}\PY{p}{,} \PY{l+m+mf}{3.093}\PY{p}{,} \PY{l+m+mf}{3.932}\PY{p}{,} \PY{l+m+mf}{4.783}\PY{p}{,} \PY{l+m+mf}{6.794}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.714}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.711}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.702}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.666}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.384}\PY{p}{,} \PY{l+m+mf}{0.460}\PY{p}{,} \PY{l+m+mf}{1.210}\PY{p}{,} \PY{l+m+mf}{2.275}\PY{p}{,} \PY{l+m+mf}{3.114}\PY{p}{,} \PY{l+m+mf}{3.973}\PY{p}{,} \PY{l+m+mf}{4.847}\PY{p}{,} \PY{l+m+mf}{6.915}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.690}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.688}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.681}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.651}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.390}\PY{p}{,} \PY{l+m+mf}{0.440}\PY{p}{,} \PY{l+m+mf}{1.195}\PY{p}{,} \PY{l+m+mf}{2.277}\PY{p}{,} \PY{l+m+mf}{3.134}\PY{p}{,} \PY{l+m+mf}{4.013}\PY{p}{,} \PY{l+m+mf}{4.909}\PY{p}{,} \PY{l+m+mf}{7.034}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.667}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.665}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.660}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.636}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.396}\PY{p}{,} \PY{l+m+mf}{0.420}\PY{p}{,} \PY{l+m+mf}{1.180}\PY{p}{,} \PY{l+m+mf}{2.278}\PY{p}{,} \PY{l+m+mf}{3.152}\PY{p}{,} \PY{l+m+mf}{4.051}\PY{p}{,} \PY{l+m+mf}{4.970}\PY{p}{,} \PY{l+m+mf}{7.152}\PY{p}{]}
+\PY{p}{]}
+
+\PY{n}{\PYZus{}INDEX\PYZus{}ST} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{30}\PY{p}{,} \PY{l+m+mi}{31}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{10}
+
+\PY{n}{\PYZus{}COL\PYZus{}ST} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{99}\PY{p}{,} \PY{l+m+mi}{95}\PY{p}{,} \PY{l+m+mi}{90}\PY{p}{,} \PY{l+m+mi}{80}\PY{p}{,} \PY{l+m+mi}{50}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mf}{0.5}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{p}{]}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{100}
+
+\PY{n}{t\PYZus{}pearson3\PYZus{}st} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{\PYZus{}DATA\PYZus{}ST}\PY{p}{,} \PY{n}{index}\PY{o}{=}\PY{n}{\PYZus{}INDEX\PYZus{}ST}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{n}{\PYZus{}COL\PYZus{}ST}\PY{p}{)}
+\PY{n}{t\PYZus{}pearson3\PYZus{}st}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+      0.990  0.950  0.900  0.800  0.500  0.200  0.100  0.040  0.020  0.010  \textbackslash{}
+-3.0 -4.051 -2.003 -1.180 -0.420  0.396  0.636  0.660  0.666  0.666  0.667
+-2.9 -4.013 -2.007 -1.195 -0.440  0.390  0.651  0.681  0.688  0.689  0.690
+-2.8 -3.973 -2.010 -1.210 -0.460  0.384  0.666  0.702  0.712  0.714  0.714
+-2.7 -3.932 -2.012 -1.224 -0.479  0.376  0.681  0.724  0.738  0.740  0.740
+-2.6 -3.889 -2.013 -1.238 -0.499  0.369  0.696  0.747  0.765  0.768  0.769
+{\ldots}     {\ldots}    {\ldots}    {\ldots}    {\ldots}    {\ldots}    {\ldots}    {\ldots}    {\ldots}    {\ldots}    {\ldots}
+ 2.6 -0.769 -0.762 -0.747 -0.696 -0.369  0.499  1.238  2.267  3.071  3.889
+ 2.7 -0.740 -0.736 -0.724 -0.681 -0.376  0.479  1.224  2.272  3.093  3.932
+ 2.8 -0.714 -0.711 -0.702 -0.666 -0.384  0.460  1.210  2.275  3.114  3.973
+ 2.9 -0.690 -0.688 -0.681 -0.651 -0.390  0.440  1.195  2.277  3.134  4.013
+ 3.0 -0.667 -0.665 -0.660 -0.636 -0.396  0.420  1.180  2.278  3.152  4.051
+
+      0.005  0.001
+-3.0  0.667  0.667
+-2.9  0.690  0.690
+-2.8  0.714  0.714
+-2.7  0.741  0.741
+-2.6  0.769  0.769
+{\ldots}     {\ldots}    {\ldots}
+ 2.6  4.718  6.672
+ 2.7  4.783  6.794
+ 2.8  4.847  6.915
+ 2.9  4.909  7.034
+ 3.0  4.970  7.152
+
+[61 rows x 12 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Dari buku Limantara hal. 107\PYZhy{}109}
+\PY{c+c1}{\PYZsh{} Tabel Distribsi log Pearson Tipe III Nilai G}
+\PY{c+c1}{\PYZsh{} Untuk Cs Positif \PYZam{} Negatif}
+
+\PY{c+c1}{\PYZsh{} KODE: LM}
+
+\PY{n}{\PYZus{}DATA\PYZus{}LM} \PY{o}{=} \PY{p}{[}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.667}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.665}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.660}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.636}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.396}\PY{p}{,} \PY{l+m+mf}{0.420}\PY{p}{,} \PY{l+m+mf}{1.180}\PY{p}{,} \PY{l+m+mf}{2.278}\PY{p}{,} \PY{l+m+mf}{3.152}\PY{p}{,} \PY{l+m+mf}{4.061}\PY{p}{,} \PY{l+m+mf}{4.970}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.690}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.688}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.681}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.651}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.390}\PY{p}{,} \PY{l+m+mf}{0.440}\PY{p}{,} \PY{l+m+mf}{1.196}\PY{p}{,} \PY{l+m+mf}{2.277}\PY{p}{,} \PY{l+m+mf}{3.134}\PY{p}{,} \PY{l+m+mf}{4.013}\PY{p}{,} \PY{l+m+mf}{4.909}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.714}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.711}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.702}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.666}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.384}\PY{p}{,} \PY{l+m+mf}{0.460}\PY{p}{,} \PY{l+m+mf}{1.210}\PY{p}{,} \PY{l+m+mf}{2.275}\PY{p}{,} \PY{l+m+mf}{3.114}\PY{p}{,} \PY{l+m+mf}{3.973}\PY{p}{,} \PY{l+m+mf}{4.847}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.740}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.736}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.724}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.681}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.376}\PY{p}{,} \PY{l+m+mf}{0.479}\PY{p}{,} \PY{l+m+mf}{1.224}\PY{p}{,} \PY{l+m+mf}{2.272}\PY{p}{,} \PY{l+m+mf}{3.097}\PY{p}{,} \PY{l+m+mf}{3.932}\PY{p}{,} \PY{l+m+mf}{4.783}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.769}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.762}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.747}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.695}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.368}\PY{p}{,} \PY{l+m+mf}{0.499}\PY{p}{,} \PY{l+m+mf}{1.238}\PY{p}{,} \PY{l+m+mf}{2.267}\PY{p}{,} \PY{l+m+mf}{3.071}\PY{p}{,} \PY{l+m+mf}{3.889}\PY{p}{,} \PY{l+m+mf}{4.718}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.799}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.790}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.771}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.711}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.360}\PY{p}{,} \PY{l+m+mf}{0.518}\PY{p}{,} \PY{l+m+mf}{1.250}\PY{p}{,} \PY{l+m+mf}{2.262}\PY{p}{,} \PY{l+m+mf}{3.048}\PY{p}{,} \PY{l+m+mf}{3.845}\PY{p}{,} \PY{l+m+mf}{4.652}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.832}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.819}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.795}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.725}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.351}\PY{p}{,} \PY{l+m+mf}{0.537}\PY{p}{,} \PY{l+m+mf}{1.262}\PY{p}{,} \PY{l+m+mf}{2.256}\PY{p}{,} \PY{l+m+mf}{3.029}\PY{p}{,} \PY{l+m+mf}{3.800}\PY{p}{,} \PY{l+m+mf}{4.584}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.867}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.850}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.819}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.739}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.341}\PY{p}{,} \PY{l+m+mf}{0.555}\PY{p}{,} \PY{l+m+mf}{1.274}\PY{p}{,} \PY{l+m+mf}{2.248}\PY{p}{,} \PY{l+m+mf}{2.997}\PY{p}{,} \PY{l+m+mf}{3.753}\PY{p}{,} \PY{l+m+mf}{4.515}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.905}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.882}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.844}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.752}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.330}\PY{p}{,} \PY{l+m+mf}{0.574}\PY{p}{,} \PY{l+m+mf}{1.284}\PY{p}{,} \PY{l+m+mf}{2.240}\PY{p}{,} \PY{l+m+mf}{2.970}\PY{p}{,} \PY{l+m+mf}{3.705}\PY{p}{,} \PY{l+m+mf}{4.454}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.946}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.914}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.869}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.765}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.319}\PY{p}{,} \PY{l+m+mf}{0.592}\PY{p}{,} \PY{l+m+mf}{1.294}\PY{p}{,} \PY{l+m+mf}{2.230}\PY{p}{,} \PY{l+m+mf}{2.942}\PY{p}{,} \PY{l+m+mf}{3.656}\PY{p}{,} \PY{l+m+mf}{4.372}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.990}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.949}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.896}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.777}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.307}\PY{p}{,} \PY{l+m+mf}{0.609}\PY{p}{,} \PY{l+m+mf}{1.302}\PY{p}{,} \PY{l+m+mf}{2.219}\PY{p}{,} \PY{l+m+mf}{2.912}\PY{p}{,} \PY{l+m+mf}{3.605}\PY{p}{,} \PY{l+m+mf}{4.298}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.037}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.984}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.920}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.788}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.294}\PY{p}{,} \PY{l+m+mf}{0.627}\PY{p}{,} \PY{l+m+mf}{1.310}\PY{p}{,} \PY{l+m+mf}{2.207}\PY{p}{,} \PY{l+m+mf}{2.881}\PY{p}{,} \PY{l+m+mf}{3.553}\PY{p}{,} \PY{l+m+mf}{4.223}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.087}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.020}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.945}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.799}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.282}\PY{p}{,} \PY{l+m+mf}{0.643}\PY{p}{,} \PY{l+m+mf}{1.318}\PY{p}{,} \PY{l+m+mf}{2.193}\PY{p}{,} \PY{l+m+mf}{2.848}\PY{p}{,} \PY{l+m+mf}{3.499}\PY{p}{,} \PY{l+m+mf}{4.147}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.140}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.056}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.970}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.808}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.268}\PY{p}{,} \PY{l+m+mf}{0.660}\PY{p}{,} \PY{l+m+mf}{1.324}\PY{p}{,} \PY{l+m+mf}{2.179}\PY{p}{,} \PY{l+m+mf}{2.815}\PY{p}{,} \PY{l+m+mf}{3.444}\PY{p}{,} \PY{l+m+mf}{4.069}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.197}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.093}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.994}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.817}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.254}\PY{p}{,} \PY{l+m+mf}{0.675}\PY{p}{,} \PY{l+m+mf}{1.329}\PY{p}{,} \PY{l+m+mf}{2.163}\PY{p}{,} \PY{l+m+mf}{2.780}\PY{p}{,} \PY{l+m+mf}{3.388}\PY{p}{,} \PY{l+m+mf}{3.990}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.256}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.131}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.018}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.825}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.240}\PY{p}{,} \PY{l+m+mf}{0.690}\PY{p}{,} \PY{l+m+mf}{1.333}\PY{p}{,} \PY{l+m+mf}{2.146}\PY{p}{,} \PY{l+m+mf}{2.745}\PY{p}{,} \PY{l+m+mf}{3.330}\PY{p}{,} \PY{l+m+mf}{3.910}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.318}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.163}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.041}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.832}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.225}\PY{p}{,} \PY{l+m+mf}{0.705}\PY{p}{,} \PY{l+m+mf}{1.337}\PY{p}{,} \PY{l+m+mf}{2.128}\PY{p}{,} \PY{l+m+mf}{2.706}\PY{p}{,} \PY{l+m+mf}{3.271}\PY{p}{,} \PY{l+m+mf}{3.828}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.388}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.206}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.064}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.838}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.210}\PY{p}{,} \PY{l+m+mf}{0.719}\PY{p}{,} \PY{l+m+mf}{1.339}\PY{p}{,} \PY{l+m+mf}{2.108}\PY{p}{,} \PY{l+m+mf}{2.666}\PY{p}{,} \PY{l+m+mf}{3.211}\PY{p}{,} \PY{l+m+mf}{3.745}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.449}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.243}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.086}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.844}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.195}\PY{p}{,} \PY{l+m+mf}{0.732}\PY{p}{,} \PY{l+m+mf}{1.340}\PY{p}{,} \PY{l+m+mf}{2.087}\PY{p}{,} \PY{l+m+mf}{2.626}\PY{p}{,} \PY{l+m+mf}{3.149}\PY{p}{,} \PY{l+m+mf}{3.661}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.518}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.280}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.107}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.848}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.180}\PY{p}{,} \PY{l+m+mf}{0.745}\PY{p}{,} \PY{l+m+mf}{1.341}\PY{p}{,} \PY{l+m+mf}{2.066}\PY{p}{,} \PY{l+m+mf}{2.585}\PY{p}{,} \PY{l+m+mf}{3.087}\PY{p}{,} \PY{l+m+mf}{3.575}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.588}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.317}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.128}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.852}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.164}\PY{p}{,} \PY{l+m+mf}{0.758}\PY{p}{,} \PY{l+m+mf}{1.340}\PY{p}{,} \PY{l+m+mf}{2.043}\PY{p}{,} \PY{l+m+mf}{2.542}\PY{p}{,} \PY{l+m+mf}{3.022}\PY{p}{,} \PY{l+m+mf}{3.489}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.660}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.353}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.147}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.854}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.148}\PY{p}{,} \PY{l+m+mf}{0.769}\PY{p}{,} \PY{l+m+mf}{1.339}\PY{p}{,} \PY{l+m+mf}{2.018}\PY{p}{,} \PY{l+m+mf}{2.498}\PY{p}{,} \PY{l+m+mf}{2.967}\PY{p}{,} \PY{l+m+mf}{3.401}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.733}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.388}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.166}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.856}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.132}\PY{p}{,} \PY{l+m+mf}{0.780}\PY{p}{,} \PY{l+m+mf}{1.336}\PY{p}{,} \PY{l+m+mf}{1.993}\PY{p}{,} \PY{l+m+mf}{2.453}\PY{p}{,} \PY{l+m+mf}{2.891}\PY{p}{,} \PY{l+m+mf}{3.312}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.806}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.423}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.183}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.857}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.116}\PY{p}{,} \PY{l+m+mf}{0.790}\PY{p}{,} \PY{l+m+mf}{1.333}\PY{p}{,} \PY{l+m+mf}{1.967}\PY{p}{,} \PY{l+m+mf}{2.407}\PY{p}{,} \PY{l+m+mf}{2.824}\PY{p}{,} \PY{l+m+mf}{3.223}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.880}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.458}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.200}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.857}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.099}\PY{p}{,} \PY{l+m+mf}{0.800}\PY{p}{,} \PY{l+m+mf}{1.328}\PY{p}{,} \PY{l+m+mf}{1.939}\PY{p}{,} \PY{l+m+mf}{2.359}\PY{p}{,} \PY{l+m+mf}{2.755}\PY{p}{,} \PY{l+m+mf}{3.123}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.965}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.491}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.216}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.856}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.083}\PY{p}{,} \PY{l+m+mf}{0.808}\PY{p}{,} \PY{l+m+mf}{1.323}\PY{p}{,} \PY{l+m+mf}{1.910}\PY{p}{,} \PY{l+m+mf}{2.311}\PY{p}{,} \PY{l+m+mf}{2.686}\PY{p}{,} \PY{l+m+mf}{3.041}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.029}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.524}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.231}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.855}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.066}\PY{p}{,} \PY{l+m+mf}{0.816}\PY{p}{,} \PY{l+m+mf}{1.317}\PY{p}{,} \PY{l+m+mf}{1.880}\PY{p}{,} \PY{l+m+mf}{2.261}\PY{p}{,} \PY{l+m+mf}{2.615}\PY{p}{,} \PY{l+m+mf}{2.949}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.104}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.555}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.245}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.853}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.050}\PY{p}{,} \PY{l+m+mf}{0.824}\PY{p}{,} \PY{l+m+mf}{1.309}\PY{p}{,} \PY{l+m+mf}{1.849}\PY{p}{,} \PY{l+m+mf}{2.211}\PY{p}{,} \PY{l+m+mf}{2.544}\PY{p}{,} \PY{l+m+mf}{2.856}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.175}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.586}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.258}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.850}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.033}\PY{p}{,} \PY{l+m+mf}{0.830}\PY{p}{,} \PY{l+m+mf}{1.301}\PY{p}{,} \PY{l+m+mf}{1.818}\PY{p}{,} \PY{l+m+mf}{2.159}\PY{p}{,} \PY{l+m+mf}{2.472}\PY{p}{,} \PY{l+m+mf}{2.763}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.225}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.616}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.270}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.846}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.017}\PY{p}{,} \PY{l+m+mf}{0.836}\PY{p}{,} \PY{l+m+mf}{1.292}\PY{p}{,} \PY{l+m+mf}{1.785}\PY{p}{,} \PY{l+m+mf}{2.107}\PY{p}{,} \PY{l+m+mf}{2.400}\PY{p}{,} \PY{l+m+mf}{2.670}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.326}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.645}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.282}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.842}\PY{p}{,} \PY{l+m+mf}{0.000}\PY{p}{,} \PY{l+m+mf}{0.842}\PY{p}{,} \PY{l+m+mf}{1.282}\PY{p}{,} \PY{l+m+mf}{1.751}\PY{p}{,} \PY{l+m+mf}{2.064}\PY{p}{,} \PY{l+m+mf}{2.064}\PY{p}{,} \PY{l+m+mf}{2.576}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.400}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.673}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.292}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.836}\PY{p}{,} \PY{l+m+mf}{0.017}\PY{p}{,} \PY{l+m+mf}{0.846}\PY{p}{,} \PY{l+m+mf}{1.270}\PY{p}{,} \PY{l+m+mf}{1.716}\PY{p}{,} \PY{l+m+mf}{2.000}\PY{p}{,} \PY{l+m+mf}{2.252}\PY{p}{,} \PY{l+m+mf}{2.482}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.472}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.700}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.301}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.830}\PY{p}{,} \PY{l+m+mf}{0.033}\PY{p}{,} \PY{l+m+mf}{0.850}\PY{p}{,} \PY{l+m+mf}{1.258}\PY{p}{,} \PY{l+m+mf}{1.680}\PY{p}{,} \PY{l+m+mf}{1.945}\PY{p}{,} \PY{l+m+mf}{2.178}\PY{p}{,} \PY{l+m+mf}{2.388}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.544}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.762}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.309}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.824}\PY{p}{,} \PY{l+m+mf}{0.050}\PY{p}{,} \PY{l+m+mf}{0.853}\PY{p}{,} \PY{l+m+mf}{1.245}\PY{p}{,} \PY{l+m+mf}{0.163}\PY{p}{,} \PY{l+m+mf}{1.890}\PY{p}{,} \PY{l+m+mf}{2.104}\PY{p}{,} \PY{l+m+mf}{2.294}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.615}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.750}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.317}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.816}\PY{p}{,} \PY{l+m+mf}{0.066}\PY{p}{,} \PY{l+m+mf}{0.855}\PY{p}{,} \PY{l+m+mf}{1.231}\PY{p}{,} \PY{l+m+mf}{1.606}\PY{p}{,} \PY{l+m+mf}{1.834}\PY{p}{,} \PY{l+m+mf}{2.029}\PY{p}{,} \PY{l+m+mf}{2.201}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.686}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.774}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.323}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.808}\PY{p}{,} \PY{l+m+mf}{0.083}\PY{p}{,} \PY{l+m+mf}{0.856}\PY{p}{,} \PY{l+m+mf}{1.216}\PY{p}{,} \PY{l+m+mf}{1.567}\PY{p}{,} \PY{l+m+mf}{1.777}\PY{p}{,} \PY{l+m+mf}{1.955}\PY{p}{,} \PY{l+m+mf}{2.108}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.755}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.797}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.328}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.800}\PY{p}{,} \PY{l+m+mf}{0.099}\PY{p}{,} \PY{l+m+mf}{0.857}\PY{p}{,} \PY{l+m+mf}{1.200}\PY{p}{,} \PY{l+m+mf}{1.528}\PY{p}{,} \PY{l+m+mf}{1.720}\PY{p}{,} \PY{l+m+mf}{1.880}\PY{p}{,} \PY{l+m+mf}{2.016}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.824}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.819}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.333}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.790}\PY{p}{,} \PY{l+m+mf}{0.116}\PY{p}{,} \PY{l+m+mf}{0.857}\PY{p}{,} \PY{l+m+mf}{1.183}\PY{p}{,} \PY{l+m+mf}{1.488}\PY{p}{,} \PY{l+m+mf}{1.633}\PY{p}{,} \PY{l+m+mf}{1.800}\PY{p}{,} \PY{l+m+mf}{1.936}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.891}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.839}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.336}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.780}\PY{p}{,} \PY{l+m+mf}{0.132}\PY{p}{,} \PY{l+m+mf}{0.856}\PY{p}{,} \PY{l+m+mf}{1.166}\PY{p}{,} \PY{l+m+mf}{1.484}\PY{p}{,} \PY{l+m+mf}{1.608}\PY{p}{,} \PY{l+m+mf}{1.733}\PY{p}{,} \PY{l+m+mf}{1.837}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.957}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.858}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.339}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.769}\PY{p}{,} \PY{l+m+mf}{0.148}\PY{p}{,} \PY{l+m+mf}{0.854}\PY{p}{,} \PY{l+m+mf}{1.147}\PY{p}{,} \PY{l+m+mf}{1.407}\PY{p}{,} \PY{l+m+mf}{1.549}\PY{p}{,} \PY{l+m+mf}{1.660}\PY{p}{,} \PY{l+m+mf}{1.749}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.022}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.877}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.340}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.758}\PY{p}{,} \PY{l+m+mf}{0.164}\PY{p}{,} \PY{l+m+mf}{0.852}\PY{p}{,} \PY{l+m+mf}{1.108}\PY{p}{,} \PY{l+m+mf}{1.366}\PY{p}{,} \PY{l+m+mf}{1.492}\PY{p}{,} \PY{l+m+mf}{1.588}\PY{p}{,} \PY{l+m+mf}{1.664}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.087}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.894}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.341}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.745}\PY{p}{,} \PY{l+m+mf}{0.180}\PY{p}{,} \PY{l+m+mf}{0.848}\PY{p}{,} \PY{l+m+mf}{1.107}\PY{p}{,} \PY{l+m+mf}{1.324}\PY{p}{,} \PY{l+m+mf}{1.435}\PY{p}{,} \PY{l+m+mf}{1.518}\PY{p}{,} \PY{l+m+mf}{1.581}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.149}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.910}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.340}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.732}\PY{p}{,} \PY{l+m+mf}{0.195}\PY{p}{,} \PY{l+m+mf}{0.844}\PY{p}{,} \PY{l+m+mf}{1.086}\PY{p}{,} \PY{l+m+mf}{1.282}\PY{p}{,} \PY{l+m+mf}{1.379}\PY{p}{,} \PY{l+m+mf}{1.449}\PY{p}{,} \PY{l+m+mf}{1.501}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.211}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.925}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.339}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.719}\PY{p}{,} \PY{l+m+mf}{0.210}\PY{p}{,} \PY{l+m+mf}{0.838}\PY{p}{,} \PY{l+m+mf}{1.064}\PY{p}{,} \PY{l+m+mf}{1.240}\PY{p}{,} \PY{l+m+mf}{1.324}\PY{p}{,} \PY{l+m+mf}{1.383}\PY{p}{,} \PY{l+m+mf}{1.424}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.271}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.938}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.337}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.705}\PY{p}{,} \PY{l+m+mf}{0.225}\PY{p}{,} \PY{l+m+mf}{0.832}\PY{p}{,} \PY{l+m+mf}{1.041}\PY{p}{,} \PY{l+m+mf}{1.196}\PY{p}{,} \PY{l+m+mf}{1.270}\PY{p}{,} \PY{l+m+mf}{1.316}\PY{p}{,} \PY{l+m+mf}{1.351}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.330}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.961}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.333}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.690}\PY{p}{,} \PY{l+m+mf}{0.240}\PY{p}{,} \PY{l+m+mf}{0.825}\PY{p}{,} \PY{l+m+mf}{1.018}\PY{p}{,} \PY{l+m+mf}{1.157}\PY{p}{,} \PY{l+m+mf}{1.217}\PY{p}{,} \PY{l+m+mf}{1.256}\PY{p}{,} \PY{l+m+mf}{1.282}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.388}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.962}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.329}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.675}\PY{p}{,} \PY{l+m+mf}{0.254}\PY{p}{,} \PY{l+m+mf}{0.817}\PY{p}{,} \PY{l+m+mf}{0.994}\PY{p}{,} \PY{l+m+mf}{1.116}\PY{p}{,} \PY{l+m+mf}{1.168}\PY{p}{,} \PY{l+m+mf}{1.197}\PY{p}{,} \PY{l+m+mf}{1.216}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.444}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.972}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.324}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.660}\PY{p}{,} \PY{l+m+mf}{0.268}\PY{p}{,} \PY{l+m+mf}{0.808}\PY{p}{,} \PY{l+m+mf}{0.970}\PY{p}{,} \PY{l+m+mf}{1.075}\PY{p}{,} \PY{l+m+mf}{1.116}\PY{p}{,} \PY{l+m+mf}{1.140}\PY{p}{,} \PY{l+m+mf}{1.155}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.499}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.981}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.318}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.643}\PY{p}{,} \PY{l+m+mf}{0.282}\PY{p}{,} \PY{l+m+mf}{0.799}\PY{p}{,} \PY{l+m+mf}{0.945}\PY{p}{,} \PY{l+m+mf}{1.035}\PY{p}{,} \PY{l+m+mf}{1.069}\PY{p}{,} \PY{l+m+mf}{1.087}\PY{p}{,} \PY{l+m+mf}{1.097}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.533}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.989}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.310}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.627}\PY{p}{,} \PY{l+m+mf}{0.294}\PY{p}{,} \PY{l+m+mf}{0.788}\PY{p}{,} \PY{l+m+mf}{0.920}\PY{p}{,} \PY{l+m+mf}{0.996}\PY{p}{,} \PY{l+m+mf}{1.023}\PY{p}{,} \PY{l+m+mf}{1.037}\PY{p}{,} \PY{l+m+mf}{1.044}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.605}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.996}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.302}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.609}\PY{p}{,} \PY{l+m+mf}{0.307}\PY{p}{,} \PY{l+m+mf}{0.777}\PY{p}{,} \PY{l+m+mf}{0.895}\PY{p}{,} \PY{l+m+mf}{0.969}\PY{p}{,} \PY{l+m+mf}{0.980}\PY{p}{,} \PY{l+m+mf}{0.990}\PY{p}{,} \PY{l+m+mf}{0.995}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.656}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.001}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.294}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.592}\PY{p}{,} \PY{l+m+mf}{0.319}\PY{p}{,} \PY{l+m+mf}{0.765}\PY{p}{,} \PY{l+m+mf}{0.869}\PY{p}{,} \PY{l+m+mf}{0.923}\PY{p}{,} \PY{l+m+mf}{0.939}\PY{p}{,} \PY{l+m+mf}{0.346}\PY{p}{,} \PY{l+m+mf}{0.949}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.705}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.006}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.284}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.574}\PY{p}{,} \PY{l+m+mf}{0.330}\PY{p}{,} \PY{l+m+mf}{0.732}\PY{p}{,} \PY{l+m+mf}{0.849}\PY{p}{,} \PY{l+m+mf}{0.888}\PY{p}{,} \PY{l+m+mf}{0.900}\PY{p}{,} \PY{l+m+mf}{0.905}\PY{p}{,} \PY{l+m+mf}{0.907}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.753}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.009}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.274}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.555}\PY{p}{,} \PY{l+m+mf}{0.341}\PY{p}{,} \PY{l+m+mf}{0.739}\PY{p}{,} \PY{l+m+mf}{0.819}\PY{p}{,} \PY{l+m+mf}{0.855}\PY{p}{,} \PY{l+m+mf}{0.864}\PY{p}{,} \PY{l+m+mf}{0.867}\PY{p}{,} \PY{l+m+mf}{0.869}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.800}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.011}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.262}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.537}\PY{p}{,} \PY{l+m+mf}{0.351}\PY{p}{,} \PY{l+m+mf}{0.725}\PY{p}{,} \PY{l+m+mf}{0.795}\PY{p}{,} \PY{l+m+mf}{0.823}\PY{p}{,} \PY{l+m+mf}{0.830}\PY{p}{,} \PY{l+m+mf}{0.832}\PY{p}{,} \PY{l+m+mf}{0.833}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.845}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.012}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.250}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.518}\PY{p}{,} \PY{l+m+mf}{0.360}\PY{p}{,} \PY{l+m+mf}{0.711}\PY{p}{,} \PY{l+m+mf}{0.771}\PY{p}{,} \PY{l+m+mf}{0.793}\PY{p}{,} \PY{l+m+mf}{0.796}\PY{p}{,} \PY{l+m+mf}{0.799}\PY{p}{,} \PY{l+m+mf}{0.800}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.889}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.013}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.238}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.499}\PY{p}{,} \PY{l+m+mf}{0.368}\PY{p}{,} \PY{l+m+mf}{0.696}\PY{p}{,} \PY{l+m+mf}{0.747}\PY{p}{,} \PY{l+m+mf}{0.764}\PY{p}{,} \PY{l+m+mf}{0.767}\PY{p}{,} \PY{l+m+mf}{0.769}\PY{p}{,} \PY{l+m+mf}{0.769}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.932}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.011}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.224}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.479}\PY{p}{,} \PY{l+m+mf}{0.376}\PY{p}{,} \PY{l+m+mf}{0.681}\PY{p}{,} \PY{l+m+mf}{0.724}\PY{p}{,} \PY{l+m+mf}{0.738}\PY{p}{,} \PY{l+m+mf}{0.740}\PY{p}{,} \PY{l+m+mf}{0.740}\PY{p}{,} \PY{l+m+mf}{0.741}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.973}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.010}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.210}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.460}\PY{p}{,} \PY{l+m+mf}{0.384}\PY{p}{,} \PY{l+m+mf}{0.666}\PY{p}{,} \PY{l+m+mf}{0.702}\PY{p}{,} \PY{l+m+mf}{0.712}\PY{p}{,} \PY{l+m+mf}{0.714}\PY{p}{,} \PY{l+m+mf}{0.734}\PY{p}{,} \PY{l+m+mf}{0.714}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{4.013}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.007}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.195}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.440}\PY{p}{,} \PY{l+m+mf}{0.330}\PY{p}{,} \PY{l+m+mf}{0.651}\PY{p}{,} \PY{l+m+mf}{0.681}\PY{p}{,} \PY{l+m+mf}{0.683}\PY{p}{,} \PY{l+m+mf}{0.689}\PY{p}{,} \PY{l+m+mf}{0.690}\PY{p}{,} \PY{l+m+mf}{0.690}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{4.051}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.003}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.180}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.420}\PY{p}{,} \PY{l+m+mf}{0.390}\PY{p}{,} \PY{l+m+mf}{0.636}\PY{p}{,} \PY{l+m+mf}{0.660}\PY{p}{,} \PY{l+m+mf}{0.666}\PY{p}{,} \PY{l+m+mf}{0.666}\PY{p}{,} \PY{l+m+mf}{0.667}\PY{p}{,} \PY{l+m+mf}{0.667}\PY{p}{]}
+\PY{p}{]}
+
+\PY{n}{\PYZus{}INDEX\PYZus{}LM} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{30}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{31}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)} \PY{o}{/} \PY{l+m+mi}{10}
+
+\PY{n}{\PYZus{}COL\PYZus{}LM} \PY{o}{=}  \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{99}\PY{p}{,} \PY{l+m+mi}{95}\PY{p}{,} \PY{l+m+mi}{90}\PY{p}{,} \PY{l+m+mi}{80}\PY{p}{,} \PY{l+m+mi}{50}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mf}{0.5}\PY{p}{]}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{100}
+
+\PY{n}{t\PYZus{}pearson3\PYZus{}lm} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{\PYZus{}DATA\PYZus{}LM}\PY{p}{,} \PY{n}{index}\PY{o}{=}\PY{n}{\PYZus{}INDEX\PYZus{}LM}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{n}{\PYZus{}COL\PYZus{}LM}\PY{p}{)}
+\PY{n}{t\PYZus{}pearson3\PYZus{}lm}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+      0.990  0.950  0.900  0.800  0.500  0.200  0.100  0.040  0.020  0.010  \textbackslash{}
+ 3.0 -0.667 -0.665 -0.660 -0.636 -0.396  0.420  1.180  2.278  3.152  4.061
+ 2.9 -0.690 -0.688 -0.681 -0.651 -0.390  0.440  1.196  2.277  3.134  4.013
+ 2.8 -0.714 -0.711 -0.702 -0.666 -0.384  0.460  1.210  2.275  3.114  3.973
+ 2.7 -0.740 -0.736 -0.724 -0.681 -0.376  0.479  1.224  2.272  3.097  3.932
+ 2.6 -0.769 -0.762 -0.747 -0.695 -0.368  0.499  1.238  2.267  3.071  3.889
+{\ldots}     {\ldots}    {\ldots}    {\ldots}    {\ldots}    {\ldots}    {\ldots}    {\ldots}    {\ldots}    {\ldots}    {\ldots}
+-2.6 -3.889 -2.013 -1.238 -0.499  0.368  0.696  0.747  0.764  0.767  0.769
+-2.7 -3.932 -2.011 -1.224 -0.479  0.376  0.681  0.724  0.738  0.740  0.740
+-2.8 -3.973 -2.010 -1.210 -0.460  0.384  0.666  0.702  0.712  0.714  0.734
+-2.9 -4.013 -2.007 -1.195 -0.440  0.330  0.651  0.681  0.683  0.689  0.690
+-3.0 -4.051 -2.003 -1.180 -0.420  0.390  0.636  0.660  0.666  0.666  0.667
+
+      0.005
+ 3.0  4.970
+ 2.9  4.909
+ 2.8  4.847
+ 2.7  4.783
+ 2.6  4.718
+{\ldots}     {\ldots}
+-2.6  0.769
+-2.7  0.741
+-2.8  0.714
+-2.9  0.690
+-3.0  0.667
+
+[61 rows x 11 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{kode}{%
+\section{KODE}\label{kode}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} KODE FUNGSI INTERPOLASI DARI TABEL}
+
+\PY{k+kn}{from} \PY{n+nn}{scipy} \PY{k+kn}{import} \PY{n}{interpolate}
+
+\PY{k}{def} \PY{n+nf}{\PYZus{}func\PYZus{}interp\PYZus{}bivariate}\PY{p}{(}\PY{n}{df}\PY{p}{)}\PY{p}{:}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Membuat fungsi dari tabel untuk interpolasi bilinear}\PY{l+s+s2}{\PYZdq{}}
+    \PY{n}{table} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{df}\PY{o}{.}\PY{n}{columns}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{p}{)}\PY{p}{]}\PY{o}{.}\PY{n}{sort\PYZus{}index}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+
+    \PY{n}{x} \PY{o}{=} \PY{n}{table}\PY{o}{.}\PY{n}{index}
+    \PY{n}{y} \PY{o}{=} \PY{n}{table}\PY{o}{.}\PY{n}{columns}
+    \PY{n}{z} \PY{o}{=} \PY{n}{table}\PY{o}{.}\PY{n}{to\PYZus{}numpy}\PY{p}{(}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{} penggunaan kx=1, ky=1 untuk interpolasi linear antara 2 titik}
+    \PY{c+c1}{\PYZsh{} tidak menggunakan (cubic) spline interpolation}
+    \PY{k}{return} \PY{n}{interpolate}\PY{o}{.}\PY{n}{RectBivariateSpline}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{z}\PY{p}{,} \PY{n}{kx}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{ky}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+
+\PY{k}{def} \PY{n+nf}{\PYZus{}as\PYZus{}value}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+    \PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{around}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}
+    \PY{k}{return} \PY{n}{x}\PY{o}{.}\PY{n}{flatten}\PY{p}{(}\PY{p}{)} \PY{k}{if} \PY{n}{x}\PY{o}{.}\PY{n}{size} \PY{o}{\PYZgt{}} \PY{l+m+mi}{1} \PY{k}{else} \PY{n}{x}\PY{o}{.}\PY{n}{item}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{find\PYZus{}K}\PY{p}{(}\PY{n}{prob}\PY{p}{,} \PY{n}{skew\PYZus{}log}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{scipy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Mencari nilai K berdasarkan probabilitas dan skewness logaritmik}\PY{l+s+s2}{\PYZdq{}}
+    \PY{n}{prob} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{prob}\PY{p}{)}
+    
+    \PY{k}{if} \PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{scipy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{}ref: https://github.com/hidrokit/hidrokit/discussions/156}
+        \PY{k}{if} \PY{n}{skew\PYZus{}log} \PY{o}{\PYZgt{}}\PY{o}{=} \PY{l+m+mi}{0}\PY{p}{:} 
+            \PY{k}{return} \PY{n}{np}\PY{o}{.}\PY{n}{around}\PY{p}{(}\PY{n}{stats}\PY{o}{.}\PY{n}{pearson3}\PY{o}{.}\PY{n}{ppf}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{prob}\PY{p}{,} \PY{n}{skew\PYZus{}log}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}
+        \PY{k}{else}\PY{p}{:}
+            \PY{k}{return} \PY{n}{np}\PY{o}{.}\PY{n}{around}\PY{p}{(}\PY{n}{stats}\PY{o}{.}\PY{n}{pearson3}\PY{o}{.}\PY{n}{ppf}\PY{p}{(}\PY{n}{prob}\PY{p}{,} \PY{n}{skew\PYZus{}log}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}
+    \PY{k}{elif} \PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soetopo}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+        \PY{n}{func\PYZus{}pearson3\PYZus{}st} \PY{o}{=} \PY{n}{\PYZus{}func\PYZus{}interp\PYZus{}bivariate}\PY{p}{(}\PY{n}{t\PYZus{}pearson3\PYZus{}st}\PY{p}{)}
+        \PY{k}{return} \PY{n}{\PYZus{}as\PYZus{}value}\PY{p}{(}\PY{n}{func\PYZus{}pearson3\PYZus{}st}\PY{p}{(}\PY{n}{skew\PYZus{}log}\PY{p}{,} \PY{n}{prob}\PY{p}{,} \PY{n}{grid}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{)}
+    \PY{k}{elif} \PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soewarno}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+        \PY{n}{func\PYZus{}pearson3\PYZus{}sw} \PY{o}{=} \PY{n}{\PYZus{}func\PYZus{}interp\PYZus{}bivariate}\PY{p}{(}\PY{n}{t\PYZus{}pearson3\PYZus{}sw}\PY{p}{)}
+        \PY{k}{return} \PY{n}{\PYZus{}as\PYZus{}value}\PY{p}{(}\PY{n}{func\PYZus{}pearson3\PYZus{}sw}\PY{p}{(}\PY{n}{skew\PYZus{}log}\PY{p}{,} \PY{n}{prob}\PY{p}{,} \PY{n}{grid}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{)}
+    \PY{k}{elif} \PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{limantara}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+        \PY{n}{func\PYZus{}pearson3\PYZus{}lm} \PY{o}{=} \PY{n}{\PYZus{}func\PYZus{}interp\PYZus{}bivariate}\PY{p}{(}\PY{n}{t\PYZus{}pearson3\PYZus{}lm}\PY{p}{)}
+        \PY{k}{return} \PY{n}{\PYZus{}as\PYZus{}value}\PY{p}{(}\PY{n}{func\PYZus{}pearson3\PYZus{}lm}\PY{p}{(}\PY{n}{skew\PYZus{}log}\PY{p}{,} \PY{n}{prob}\PY{p}{,} \PY{n}{grid}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{)}
+
+\PY{k}{def} \PY{n+nf}{calc\PYZus{}x\PYZus{}lp3}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{return\PYZus{}period}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{5}\PY{p}{]}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{scipy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{show\PYZus{}stat}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{:}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Menghitung besar X dengan kala ulang tertentu}\PY{l+s+s2}{\PYZdq{}}
+    \PY{n}{y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{log10}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+    \PY{n}{y\PYZus{}mean} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{n}{y}\PY{p}{)}
+    \PY{n}{y\PYZus{}std} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{std}\PY{p}{(}\PY{n}{y}\PY{p}{,} \PY{n}{ddof}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+    \PY{n}{y\PYZus{}skew} \PY{o}{=} \PY{n}{stats}\PY{o}{.}\PY{n}{skew}\PY{p}{(}\PY{n}{y}\PY{p}{,} \PY{n}{bias}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}
+
+    \PY{n}{prob} \PY{o}{=} \PY{l+m+mi}{1} \PY{o}{/} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{return\PYZus{}period}\PY{p}{)}
+    \PY{n}{k} \PY{o}{=} \PY{n}{find\PYZus{}K}\PY{p}{(}\PY{n}{prob}\PY{p}{,} \PY{n}{y\PYZus{}skew}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{n}{source}\PY{p}{)}
+
+    \PY{k}{if} \PY{n}{show\PYZus{}stat}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{y\PYZus{}mean = }\PY{l+s+si}{\PYZob{}}\PY{n}{y\PYZus{}mean}\PY{l+s+si}{:}\PY{l+s+s1}{.5f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{y\PYZus{}std = }\PY{l+s+si}{\PYZob{}}\PY{n}{y\PYZus{}std}\PY{l+s+si}{:}\PY{l+s+s1}{.5f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{y\PYZus{}skew = }\PY{l+s+si}{\PYZob{}}\PY{n}{y\PYZus{}skew}\PY{l+s+si}{:}\PY{l+s+s1}{.5f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{k = }\PY{l+s+si}{\PYZob{}}\PY{n}{k}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    
+    \PY{n}{val\PYZus{}y} \PY{o}{=} \PY{n}{y\PYZus{}mean} \PY{o}{+} \PY{n}{k} \PY{o}{*} \PY{n}{y\PYZus{}std}
+    \PY{n}{val\PYZus{}x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{power}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{n}{val\PYZus{}y}\PY{p}{)}
+    \PY{k}{return} \PY{n}{val\PYZus{}x}
+
+\PY{k}{def} \PY{n+nf}{freq\PYZus{}logpearson3}\PY{p}{(}
+    \PY{n}{df}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} 
+    \PY{n}{return\PYZus{}period}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{25}\PY{p}{,} \PY{l+m+mi}{50}\PY{p}{,} \PY{l+m+mi}{100}\PY{p}{]}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{scipy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{show\PYZus{}stat}\PY{o}{=}\PY{k+kc}{False}\PY{p}{,}
+    \PY{n}{col\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Log Pearson III}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{index\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Kala Ulang}\PY{l+s+s1}{\PYZsq{}}
+    \PY{p}{)}\PY{p}{:}
+
+    \PY{n}{col} \PY{o}{=} \PY{n}{df}\PY{o}{.}\PY{n}{columns}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{k}{if} \PY{n}{col} \PY{o+ow}{is} \PY{k+kc}{None} \PY{k}{else} \PY{n}{col}
+
+    \PY{n}{x} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+
+    \PY{n}{arr} \PY{o}{=} \PY{n}{calc\PYZus{}x\PYZus{}lp3}\PY{p}{(}
+        \PY{n}{x}\PY{p}{,} \PY{n}{return\PYZus{}period}\PY{o}{=}\PY{n}{return\PYZus{}period}\PY{p}{,} \PY{n}{show\PYZus{}stat}\PY{o}{=}\PY{n}{show\PYZus{}stat}\PY{p}{,}
+        \PY{n}{source}\PY{o}{=}\PY{n}{source}
+    \PY{p}{)}
+
+    \PY{n}{result} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}
+        \PY{n}{data}\PY{o}{=}\PY{n}{arr}\PY{p}{,} \PY{n}{index}\PY{o}{=}\PY{n}{return\PYZus{}period}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{p}{[}\PY{n}{col\PYZus{}name}\PY{p}{]}
+    \PY{p}{)}
+
+    \PY{n}{result}\PY{o}{.}\PY{n}{index}\PY{o}{.}\PY{n}{name} \PY{o}{=} \PY{n}{index\PYZus{}name}
+    \PY{k}{return} \PY{n}{result}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{dict\PYZus{}table\PYZus{}source} \PY{o}{=} \PY{p}{\PYZob{}}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soewarno}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{t\PYZus{}pearson3\PYZus{}sw}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soetopo}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{t\PYZus{}pearson3\PYZus{}st}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{limantara}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{t\PYZus{}pearson3\PYZus{}lm}
+\PY{p}{\PYZcb{}}
+
+\PY{k}{def} \PY{n+nf}{\PYZus{}find\PYZus{}prob\PYZus{}in\PYZus{}table}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{n}{skew\PYZus{}log}\PY{p}{,} \PY{n}{table}\PY{p}{)}\PY{p}{:}
+    \PY{n}{func\PYZus{}table} \PY{o}{=} \PY{n}{\PYZus{}func\PYZus{}interp\PYZus{}bivariate}\PY{p}{(}\PY{n}{table}\PY{p}{)}
+    \PY{n}{y} \PY{o}{=} \PY{n}{table}\PY{o}{.}\PY{n}{columns}
+    \PY{n}{x} \PY{o}{=} \PY{n}{func\PYZus{}table}\PY{p}{(}\PY{n}{skew\PYZus{}log}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{grid}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}
+    \PY{n}{func\PYZus{}prob} \PY{o}{=} \PY{n}{interpolate}\PY{o}{.}\PY{n}{interp1d}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{kind}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{linear}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{k}{return} \PY{n}{\PYZus{}as\PYZus{}value}\PY{p}{(}\PY{n}{func\PYZus{}prob}\PY{p}{(}\PY{n}{k}\PY{p}{)}\PY{p}{)}
+
+\PY{k}{def} \PY{n+nf}{\PYZus{}calc\PYZus{}prob\PYZus{}in\PYZus{}table}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{n}{skew\PYZus{}log}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soewarno}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o+ow}{in} \PY{n}{dict\PYZus{}table\PYZus{}source}\PY{o}{.}\PY{n}{keys}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{\PYZus{}find\PYZus{}prob\PYZus{}in\PYZus{}table}\PY{p}{(}
+            \PY{n}{k}\PY{p}{,} \PY{n}{skew\PYZus{}log}\PY{p}{,} \PY{n}{dict\PYZus{}table\PYZus{}source}\PY{p}{[}\PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)}\PY{p}{]}
+        \PY{p}{)}
+    
+\PY{k}{def} \PY{n+nf}{calc\PYZus{}prob}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{n}{skew\PYZus{}log}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{scipy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{scipy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+        \PY{k}{if} \PY{n}{skew\PYZus{}log} \PY{o}{\PYZgt{}}\PY{o}{=} \PY{l+m+mi}{0}\PY{p}{:}
+            \PY{k}{return} \PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{p}{(}\PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{stats}\PY{o}{.}\PY{n}{pearson3}\PY{o}{.}\PY{n}{cdf}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{n}{skew\PYZus{}log}\PY{p}{)}\PY{p}{)}
+        \PY{k}{else}\PY{p}{:}
+            \PY{k}{return} \PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{stats}\PY{o}{.}\PY{n}{pearson3}\PY{o}{.}\PY{n}{cdf}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{n}{skew\PYZus{}log}\PY{p}{)}
+    \PY{k}{if} \PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o+ow}{in} \PY{n}{dict\PYZus{}table\PYZus{}source}\PY{o}{.}\PY{n}{keys}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{n}{\PYZus{}calc\PYZus{}prob\PYZus{}in\PYZus{}table}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{n}{skew\PYZus{}log}\PY{p}{,} \PY{n}{source}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{fungsi}{%
+\section{FUNGSI}\label{fungsi}}
+
+    \hypertarget{fungsi-find_kprob-skew_log-...}{%
+\subsection{\texorpdfstring{Fungsi
+\texttt{find\_K(prob,\ skew\_log,\ ...)}}{Fungsi find\_K(prob, skew\_log, ...)}}\label{fungsi-find_kprob-skew_log-...}}
+
+Function:
+\texttt{find\_K(prob,\ skew\_log,\ source=\textquotesingle{}scipy\textquotesingle{})}
+
+Fungsi \texttt{find\_K(...)} digunakan untuk mencari nilai \(K\)
+(frequency factor) dari berbagai sumber berdasarkan besar probabilitas
+dan kemencengan (\emph{skew}) logaritmik data.
+
+\begin{itemize}
+\tightlist
+\item
+  Argumen Posisi:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{prob}: probabilitas
+    \(\left( \left( 0, 1 \right) \in \mathbb{R} \right)\)
+  \item
+    \texttt{skew\_log}: skewness logaritmik
+  \end{itemize}
+\item
+  Argumen Opsional:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{source}: sumber nilai K,
+    \texttt{\textquotesingle{}scipy\textquotesingle{}} (default). Sumber
+    yang dapat digunakan antara lain: Soewarno
+    (\texttt{\textquotesingle{}soewarno\textquotesingle{}}), Soetopo
+    (\texttt{\textquotesingle{}soetopo\textquotesingle{}}), Limantara
+    (\texttt{\textquotesingle{}limantara\textquotesingle{}}).
+  \end{itemize}
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{find\PYZus{}K}\PY{p}{(}\PY{l+m+mf}{0.02}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{)} \PY{c+c1}{\PYZsh{} menggunakan nilai dari scipy}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+0.9798
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{find\PYZus{}K}\PY{p}{(}\PY{l+m+mf}{0.02}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soewarno}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} \PY{c+c1}{\PYZsh{} menggunakan tabel dari buku Soewarno}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+0.98
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} perbandingan antara nilai tabel dan fungsi scipy}
+
+\PY{n}{source\PYZus{}test} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{scipy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soewarno}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soetopo}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{limantara}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{n}{prob} \PY{o}{=} \PY{l+m+mi}{1} \PY{o}{/} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{25}\PY{p}{,} \PY{l+m+mi}{50}\PY{p}{,} \PY{l+m+mi}{100}\PY{p}{]}\PY{p}{)} \PY{c+c1}{\PYZsh{} [0.5 , 0.2 , 0.1 , 0.05, 0.04, 0.02, 0.01]}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{prob = }\PY{l+s+si}{\PYZob{}}\PY{n}{prob}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{skew\PYZus{}log} \PY{o}{=} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.5}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Nilai dari tabel (skew=}\PY{l+s+si}{\PYZob{}}\PY{n}{skew\PYZus{}log}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{k}{for} \PY{n}{\PYZus{}source} \PY{o+ow}{in} \PY{n}{source\PYZus{}test}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{K\PYZus{}}\PY{l+s+si}{\PYZob{}}\PY{n}{\PYZus{}source}\PY{l+s+si}{:}\PY{l+s+s1}{\PYZlt{}12}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{=}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{find\PYZus{}K}\PY{p}{(}\PY{n}{prob}\PY{p}{,} \PY{n}{skew\PYZus{}log}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{n}{\PYZus{}source}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{skew\PYZus{}log} \PY{o}{=} \PY{l+m+mf}{1.75}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Nilai hasil interpolasi (skew=}\PY{l+s+si}{\PYZob{}}\PY{n}{skew\PYZus{}log}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{k}{for} \PY{n}{\PYZus{}source} \PY{o+ow}{in} \PY{n}{source\PYZus{}test}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{K\PYZus{}}\PY{l+s+si}{\PYZob{}}\PY{n}{\PYZus{}source}\PY{l+s+si}{:}\PY{l+s+s1}{\PYZlt{}12}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{=}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{find\PYZus{}K}\PY{p}{(}\PY{n}{prob}\PY{p}{,} \PY{n}{skew\PYZus{}log}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{n}{\PYZus{}source}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+prob = [0.5  0.2  0.1  0.05 0.04 0.02 0.01]
+Nilai dari tabel (skew=-2.5)
+K\_scipy       = [0.3599 0.7107 0.7706 0.7901 0.7931 0.7977 0.7992]
+K\_soewarno    = [0.36   0.711  0.771  0.7893 0.793  0.798  0.799 ]
+K\_soetopo     = [0.36   0.711  0.771  0.7893 0.793  0.798  0.799 ]
+K\_limantara   = [0.36   0.711  0.771  0.7893 0.793  0.796  0.799 ]
+Nilai hasil interpolasi (skew=1.75)
+K\_scipy       = [-0.2748  0.6515  1.3208  1.9769  2.1862  2.8318  3.472 ]
+K\_soewarno    = [-0.275   0.651   1.3207  2.0414  2.1855  2.831   3.4712]
+K\_soetopo     = [-0.275   0.6515  1.321   2.0418  2.186   2.8315  3.4715]
+K\_limantara   = [-0.275   0.6515  1.321   2.0418  2.186   2.8315  3.4715]
+    \end{Verbatim}
+
+    \hypertarget{fungsi-calc_x_lp3x-...}{%
+\subsection{\texorpdfstring{Fungsi
+\texttt{calc\_x\_lp3(x,\ ...)}}{Fungsi calc\_x\_lp3(x, ...)}}\label{fungsi-calc_x_lp3x-...}}
+
+Function:
+\texttt{calc\_x\_lp3(x,\ return\_period={[}5{]},\ source=\textquotesingle{}scipy\textquotesingle{},\ show\_stat=False)}
+
+Fungsi \texttt{calc\_x\_lp3(...)} digunakan untuk mencari besar \(X\)
+berdasarkan kala ulang (\emph{return period}), yang hasilnya dalam
+bentuk \texttt{numpy.array}.
+
+\begin{itemize}
+\tightlist
+\item
+  Argumen Posisi:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{x}: \emph{array}.
+  \end{itemize}
+\item
+  Argumen Opsional:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{return\_period}: Kala Ulang (Tahun), \texttt{{[}5{]}}
+    (default).
+  \item
+    \texttt{source}: sumber nilai K,
+    \texttt{\textquotesingle{}scipy\textquotesingle{}} (default). Sumber
+    yang dapat digunakan antara lain: Soewarno
+    (\texttt{\textquotesingle{}soewarno\textquotesingle{}}), Soetopo
+    (\texttt{\textquotesingle{}soetopo\textquotesingle{}}), Limantara
+    (\texttt{\textquotesingle{}limantara\textquotesingle{}}).
+  \item
+    \texttt{show\_stat}: Menampilkan parameter statistik, \texttt{False}
+    (default)
+  \end{itemize}
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{calc\PYZus{}x\PYZus{}lp3}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{hujan}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([114.75316488])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{calc\PYZus{}x\PYZus{}lp3}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{hujan}\PY{p}{,} \PY{n}{show\PYZus{}stat}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+y\_mean = 1.96408
+y\_std = 0.11381
+y\_skew = -1.25646
+k = [0.8408]
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([114.75316488])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{calc\PYZus{}x\PYZus{}lp3}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{hujan}\PY{p}{,} \PY{n}{return\PYZus{}period}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{21}\PY{p}{]}\PY{p}{,} \PY{n}{show\PYZus{}stat}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+y\_mean = 1.96408
+y\_std = 0.11381
+y\_skew = -1.25646
+k = [0.8408 1.0738 1.1678 1.2221 1.2304]
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([114.75316488, 121.97804293, 125.02000217, 126.81166723,
+       127.08778456])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{fungsi-freq_logpearson3df-...}{%
+\subsection{\texorpdfstring{Fungsi
+\texttt{freq\_logpearson3(df,\ ...)}}{Fungsi freq\_logpearson3(df, ...)}}\label{fungsi-freq_logpearson3df-...}}
+
+Function:
+\texttt{freq\_logpearson3(df,\ col=None,\ return\_period={[}2,\ 5,\ 10,\ 20,\ 25,\ 50,\ 100{]},\ source=\textquotesingle{}scipy\textquotesingle{},\ show\_stat=False,\ col\_name=\textquotesingle{}Log\ Pearson\ III\textquotesingle{})}
+
+Fungsi \texttt{freq\_logpearson3(...)} merupakan fungsi kembangan lebih
+lanjut dari \texttt{calc\_x\_lp3(...)} yang menerima input
+\texttt{pandas.DataFrame} dan memiliki luaran berupa
+\texttt{pandas.DataFrame}.
+
+\begin{itemize}
+\tightlist
+\item
+  Argumen Posisi:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{df}: \texttt{pandas.DataFrame}.
+  \end{itemize}
+\item
+  Argumen Opsional:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{col}: nama kolom, \texttt{None} (default). Jika tidak diisi
+    menggunakan kolom pertama dalam \texttt{df} sebagai data masukan.
+  \item
+    \texttt{return\_period}: Kala Ulang (Tahun),
+    \texttt{{[}2,\ 5,\ 10,\ 20,\ 25,\ 50,\ 100{]}} (default).
+  \item
+    \texttt{source}: sumber nilai K,
+    \texttt{\textquotesingle{}scipy\textquotesingle{}} (default). Sumber
+    yang dapat digunakan antara lain: Soewarno
+    (\texttt{\textquotesingle{}soewarno\textquotesingle{}}), Soetopo
+    (\texttt{\textquotesingle{}soetopo\textquotesingle{}}), Limantara
+    (\texttt{\textquotesingle{}limantara\textquotesingle{}}).
+  \item
+    \texttt{show\_stat}: Menampilkan parameter statistik, \texttt{False}
+    (default).
+  \item
+    \texttt{col\_name}: Nama kolom luaran, \texttt{Log\ Pearson\ III}
+    (default).
+  \end{itemize}
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{freq\PYZus{}logpearson3}\PY{p}{(}\PY{n}{data}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+            Log Pearson III
+Kala Ulang
+2                 97.111291
+5                114.753165
+10               121.978043
+20               126.811667
+25               128.030417
+50               131.065229
+100              133.264423
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{freq\PYZus{}logpearson3}\PY{p}{(}\PY{n}{data}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soewarno}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{col\PYZus{}name}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{LP3 (soewarno)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+            LP3 (soewarno)
+Kala Ulang
+2                97.103657
+5               114.747151
+10              121.962062
+20              126.991242
+25              128.020353
+50              131.072098
+100             133.281885
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{freq\PYZus{}logpearson3}\PY{p}{(}\PY{n}{data}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{hujan}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{limantara}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{col\PYZus{}name}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{LP3 (limantara)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{show\PYZus{}stat}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+y\_mean = 1.96408
+y\_std = 0.11381
+y\_skew = -1.25646
+k = [0.2035 0.8406 1.0736 1.2275 1.2583 1.3479 1.4117]
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+            LP3 (limantara)
+Kala Ulang
+2                 97.103657
+5                114.747151
+10               121.971650
+20               126.991242
+25               128.020353
+50               131.061795
+100              133.271408
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{\PYZus{}res} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+
+\PY{k}{for} \PY{n}{\PYZus{}s} \PY{o+ow}{in} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{scipy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soewarno}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soetopo}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{limantara}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{:}
+    \PY{n}{\PYZus{}res} \PY{o}{+}\PY{o}{=} \PY{p}{[}\PY{n}{freq\PYZus{}logpearson3}\PY{p}{(}\PY{n}{data}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{hujan}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{n}{\PYZus{}s}\PY{p}{,} \PY{n}{col\PYZus{}name}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{LP3 (}\PY{l+s+si}{\PYZob{}}\PY{n}{\PYZus{}s}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{]}
+
+\PY{n}{pd}\PY{o}{.}\PY{n}{concat}\PY{p}{(}\PY{n}{\PYZus{}res}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+            LP3 (scipy)  LP3 (soewarno)  LP3 (soetopo)  LP3 (limantara)
+Kala Ulang
+2             97.111291       97.103657      97.103657        97.103657
+5            114.753165      114.747151     114.747151       114.747151
+10           121.978043      121.962062     121.971650       121.971650
+20           126.811667      126.991242     126.991242       126.991242
+25           128.030417      128.020353     128.020353       128.020353
+50           131.065229      131.072098     131.061795       131.061795
+100          133.264423      133.281885     133.271408       133.271408
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{fungsi-calc_probk-skew_log-...}{%
+\subsection{\texorpdfstring{Fungsi
+\texttt{calc\_prob(k,\ skew\_log,\ ...)}}{Fungsi calc\_prob(k, skew\_log, ...)}}\label{fungsi-calc_probk-skew_log-...}}
+
+Function:
+\texttt{calc\_prob(k,\ skew\_log,\ source=\textquotesingle{}scipy\textquotesingle{})}
+
+Fungsi \texttt{calc\_prob(...)} digunakan untuk menghitung nilai
+probabilitas/peluang berdasarkan nilai \(K\) (\emph{frequency factor}).
+
+\begin{itemize}
+\tightlist
+\item
+  Argumen Posisi:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{k}: nilai \(K\) (\emph{frequency factor}). Nilai \(K\)
+    diperoleh menggunakan persamaan \(K = \frac{y-\bar{y}}{s_y}\) dengan
+    \(y = log(x)\).
+  \item
+    \texttt{skew\_log}: nilai \emph{skewness} logaritmik.
+  \end{itemize}
+\item
+  Argumen Opsional:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{source}: sumber nilai probabilitas.
+    \texttt{\textquotesingle{}scipy\textquotesingle{}} (default). Sumber
+    yang dapat digunakan antara lain: Soewarno
+    (\texttt{\textquotesingle{}soewarno\textquotesingle{}}), Soetopo
+    (\texttt{\textquotesingle{}soetopo\textquotesingle{}}), Limantara
+    (\texttt{\textquotesingle{}limantara\textquotesingle{}}). Ketiga
+    sumber lain menggunakan tabel, sehingga memiliki keterbatasan dalam
+    memberi nilai probabilitas.
+  \end{itemize}
+\end{itemize}
+
+Probabilitas/Peluang yang dikeluarkan oleh fungsi
+\texttt{calc\_prob(...)} adalah \(P'(X<)\) sehingga jika dilakukan
+perhitungan \(K\) kembali, nilai masukan harus menggunakan formula
+\(P(X) = 1-P'(X<)\).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{\PYZus{}data} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mf}{59.000}\PY{p}{,} \PY{l+m+mf}{67.750}\PY{p}{,} \PY{l+m+mf}{50.000}\PY{p}{,} \PY{l+m+mf}{72.500}\PY{p}{,} \PY{l+m+mf}{29.000}\PY{p}{,} \PY{l+m+mf}{30.550}\PY{p}{,} \PY{l+m+mf}{36.100}\PY{p}{,} \PY{l+m+mf}{64.500}\PY{p}{,} \PY{l+m+mf}{34.500}\PY{p}{,} \PY{l+m+mf}{125.500}\PY{p}{]}\PY{p}{)}
+\PY{n}{\PYZus{}y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sort}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{log10}\PY{p}{(}\PY{n}{\PYZus{}data}\PY{p}{)}\PY{p}{)}\PY{p}{[}\PY{p}{:}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{c+c1}{\PYZsh{}urut besar ke kecil}
+\PY{n}{\PYZus{}y\PYZus{}mean} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{n}{\PYZus{}y}\PY{p}{)}
+\PY{n}{\PYZus{}y\PYZus{}std} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{std}\PY{p}{(}\PY{n}{\PYZus{}y}\PY{p}{,} \PY{n}{ddof}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{\PYZus{}y\PYZus{}skew} \PY{o}{=} \PY{n}{stats}\PY{o}{.}\PY{n}{skew}\PY{p}{(}\PY{n}{\PYZus{}y}\PY{p}{,} \PY{n}{bias}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}
+
+\PY{n}{\PYZus{}k} \PY{o}{=} \PY{p}{(}\PY{n}{\PYZus{}y} \PY{o}{\PYZhy{}} \PY{n}{\PYZus{}y\PYZus{}mean}\PY{p}{)} \PY{o}{/} \PY{n}{\PYZus{}y\PYZus{}std}
+\PY{n}{\PYZus{}k}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([ 1.91913743,  0.73872755,  0.59295708,  0.48720527,  0.29547275,
+       -0.06058346, -0.76129719, -0.85881912, -1.12039465, -1.23240566])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{calc\PYZus{}prob}\PY{p}{(}\PY{n}{\PYZus{}k}\PY{p}{,} \PY{n}{\PYZus{}y\PYZus{}skew}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{limantara}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([0.9607, 0.7761, 0.727 , 0.6913, 0.6266, 0.5065, 0.2365, 0.1992,
+       0.1271, 0.0975])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{calc\PYZus{}prob}\PY{p}{(}\PY{n}{\PYZus{}k}\PY{p}{,} \PY{n}{\PYZus{}y\PYZus{}skew}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{soetopo}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([0.9607, 0.7761, 0.727 , 0.6913, 0.6267, 0.5066, 0.2368, 0.1994,
+       0.1272, 0.0975])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{calc\PYZus{}prob}\PY{p}{(}\PY{n}{\PYZus{}k}\PY{p}{,} \PY{n}{\PYZus{}y\PYZus{}skew}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{scipy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([0.96095003, 0.78178546, 0.7409749 , 0.70849576, 0.64381381,
+       0.50782301, 0.23212832, 0.19918497, 0.12334252, 0.09705203])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{changelog}{%
+\section{Changelog}\label{changelog}}
+
+\begin{verbatim}
+- 20220323 - 1.1.0 - tambah argumen index_name="Kala Ulang" pada fungsi freq_gumbel() untuk penamaan index
+- 20220315 - 1.0.3 - Tambah fungsi calc_prob(...)
+- 20220310 - 1.0.2 - Fix show_stat default typo
+- 20220309 - 1.0.1 - Typo
+- 20220309 - 1.0.0 - Initial
+\end{verbatim}
+
+\hypertarget{copyright-2022-taruma-sakti-megariansyah}{%
+\paragraph{\texorpdfstring{Copyright © 2022
+\href{https://taruma.github.io}{Taruma Sakti
+Megariansyah}}{Copyright © 2022 Taruma Sakti Megariansyah}}\label{copyright-2022-taruma-sakti-megariansyah}}
+
+Source code in this notebook is licensed under a
+\href{https://choosealicense.com/licenses/mit/}{MIT License}. Data in
+this notebook is licensed under a
+\href{https://creativecommons.org/licenses/by/4.0/}{Creative Common
+Attribution 4.0 International}.
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}

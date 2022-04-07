@@ -1,0 +1,2071 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{taruma\_LI01\_ann\_ka}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    % \maketitle
+
+	\begin{titlepage}
+		\vspace*{\fill}
+		\begin{center}
+ 		\normalsize Laporan Implementasi (LI-01)\\
+		\huge Prediksi Kualitas Air menggunakan \emph{Artificial Neural Networks} (ANN) \\ 
+		\normalsize Versi 2.0.0 \\[0.2cm]
+      	\small Berdasarkan \emph{Jupyter Notebook}: \texttt{taruma\_LI01\_ann\_ka.ipynb} \\[0.5cm]
+      	\normalsize Buku ini menyajikan implementasi \emph{Deep Learning} pada kasus memprediksikan kualitas air. \\[0.5cm]
+		\normalsize oleh Taruma Sakti Megariansyah\\[0.5cm]
+      	\normalsize 13 Juli 2019\\[1cm]
+    	\adjustimage{max size={0.9\linewidth}{1cm}}{hidrokit-400x100.jpg}\\
+      	\normalsize \href{https://hidrokit.github.io/hidrokit}{hidrokit.github.io/hidrokit}  \\[0.5cm]
+      	\small disponsori oleh \\[0.2cm]
+    	\href{https://www.fiako.co.id}{\adjustimage{max size={0.9\linewidth}{2.5cm}}{logo_fiako.png}}\\
+		\end{center}
+    	\vspace*{\fill}
+	\end{titlepage}
+
+    
+
+    
+    \hypertarget{single-output-regression-neural-network-pada-kasus-prediksi-kualitas-air}{%
+\section{Single-Output Regression Neural Network pada kasus Prediksi
+Kualitas
+Air}\label{single-output-regression-neural-network-pada-kasus-prediksi-kualitas-air}}
+
+Notebook ini hanya \textbf{contoh} dan dibuat untuk
+\textbf{pembelajaran} mengenai \emph{Deep Learning/Neural Networks} dan
+penggunaan praktis bidang sumberdaya air menggunakan \emph{Python}.
+Notebook ini masih perlu dievaluasi kembali jika digunakan untuk
+kepenting riset/penelitian ataupun proyek.
+
+\hypertarget{informasi-notebook}{%
+\subsection{Informasi Notebook}\label{informasi-notebook}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{notebook name}: \texttt{taruma\_demo\_ann\_ka\_2.0.0}
+\item
+  \textbf{notebook version/date}: \texttt{2.0.0}/\texttt{20190713}
+\item
+  \textbf{notebook server}: Google Colab
+\item
+  \textbf{hidrokit version}: \texttt{0.2.0}
+\item
+  \textbf{python version}: \texttt{3.7}
+\end{itemize}
+
+    \hypertarget{deskripsi-kasus}{%
+\section{Deskripsi Kasus}\label{deskripsi-kasus}}
+
+Bagian ini akan menjelaskan gambaran umum mengenai dataset,
+permasalahan/tujuan, dan langkah penyelesaiannya
+
+    \hypertarget{dataset}{%
+\subsection{Dataset}\label{dataset}}
+
+Dataset merupakan data kualitas air \textbf{bulanan} dari \textbf{Juni
+2000 hingga Desember 2017} (211 data bulanan). Dataset memiliki 15 kolom
+yaitu (berurutan): - \textbf{1 kolom berupa tanggal} - \textbf{11 kolom
+\emph{independent variables} yang diperoleh di stasiun A}: - temperatur
+udara (\texttt{temp\_udara}), lama penyinaran (\texttt{lama\_sinar}),
+kecepatan angin (\texttt{kec\_angin}), \(Q_{in}\)
+(\texttt{debit\_masuk}), \(Q_{out}\) (\texttt{debit\_keluar}), volume
+(\texttt{volume}), temperatur air (\texttt{temp\_air}), \(O_2\), Oksigen
+(\texttt{oksigen}), \(NO_2\), Nitrogen (\texttt{nitrogen}), \(NO_3\),
+Nitrat (\texttt{nitrat}), \(NH_3\), Amonia (\texttt{amonia}). -
+\textbf{3 kolom \emph{dependent variables} pada stasiun B}: - \(NO_2\),
+Nitrogen (\texttt{out\_nitrogen}), \(NO_3\), Nitrat
+(\texttt{out\_nitrat}), \(NH_3\), Amonia (\texttt{out\_amonia}).
+
+    \hypertarget{permasalahan-dan-tujuan}{%
+\subsection{Permasalahan dan Tujuan}\label{permasalahan-dan-tujuan}}
+
+\textbf{Permasalahan}: - Peneliti ingin mengetahui nilai tiga kualitas
+air berupa \(NO_2, NO_3, NH_3\) pada stasiun B berdasarkan informasi
+yang diperoleh di stasiun A.
+
+\textbf{Batasan Masalah}: - Dalam \emph{notebook} ini \emph{target} yang
+digunakan hanya \(NH_3\) (\emph{single-output}). - Arsitektur
+\emph{Neural Networks} yang digunakan adalah \emph{Multi Layer
+Perceptron} (MLP), dengan setidaknya \emph{hidden layers} lebih dari
+satu. - Kasus disini merupakan contoh permasalahan \emph{supervised
+learning}.
+
+\textbf{Pertanyaan}: - Berapa nilai NH3 pada stasiun B pada waktu \(t\)
+jika \textbf{telah diketahui} hasil pengukuran di stasiun A pada waktu
+\(t\) \textbf{dan} hasil observasi stasiun B pada waktu sebelumnya
+(\(t-1, t-2, ..., t-n\), dengan \(n\) adalah jumlah \emph{timesteps})? -
+Apa arsitektur \emph{NN} yang optimal untuk melakukan prediksi kualitas
+air?
+
+\emph{Catatan}: Dalam kasus ini akan digunakan \emph{\(2\) timesteps}
+yang berarti data \textbf{dua bulan yang lalu} akan digunakan sebagai
+\emph{input} untuk memprediksikan \emph{target} pada waktu \(t\).
+
+    \hypertarget{strategi-penyelesaian-masalah}{%
+\subsection{Strategi Penyelesaian
+Masalah}\label{strategi-penyelesaian-masalah}}
+
+\hypertarget{tahap-1-data-exploration-and-data-munging}{%
+\subsubsection{\texorpdfstring{Tahap 1: \emph{Data exploration and Data
+munging}}{Tahap 1: Data exploration and Data munging}}\label{tahap-1-data-exploration-and-data-munging}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \emph{Import} dataset dari berkas excel ke dalam
+  \texttt{pandas.DataFrame}.
+\item
+  Eksplorasi dataset berupa memeriksa kehilangan data disertai validasi
+  dan verifikasi data. \emph{Data exploration} dapat berupa visualisasi,
+  deskripsi statistik, dan memeriksa jika terdapat nilai \emph{outlier}
+  atau tidak.
+\item
+  Jika terdapat data yang hilang, maka \textbf{diasumsikan} data
+  memiliki sifat \emph{linear} sehingga data yang hilang diisi dengan
+  menginterpolasikan dengan metode linear. (Langkah ini dapat diganti
+  dengan kesesuaian keahlian bidangnya)
+\item
+  Diperiksa kembali data yang telah diisi dan melakukan ekplorasi data
+  lagi untuk memastikan dataset sudah siap untuk diolah di tahap
+  berikutnya.
+\end{enumerate}
+
+\hypertarget{tahap-2-data-preprocessing}{%
+\subsubsection{\texorpdfstring{Tahap 2: \emph{Data
+Preprocessing}}{Tahap 2: Data Preprocessing}}\label{tahap-2-data-preprocessing}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Membagi dataset menjadi dua bagian yaitu \textbf{training set dan test
+  set}. Pemotongan data ini tidak acak. \textbf{Training set} merupakan
+  potongan data dari \textbf{Juni 2000 hingga Desember 2014}.
+  \textbf{Test set} merupakan potongan data dari \textbf{Januari 2015
+  hingga Desember 2017}. Untuk selanjutnya hanya \textbf{training set}
+  yang akan diproses untuk training dan \textbf{test set} disimpan untuk
+  tahap evaluasi model.
+\item
+  Dilakukan tahap \textbf{\emph{Scaling}} yaitu menormalisasikan nilai
+  pada dataset ke dalam skala yang sama. Digunakan metode
+  \texttt{MinMaxScaler} karena diketahui data tidak terdistribusi
+  normal.
+\item
+  Membuat kolom yang menunjukkan \emph{\(2\) timesteps}, sehingga
+  dataset yang sebelumnya 14 kolom menjadi
+  \(feature_{original}\times(timesteps+1)=14\times(2+1)=42\).
+\item
+  Menampilkan hasil penambahan \emph{timesteps} dalam bentuk
+  \texttt{pandas.DataFrame}.
+\item
+  \textbf{training set} dibagi menjadi \texttt{X\_train} dan
+  \texttt{y\_train}. Dengan \texttt{X\_train} merupakan seluruh kolom
+  \textbf{kecuali} nilai observasi dari stasiun B pada waktu \(t\)
+  (kolom:
+  \texttt{out\_nitrogen\_tmin0,\ out\_nitrat\_tmin0,\ out\_amonia\_tmin0})
+  sebagai \emph{feature}. Sedangkan \texttt{y\_train} merupakan kolom
+  \texttt{out\_amonia\_tmin0} sebagai \emph{target}.
+\end{enumerate}
+
+\hypertarget{tahap-3-building-neural-networks}{%
+\subsubsection{\texorpdfstring{Tahap 3: \emph{Building Neural
+Networks}}{Tahap 3: Building Neural Networks}}\label{tahap-3-building-neural-networks}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Untuk Neural Networks digunakan \emph{Multi Layer Perceptron (MLP)}
+  dengan target \emph{single-output}.
+\item
+  Membuat fungsi \texttt{build\_model} yang memberikan fleksibilitas
+  arsitektur sehingga memiliki hidden layer lebih dari satu dengan
+  parameter \texttt{hidden\_layers}.
+\item
+  Menggunakan \texttt{GridSearchCV} untuk mengetahui parameter terbaik.
+\item
+  Melalukan proses \texttt{fit} terhadap \texttt{X\_train,\ y\_train}.
+  Besarnya \emph{validation split} yang digunakan sebesar \(0.2\).
+\end{enumerate}
+
+\hypertarget{tahap-4-evaluation-models}{%
+\subsubsection{\texorpdfstring{Tahap 4: \emph{Evaluation
+Models}}{Tahap 4: Evaluation Models}}\label{tahap-4-evaluation-models}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Pada tahap evaluasi, dataset yang digunakan adalah \textbf{test set}.
+  \emph{test set} yang diperoleh dari pembagian set perlu diproses lebih
+  lanjut sebelum digunakan untuk memprediksi.
+\item
+  Dilakukan proses \emph{data preprocessing} seperti tahap 2 langkah 2-5
+  pada \textbf{test set}.
+\item
+  Memprediksi nilai dengan model yang terbaik hasil \emph{Grid Search}.
+\item
+  Mengembalikan nilai prediksi dan nilai \texttt{y\_test} ke skala
+  original dengan menggunakan \emph{method} \texttt{inverse\_transform}.
+  Hal ini dilakukan dengan mentransfer atribut \texttt{MinMaxScaler}
+  sebelumnya ke \emph{object} baru, agar menyederhanakan proses
+  pengembalian ke skala asli.
+\item
+  Evaluasi menggunakan metrik RMSE/MAE.
+\item
+  Evaluasi menggunakan grafik.
+\item
+  Menghitung nilai beda prediksi dan observasi, dan dilakukan statistik
+  deskriptif disertai membuat histogram nilai residu tersebut.
+\end{enumerate}
+
+\hypertarget{tahap-5-conclusion-and-interpretation}{%
+\subsubsection{\texorpdfstring{Tahap 5: \emph{Conclusion and
+Interpretation}}{Tahap 5: Conclusion and Interpretation}}\label{tahap-5-conclusion-and-interpretation}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Tahap ini menyimpulkan hasil model dan menginterpretasikan model NN.
+\item
+  Langkah yang bisa meningkatkan hasil model dengan mengurangi
+  kemungkinan \emph{overfitting} ataupun \emph{underfitting}.
+\end{enumerate}
+
+    \hypertarget{tahap-0-pengaturan-awal}{%
+\section{Tahap 0: Pengaturan Awal}\label{tahap-0-pengaturan-awal}}
+
+Bagian ini merupakan pengaturan awal pribadi, dapat diabaikan.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{datetime} \PY{k+kn}{import} \PY{n}{datetime}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{}\PYZsh{} PROJECT DESCRIPTION}
+\PY{n}{notebook\PYZus{}version} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{2.0.0}\PY{l+s+s1}{\PYZsq{}}
+\PY{n}{notebook\PYZus{}title} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{kualitas\PYZus{}air\PYZus{}ann\PYZus{}so}\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZus{}}\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{n}{notebook\PYZus{}version}
+\PY{n}{prefix} \PY{o}{=} \PY{n}{datetime}\PY{o}{.}\PY{n}{utcnow}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{strftime}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{Y}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{m}\PY{l+s+si}{\PYZpc{}d}\PY{l+s+s2}{\PYZus{}}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{H}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{M}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{project\PYZus{}title} \PY{o}{=} \PY{n}{prefix} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZus{}}\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{n}{notebook\PYZus{}title}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Judul Notebook: }\PY{l+s+si}{\PYZob{}}\PY{n}{notebook\PYZus{}title}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Judul Proyek: }\PY{l+s+si}{\PYZob{}}\PY{n}{project\PYZus{}title}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Judul Notebook: kualitas\_air\_ann\_so\_2.0.0
+Judul Proyek: 20190713\_0507\_kualitas\_air\_ann\_so\_2.0.0
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{}\PYZsh{} Memasang Akses Google Drive (untuk tempat menyimpan hasil training)}
+\PY{k+kn}{from} \PY{n+nn}{google}\PY{n+nn}{.}\PY{n+nn}{colab} \PY{k+kn}{import} \PY{n}{drive}
+\PY{n}{drive}\PY{o}{.}\PY{n}{mount}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{/content/gdrive}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{drop\PYZus{}path} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{/content/gdrive/My Drive/Colab Notebooks/\PYZus{}dropbox}\PY{l+s+s1}{\PYZsq{}}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{}\PYZsh{} Instalasi Paket Python Pribadi (untuk Logging)}
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{}\PYZsh{} https://github.com/taruma/umakit}
+\PY{o}{!}pip install umakit
+\PY{k+kn}{from} \PY{n+nn}{umakit}\PY{n+nn}{.}\PY{n+nn}{logtool} \PY{k+kn}{import} \PY{n}{LogTool}
+\PY{n}{mylog} \PY{o}{=} \PY{n}{LogTool}\PY{p}{(}\PY{p}{)}
+\PY{n}{mylog}\PY{o}{.}\PY{n}{\PYZus{}reset}\PY{p}{(}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{}\PYZsh{} Instalasi Paket Hidrokit (untuk plotting, dan transformasi kolom saat data preprocessing)}
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{}\PYZsh{} https://github.com/taruma/hidrokit}
+\PY{o}{!}pip install hidrokit
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Collecting umakit
+  Downloading https://files.pythonhosted.org/packages/76/64/d972d8fd9936a7a498c7
+5e593d1986ec4d19204c84a636e5b5783c34806e/umakit-0.1.1-py3-none-any.whl
+Installing collected packages: umakit
+Successfully installed umakit-0.1.1
+Collecting hidrokit
+  Downloading https://files.pythonhosted.org/packages/43/9d/343d2a413a07463a21dd
+13369e31d664d6733bbfd46276abef5d804c83d1/hidrokit-0.2.0-py2.py3-none-any.whl
+Requirement already satisfied: matplotlib in /usr/local/lib/python3.6/dist-
+packages (from hidrokit) (3.0.3)
+Requirement already satisfied: pandas in /usr/local/lib/python3.6/dist-packages
+(from hidrokit) (0.24.2)
+Requirement already satisfied: numpy in /usr/local/lib/python3.6/dist-packages
+(from hidrokit) (1.16.4)
+Requirement already satisfied: python-dateutil>=2.1 in
+/usr/local/lib/python3.6/dist-packages (from matplotlib->hidrokit) (2.5.3)
+Requirement already satisfied: cycler>=0.10 in /usr/local/lib/python3.6/dist-
+packages (from matplotlib->hidrokit) (0.10.0)
+Requirement already satisfied: kiwisolver>=1.0.1 in
+/usr/local/lib/python3.6/dist-packages (from matplotlib->hidrokit) (1.1.0)
+Requirement already satisfied: pyparsing!=2.0.4,!=2.1.2,!=2.1.6,>=2.0.1 in
+/usr/local/lib/python3.6/dist-packages (from matplotlib->hidrokit) (2.4.0)
+Requirement already satisfied: pytz>=2011k in /usr/local/lib/python3.6/dist-
+packages (from pandas->hidrokit) (2018.9)
+Requirement already satisfied: six>=1.5 in /usr/local/lib/python3.6/dist-
+packages (from python-dateutil>=2.1->matplotlib->hidrokit) (1.12.0)
+Requirement already satisfied: setuptools in /usr/local/lib/python3.6/dist-
+packages (from kiwisolver>=1.0.1->matplotlib->hidrokit) (41.0.1)
+Installing collected packages: hidrokit
+Successfully installed hidrokit-0.2.0
+    \end{Verbatim}
+
+    \hypertarget{tahap-1-data-exploration-and-data-munging}{%
+\section{\texorpdfstring{Tahap 1: \emph{Data Exploration and Data
+Munging}}{Tahap 1: Data Exploration and Data Munging}}\label{tahap-1-data-exploration-and-data-munging}}
+
+Ringkasan pada tahap ini:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \emph{Import} dataset.
+\item
+  Eksplorasi dataset.
+\item
+  Mengisi data yang hilang.
+\item
+  Eksplorasi dataset kembali.
+\end{enumerate}
+
+    \hypertarget{import-dataset}{%
+\subsection{1.1 Import dataset}\label{import-dataset}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{}\PYZsh{} Mengunggah dataset}
+\PY{k+kn}{from} \PY{n+nn}{google}\PY{n+nn}{.}\PY{n+nn}{colab} \PY{k+kn}{import} \PY{n}{files}
+\PY{n}{uploaded} \PY{o}{=} \PY{n}{files}\PY{o}{.}\PY{n}{upload}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+<IPython.core.display.HTML object>
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Saving data\_ka.xlsx to data\_ka.xlsx
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{}\PYZsh{} 1. Import dataset ke pandas.DataFrame}
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} import dataset}
+\PY{n}{dataset} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}excel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data\PYZus{}ka.xlsx}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{skiprows}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} Menamai kolom}
+\PY{n}{dataset}\PY{o}{.}\PY{n}{columns} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{date}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{temp\PYZus{}udara}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{lama\PYZus{}sinar}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{kec\PYZus{}angin}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} 
+                   \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{debit\PYZus{}masuk}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{debit\PYZus{}keluar}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{volume}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{temp\PYZus{}air}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} 
+                   \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{oksigen}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{nitrogen}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{nitrat}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{amonia}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} 
+                   \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{out\PYZus{}nitrogen}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{out\PYZus{}nitrat}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{out\PYZus{}amonia}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} Mengatur index dataframe ke tanggal}
+\PY{n}{dataset} \PY{o}{=} \PY{n}{dataset}\PY{o}{.}\PY{n}{set\PYZus{}index}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{date}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{dataset}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+            temp\_udara  lama\_sinar  {\ldots}  out\_nitrat  out\_amonia
+date                                {\ldots}
+2000-06-20        26.5    6.050000  {\ldots}    0.524643    0.589523
+2000-07-20        25.2    4.366667  {\ldots}    0.727771    0.602750
+2000-08-20        26.9    7.616667  {\ldots}    0.742150    0.627844
+2000-09-20        26.4    5.100000  {\ldots}    0.457229    0.430150
+2000-10-20        25.2    6.233333  {\ldots}    0.461479    0.559891
+
+[5 rows x 14 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{eksplorasi-dataset}{%
+\subsection{1.2 Eksplorasi dataset}\label{eksplorasi-dataset}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} Gamabaran umum dataset}
+\PY{n}{dataset}\PY{o}{.}\PY{n}{info}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+<class 'pandas.core.frame.DataFrame'>
+DatetimeIndex: 211 entries, 2000-06-20 to 2017-12-13
+Data columns (total 14 columns):
+temp\_udara      210 non-null float64
+lama\_sinar      210 non-null float64
+kec\_angin       210 non-null float64
+debit\_masuk     210 non-null float64
+debit\_keluar    210 non-null float64
+volume          210 non-null float64
+temp\_air        209 non-null float64
+oksigen         210 non-null float64
+nitrogen        189 non-null float64
+nitrat          208 non-null float64
+amonia          210 non-null float64
+out\_nitrogen    210 non-null float64
+out\_nitrat      208 non-null float64
+out\_amonia      210 non-null float64
+dtypes: float64(14)
+memory usage: 24.7 KB
+    \end{Verbatim}
+
+    Dari dataset dapat disimpulkan: 1. Kolom \texttt{date} digunakan sebagai
+acuan total jumlah data yang tersedia. Diketahui bahwa ada \textbf{211
+data}. 2. Kolom \texttt{temp\_udara}, \texttt{lama\_sinar},
+\texttt{kec\_angin}, \texttt{debit\_masuk}, \texttt{debit\_keluar},
+\texttt{volume}, \texttt{temp\_air}, \texttt{amonia},
+\texttt{out\_nitrogen}, \texttt{out\_amonia} \textbf{kehilangan 1 data,
+sehingga jumlah datanya hanya 210}. 3. Kolom berikut memiliki kehilangan
+data lebih dari 1 data: - \texttt{temp\_air}: total: 209 data,
+\textbf{kehilangan 2 data}. - \texttt{nitrogen}: total: 189 data,
+\textbf{kehilangan 22 data}. - \texttt{nitrat}: total: 208 data,
+\textbf{kehilangan 3 data}. - \texttt{out\_nitrat}: total: 208 data,
+\textbf{kehilangan 3 data}.
+
+    \hypertarget{visualisasi}{%
+\subsubsection{Visualisasi}\label{visualisasi}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{hidrokit}\PY{n+nn}{.}\PY{n+nn}{viz} \PY{k+kn}{import} \PY{n}{graph}
+\PY{n}{graph}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{n}{dataset}\PY{p}{,} \PY{n}{ncols}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{nrows}\PY{o}{=}\PY{l+m+mi}{14}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{15}\PY{p}{)}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{taruma_LI01_ann_ka_files/taruma_LI01_ann_ka_17_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Dari grafik diatas terlihat ada data yang hilang.
+
+    \hypertarget{kehilangan-data}{%
+\subsection{1.3 Kehilangan Data}\label{kehilangan-data}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} Memperoleh informasi kehilangan data}
+\PY{k+kn}{from} \PY{n+nn}{hidrokit}\PY{n+nn}{.}\PY{n+nn}{prep} \PY{k+kn}{import} \PY{n}{read}
+
+\PY{n}{data\PYZus{}hilang} \PY{o}{=} \PY{n}{read}\PY{o}{.}\PY{n}{missing\PYZus{}row}\PY{p}{(}\PY{n}{dataset}\PY{p}{,} \PY{n}{date\PYZus{}format}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZpc{}}\PY{l+s+s1}{Y/}\PY{l+s+s1}{\PYZpc{}}\PY{l+s+s1}{m}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Daftar kehilangan data:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{k}{for} \PY{n}{column}\PY{p}{,} \PY{n}{value} \PY{o+ow}{in} \PY{n}{data\PYZus{}hilang}\PY{o}{.}\PY{n}{items}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Kolom }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{: }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{column}\PY{p}{,} \PY{n}{value}\PY{p}{)}
+    \PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Daftar kehilangan data:
+Kolom temp\_udara: ['2005/12']
+Kolom lama\_sinar: ['2005/12']
+Kolom kec\_angin: ['2005/12']
+Kolom debit\_masuk: ['2005/12']
+Kolom debit\_keluar: ['2005/12']
+Kolom volume: ['2005/12']
+Kolom temp\_air: ['2005/11', '2005/12']
+Kolom oksigen: ['2005/12']
+Kolom nitrogen: ['2005/12', '2007/04', '2007/05', '2007/06', '2007/07',
+'2007/08', '2007/09', '2007/10', '2007/11', '2007/12', '2008/01', '2008/02',
+'2008/03', '2008/04', '2008/05', '2008/06', '2008/07', '2008/08', '2008/09',
+'2008/10', '2008/11', '2008/12']
+Kolom nitrat: ['2005/06', '2005/07', '2005/12']
+Kolom amonia: ['2005/12']
+Kolom out\_nitrogen: ['2005/12']
+Kolom out\_nitrat: ['2005/06', '2005/07', '2005/12']
+Kolom out\_amonia: ['2005/12']
+    \end{Verbatim}
+
+    Dari proses diatas diperoleh informasi: 1. Pada bulan \texttt{2005/12}
+(Desember 2005), data tidak tersedia pada \textbf{seluruh kolom}. 2.
+Kolom \texttt{temp\_air}, kehilangan data pada \texttt{2005/11}
+(November 2005). 3. Kolom \texttt{nitrogen}, kehilangan data pada dari
+\texttt{2007/04} (April 2007) sampai \texttt{2008/12} (Desember 2008).
+4. Kolom \texttt{nitrat} dan \texttt{out\_amonia}, kehilangan data pada
+\texttt{2005/06} (Juni 2005) dan \texttt{2005/07} (Juli 2005).`
+
+    \hypertarget{mengisi-kehilangan-data}{%
+\subsubsection{Mengisi Kehilangan data}\label{mengisi-kehilangan-data}}
+
+\textbf{Diasumsikan} bahwa data yang hilang dapat diisi dengan
+\textbf{metode interpolasi linear}. Dengan catatan metode tersebut
+digunakan dalam notebook ini untuk \textbf{pembelajaran}. Dimungkinkan
+untuk mengisi data hilang dengan teknik yang tersedia dalam bidang
+keahliannya.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} Mengisi Data yang hilang dengan metode linear}
+\PY{n}{new\PYZus{}dataset} \PY{o}{=} \PY{n}{dataset}\PY{o}{.}\PY{n}{interpolate}\PY{p}{(}\PY{n}{method}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{linear}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{eksplorasi-dataset}{%
+\subsection{1.4 Eksplorasi dataset}\label{eksplorasi-dataset}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} statistik deskriptif}
+\PY{n}{new\PYZus{}dataset}\PY{o}{.}\PY{n}{describe}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       temp\_udara  lama\_sinar   kec\_angin  {\ldots}  out\_nitrogen  out\_nitrat
+out\_amonia
+count  211.000000  211.000000  211.000000  {\ldots}    211.000000  211.000000
+211.000000
+mean    26.297867    5.429739   89.090929  {\ldots}      0.124222    0.369451
+0.258836
+std      1.230595    2.653354   56.941944  {\ldots}      0.216860    0.591848
+0.360054
+min     22.400000    0.000000    0.400000  {\ldots}      0.000000    0.004667
+0.000000
+25\%     25.750000    3.591667   47.350000  {\ldots}      0.006673    0.052589
+0.002378
+50\%     26.200000    5.750000   83.300000  {\ldots}      0.019494    0.143512
+0.066165
+75\%     27.000000    7.683333  125.400000  {\ldots}      0.085891    0.452636
+0.448939
+max     29.150000   10.083333  365.900000  {\ldots}      1.164635    5.460060
+2.252332
+
+[8 rows x 14 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{visualisasi}{%
+\subsubsection{Visualisasi}\label{visualisasi}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{graph}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{n}{new\PYZus{}dataset}\PY{p}{,} \PY{n}{ncols}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{nrows}\PY{o}{=}\PY{l+m+mi}{14}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{15}\PY{p}{)}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{taruma_LI01_ann_ka_files/taruma_LI01_ann_ka_27_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} Pairplot untuk melihat hubungan masing\PYZhy{}masing kolom}
+\PY{k+kn}{import} \PY{n+nn}{seaborn} \PY{k}{as} \PY{n+nn}{sns}
+
+\PY{n}{g} \PY{o}{=} \PY{n}{sns}\PY{o}{.}\PY{n}{pairplot}\PY{p}{(}\PY{n}{new\PYZus{}dataset}\PY{p}{)}
+\PY{n}{g}\PY{o}{.}\PY{n}{fig}\PY{o}{.}\PY{n}{set\PYZus{}size\PYZus{}inches}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,}\PY{l+m+mi}{15}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{taruma_LI01_ann_ka_files/taruma_LI01_ann_ka_28_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Dari visualisasi diatas diketahui bahwa terdapat kolom yang memiliki
+distribusi tidak normal, sehingga dalam \emph{scaling} digunakan
+\texttt{MinMaxScaler}.
+
+    \hypertarget{tahap-2-data-preprocessing}{%
+\section{\texorpdfstring{Tahap 2: \emph{Data
+Preprocessing}}{Tahap 2: Data Preprocessing}}\label{tahap-2-data-preprocessing}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Membagi dataset menjadi \emph{training set} dan \emph{test set}.
+\item
+  \emph{Scaling} dengan \texttt{MinMaxScaler}.
+\item
+  Menambahkan kolom \emph{timesteps}.
+\item
+  Menampilkan hasil penambahan \emph{timesteps}.
+\item
+  Mempersiapkan data \emph{training} dari \emph{training set} menjadi
+  \texttt{X\_train} dan \texttt{y\_train}.
+\end{enumerate}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{}\PYZsh{} Import Libraries}
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{training-set-dan-test-set}{%
+\subsection{\texorpdfstring{2.1 \emph{Training set} dan \emph{Test
+set}}{2.1 Training set dan Test set}}\label{training-set-dan-test-set}}
+
+Dari \texttt{new\_dataset} yang telah diinterpolasi, akan dibagi menjadi
+dua bagian data yaitu training dan testing.
+
+\begin{itemize}
+\tightlist
+\item
+  Training data merupakan data dari \texttt{2000/06} hingga
+  \texttt{2014/12}
+\item
+  Testing data merupakan data dari \texttt{2015/01} hingga
+  \texttt{2017/12}
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} Memisahkan dataset training dan test}
+
+\PY{n}{training\PYZus{}dataset} \PY{o}{=} \PY{n}{new\PYZus{}dataset}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{p}{:}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{20141231}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{p}{:}\PY{p}{]}
+\PY{n}{test\PYZus{}dataset} \PY{o}{=} \PY{n}{new\PYZus{}dataset}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{20150101}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:}\PY{p}{,} \PY{p}{:}\PY{p}{]}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} Informasi training set dan testing set}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Informasi training set: }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{ baris, }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{ kolom}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}
+    \PY{n}{training\PYZus{}dataset}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{training\PYZus{}dataset}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+     \PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Informasi testing set: }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{ baris, }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{ kolom}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}
+    \PY{n}{test\PYZus{}dataset}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{test\PYZus{}dataset}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+     \PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} Menampilkan training set}
+\PY{n}{training\PYZus{}dataset}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Informasi training set: 175 baris, 14 kolom
+Informasi testing set: 36 baris, 14 kolom
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+            temp\_udara  lama\_sinar  {\ldots}  out\_nitrat  out\_amonia
+date                                {\ldots}
+2000-06-20        26.5    6.050000  {\ldots}    0.524643    0.589523
+2000-07-20        25.2    4.366667  {\ldots}    0.727771    0.602750
+2000-08-20        26.9    7.616667  {\ldots}    0.742150    0.627844
+2000-09-20        26.4    5.100000  {\ldots}    0.457229    0.430150
+2000-10-20        25.2    6.233333  {\ldots}    0.461479    0.559891
+
+[5 rows x 14 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Menyimpan nilai dalam \texttt{dataframe} dalam bentuk
+\texttt{numpy.array}.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{array\PYZus{}train} \PY{o}{=} \PY{n}{training\PYZus{}dataset}\PY{o}{.}\PY{n}{values}
+\PY{n}{array\PYZus{}train}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{1}\PY{p}{,} \PY{p}{:}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([[2.65000000e+01, 6.05000000e+00, 1.40000000e+00, 9.13500000e+01,
+        1.68320000e+02, 2.33428460e+09, 2.39375000e+01, 5.06250000e+00,
+        2.35750000e-01, 4.81875000e-01, 8.25375000e-01, 3.26914583e-01,
+        5.24642857e-01, 5.89522917e-01]])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{scaling}{%
+\subsection{\texorpdfstring{2.2
+\emph{Scaling}}{2.2 Scaling}}\label{scaling}}
+
+Skala yang digunakan adalah \texttt{MinMaxScaler}.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{}\PYZsh{} Scaling dataset}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{preprocessing} \PY{k+kn}{import} \PY{n}{MinMaxScaler}
+\PY{n}{sc} \PY{o}{=} \PY{n}{MinMaxScaler}\PY{p}{(}\PY{n}{feature\PYZus{}range}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+\PY{n}{array\PYZus{}train} \PY{o}{=} \PY{n}{sc}\PY{o}{.}\PY{n}{fit\PYZus{}transform}\PY{p}{(}\PY{n}{array\PYZus{}train}\PY{p}{)}
+\PY{n}{array\PYZus{}train}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{1}\PY{p}{,} \PY{p}{:}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([[0.67213115, 0.6       , 0.00273598, 0.09964254, 0.17944199,
+        0.738755  , 0.31118314, 0.50451442, 0.19395311, 0.08149884,
+        0.19043453, 0.28070132, 0.09466023, 0.26173895]])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{kolom-timesteps}{%
+\subsection{\texorpdfstring{2.3 Kolom
+\emph{Timesteps}}{2.3 Kolom Timesteps}}\label{kolom-timesteps}}
+
+Setelah \emph{scaling}, dataset dibuat kolom tambahan yang
+merepresentasikan data \emph{timesteps} sebelumnya. Untuk kasus ini
+dipilih timesteps sebanyak 2 bulan sebelumnya. Sehingga persamaan
+umumnya berupa:
+
+\(Output_t = f(Input_t, Input_{t-1}, Input_{t-2}, Output_{t-1}, Output_{t-2})\)
+
+Diketahui terdapat 14 kolom (termasuk output) dengan \emph{timesteps} 2,
+sehingga dimensi \texttt{array} menjadi \(14 \times (2+1)=42\).
+
+\textbf{Catatan}: - Karena hidrokit menggunakan input dalam bentuk
+DataFrame, hasil \emph{scaling} yang masih berbentuk array dibuat
+DataFramenya. - Dapat digunakan langsung dengan input array dengan
+menggunakan \emph{private function}
+\texttt{\_multi\_column\_timesteps()}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Membuat dataframe baru setelah proses scaling}
+\PY{n}{training\PYZus{}dataset\PYZus{}scale} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}
+    \PY{n}{data}\PY{o}{=}\PY{n}{array\PYZus{}train}\PY{p}{,}
+    \PY{n}{columns}\PY{o}{=}\PY{n}{training\PYZus{}dataset}\PY{o}{.}\PY{n}{columns}\PY{p}{,}
+    \PY{n}{index}\PY{o}{=}\PY{n}{training\PYZus{}dataset}\PY{o}{.}\PY{n}{index}
+\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Membuat tabel timesteps}
+\PY{k+kn}{from} \PY{n+nn}{hidrokit}\PY{n+nn}{.}\PY{n+nn}{prep} \PY{k+kn}{import} \PY{n}{timeseries}
+
+\PY{n}{n\PYZus{}timesteps} \PY{o}{=} \PY{l+m+mi}{2}
+\PY{n}{df\PYZus{}train\PYZus{}ts} \PY{o}{=} \PY{n}{timeseries}\PY{o}{.}\PY{n}{timestep\PYZus{}table}\PY{p}{(}\PY{n}{training\PYZus{}dataset\PYZus{}scale}\PY{p}{,} \PY{n}{timesteps}\PY{o}{=}\PY{n}{n\PYZus{}timesteps}\PY{p}{)}
+\PY{n}{array\PYZus{}train\PYZus{}ts} \PY{o}{=} \PY{n}{df\PYZus{}train\PYZus{}ts}\PY{o}{.}\PY{n}{values}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Dimensi array setelah diberi kolom timesteps: }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{array\PYZus{}train\PYZus{}ts}\PY{o}{.}\PY{n}{shape}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Dimensi array setelah diberi kolom timesteps: (173, 42)
+    \end{Verbatim}
+
+    \hypertarget{tabel-training-set}{%
+\subsection{\texorpdfstring{2.4 Tabel \emph{Training
+set}}{2.4 Tabel Training set}}\label{tabel-training-set}}
+
+Tabel \texttt{pandas.DataFrame} untuk \emph{training set} yang telah
+diberi kolom \emph{timesteps}.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} Menampilkan hasil pemberian kolom timestep dengan pandas.DataFrame}
+\PY{n}{df\PYZus{}train\PYZus{}ts}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+            temp\_udara\_tmin0  {\ldots}  out\_amonia\_tmin2
+date                          {\ldots}
+2000-08-20          0.737705  {\ldots}          0.261739
+2000-09-20          0.655738  {\ldots}          0.267612
+2000-10-20          0.459016  {\ldots}          0.278753
+2000-11-20          0.475410  {\ldots}          0.190980
+2000-12-20          0.803279  {\ldots}          0.248583
+
+[5 rows x 42 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{x_train-dan-y_train}{%
+\subsection{\texorpdfstring{2.5 \texttt{X\_train} dan
+\texttt{y\_train}}{2.5 X\_train dan y\_train}}\label{x_train-dan-y_train}}
+
+Berdasarkan persamaan sebelumnya, kolom \emph{output} pada waktu \(t\)
+harus dipisahkan sebagai label \emph{training}-nya. Dan karena dalam
+kasus ini fokus pada \emph{single-output}, maka kolom \emph{output} yang
+digunakan sebagai \emph{target} hanya \texttt{out\_amonia\_tmin0}.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} Pembagian X\PYZus{}train dan y\PYZus{}train untuk }
+\PY{c+c1}{\PYZsh{}\PYZsh{} Kasus Single\PYZhy{}Output Regression Neural Network}
+
+\PY{n}{target\PYZus{}col} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{out\PYZus{}amonia\PYZus{}tmin0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{drop\PYZus{}col} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{out\PYZus{}nitrogen\PYZus{}tmin0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{out\PYZus{}nitrat\PYZus{}tmin0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{out\PYZus{}amonia\PYZus{}tmin0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{df\PYZus{}X\PYZus{}train} \PY{o}{=} \PY{n}{df\PYZus{}train\PYZus{}ts}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{n}{drop\PYZus{}col}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{df\PYZus{}y\PYZus{}train} \PY{o}{=} \PY{n}{df\PYZus{}train\PYZus{}ts}\PY{p}{[}\PY{n}{target\PYZus{}col}\PY{p}{]}
+\PY{n}{X\PYZus{}train} \PY{o}{=} \PY{n}{df\PYZus{}X\PYZus{}train}\PY{o}{.}\PY{n}{values}
+\PY{n}{y\PYZus{}train} \PY{o}{=} \PY{n}{df\PYZus{}y\PYZus{}train}\PY{o}{.}\PY{n}{values}\PY{o}{.}\PY{n}{flatten}\PY{p}{(}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Dimensi X\PYZus{}train = }\PY{l+s+si}{\PYZob{}}\PY{n}{X\PYZus{}train}\PY{o}{.}\PY{n}{shape}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Dimensi y\PYZus{}train = }\PY{l+s+si}{\PYZob{}}\PY{n}{y\PYZus{}train}\PY{o}{.}\PY{n}{shape}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Dimensi X\_train = (173, 39)
+Dimensi y\_train = (173,)
+    \end{Verbatim}
+
+    Catatan: Terdapat \textbf{39 \emph{features}} dengan \textbf{1
+\emph{target}}.
+
+    \hypertarget{tahap-3-building-neural-networks}{%
+\section{\texorpdfstring{Tahap 3: \emph{Building Neural
+Networks}}{Tahap 3: Building Neural Networks}}\label{tahap-3-building-neural-networks}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Fungsi \texttt{build\_model}.
+\item
+  Penggunaan \texttt{GridSearchCV}.
+\item
+  Melalukan proses \texttt{fit} terhadap \texttt{X\_train,\ y\_train}
+\end{enumerate}
+
+    \hypertarget{fungsi-build_model}{%
+\subsection{\texorpdfstring{3.1 Fungsi
+\texttt{build\_model}}{3.1 Fungsi build\_model}}\label{fungsi-build_model}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{keras}\PY{n+nn}{.}\PY{n+nn}{models} \PY{k+kn}{import} \PY{n}{Sequential}
+\PY{k+kn}{from} \PY{n+nn}{keras}\PY{n+nn}{.}\PY{n+nn}{layers} \PY{k+kn}{import} \PY{n}{Dense}\PY{p}{,} \PY{n}{Dropout}
+\PY{k+kn}{from} \PY{n+nn}{keras}\PY{n+nn}{.}\PY{n+nn}{wrappers}\PY{n+nn}{.}\PY{n+nn}{scikit\PYZus{}learn} \PY{k+kn}{import} \PY{n}{KerasRegressor}
+
+\PY{k}{def} \PY{n+nf}{build\PYZus{}model}\PY{p}{(}\PY{n}{optimizer}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{adam}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sigmoid}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{first\PYZus{}layer}\PY{o}{=}\PY{l+m+mi}{10}\PY{p}{,} 
+                \PY{n}{hidden\PYZus{}layers}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{30}\PY{p}{]}\PY{p}{,} \PY{n}{p}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{message}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{p}{:}
+    \PY{k}{global} \PY{n}{idx}
+    \PY{n}{model} \PY{o}{=} \PY{n}{Sequential}\PY{p}{(}\PY{p}{)}
+    \PY{n}{model}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{Dense}\PY{p}{(}\PY{n}{first\PYZus{}layer}\PY{p}{,} \PY{n}{activation}\PY{o}{=}\PY{n}{activation}\PY{p}{,} \PY{n}{input\PYZus{}dim}\PY{o}{=}\PY{l+m+mi}{39}\PY{p}{)}\PY{p}{)}
+    \PY{n}{model}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{Dropout}\PY{p}{(}\PY{n}{p}\PY{p}{)}\PY{p}{)}
+    
+    \PY{k}{if} \PY{n}{hidden\PYZus{}layers}\PY{p}{:}
+        \PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n}{hidden\PYZus{}layers}\PY{p}{:}
+            \PY{n}{model}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{Dense}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{activation}\PY{o}{=}\PY{n}{activation}\PY{p}{)}\PY{p}{)}
+            \PY{k}{if} \PY{n}{x} \PY{o}{==} \PY{n}{hidden\PYZus{}layers}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{:}
+                \PY{n}{model}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{Dropout}\PY{p}{(}\PY{n}{p}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}
+            \PY{k}{else}\PY{p}{:}
+                \PY{n}{model}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{Dropout}\PY{p}{(}\PY{n}{p}\PY{p}{)}\PY{p}{)}
+    
+    \PY{n}{model}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{Dense}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+    \PY{n}{model}\PY{o}{.}\PY{n}{compile}\PY{p}{(}\PY{n}{optimizer}\PY{o}{=}\PY{n}{optimizer}\PY{p}{,} \PY{n}{loss}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mean\PYZus{}squared\PYZus{}error}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+                  \PY{n}{metrics}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mse}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mae}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+    
+    \PY{k}{if} \PY{n}{message} \PY{o+ow}{and} \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{idx}\PY{l+s+s1}{\PYZsq{}} \PY{o+ow}{in} \PY{n+nb}{globals}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{idx}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZgt{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{end}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n}{idx} \PY{o}{\PYZhy{}}\PY{o}{=} \PY{l+m+mi}{1}
+        \PY{k}{if} \PY{p}{(}\PY{n}{idx} \PY{o}{\PYZpc{}} \PY{l+m+mi}{10}\PY{p}{)} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{:}
+            \PY{n+nb}{print}\PY{p}{(}\PY{p}{)}
+    
+    \PY{k}{return} \PY{n}{model}
+
+\PY{n}{model} \PY{o}{=} \PY{n}{KerasRegressor}\PY{p}{(}\PY{n}{build\PYZus{}fn}\PY{o}{=}\PY{n}{build\PYZus{}model}\PY{p}{,} \PY{n}{verbose}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Using TensorFlow backend.
+    \end{Verbatim}
+
+    \hypertarget{parameter-gridsearchcv}{%
+\subsection{\texorpdfstring{3.2 Parameter
+\texttt{GridSearchCV}}{3.2 Parameter GridSearchCV}}\label{parameter-gridsearchcv}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{model\PYZus{}selection} \PY{k+kn}{import} \PY{n}{GridSearchCV}
+
+\PY{n}{param\PYZus{}grid} \PY{o}{=} \PY{n+nb}{dict}\PY{p}{(}\PY{n}{epochs}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{100}\PY{p}{,} \PY{l+m+mi}{150}\PY{p}{,} \PY{l+m+mi}{200}\PY{p}{]}\PY{p}{,}
+                  \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{]}\PY{p}{,}
+                  \PY{n}{first\PYZus{}layer}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{30}\PY{p}{]}\PY{p}{,}
+                  \PY{n}{hidden\PYZus{}layers}\PY{o}{=}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{20}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{30}\PY{p}{]}\PY{p}{]}\PY{p}{,}
+                  \PY{n}{activation}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sigmoid}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,}
+                  \PY{n}{optimizer}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{adam}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,}
+                 \PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Ignore K\PYZhy{}Fold Cross Validation}
+\PY{n}{cv} \PY{o}{=} \PY{p}{[}\PY{p}{(}\PY{n+nb}{slice}\PY{p}{(}\PY{k+kc}{None}\PY{p}{)}\PY{p}{,} \PY{n+nb}{slice}\PY{p}{(}\PY{k+kc}{None}\PY{p}{)}\PY{p}{)}\PY{p}{]}
+\PY{c+c1}{\PYZsh{} cv = 3}
+
+\PY{n}{grid\PYZus{}search} \PY{o}{=} \PY{n}{GridSearchCV}\PY{p}{(}\PY{n}{estimator}\PY{o}{=}\PY{n}{model}\PY{p}{,} 
+                           \PY{n}{param\PYZus{}grid}\PY{o}{=}\PY{n}{param\PYZus{}grid}\PY{p}{,}
+                           \PY{n}{cv}\PY{o}{=}\PY{n}{cv}\PY{p}{,}
+                           \PY{n}{return\PYZus{}train\PYZus{}score}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}
+                           \PY{n}{verbose}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,}
+                           \PY{n}{scoring}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{neg\PYZus{}mean\PYZus{}squared\PYZus{}error}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                          \PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{fit}{%
+\subsection{\texorpdfstring{3.3 \texttt{Fit}}{3.3 Fit}}\label{fit}}
+
+    \hypertarget{fitting}{%
+\subsubsection{\texorpdfstring{3.3.1
+\texttt{Fitting}}{3.3.1 Fitting}}\label{fitting}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} idx}
+\PY{n}{search\PYZus{}steps} \PY{o}{=} \PY{l+m+mi}{1}
+\PY{k}{for} \PY{n}{key}\PY{p}{,} \PY{n}{val} \PY{o+ow}{in} \PY{n}{param\PYZus{}grid}\PY{o}{.}\PY{n}{items}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+    \PY{n}{search\PYZus{}steps} \PY{o}{*}\PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n}{val}\PY{p}{)}
+\PY{n}{idx} \PY{o}{=} \PY{n}{search\PYZus{}steps}\PY{o}{*}\PY{n}{cv} \PY{k}{if} \PY{p}{(}\PY{n+nb}{type}\PY{p}{(}\PY{n}{cv}\PY{p}{)} \PY{o+ow}{is} \PY{n+nb}{int}\PY{p}{)} \PY{k}{else} \PY{n}{search\PYZus{}steps}
+
+\PY{c+c1}{\PYZsh{} Fitting}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{mylog}\PY{o}{.}\PY{n}{add\PYZus{}savepoint}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{START FITTING}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{fit}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{grid\PYZus{}search} \PY{o}{=} \PY{n}{grid\PYZus{}search}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}train}\PY{p}{,} \PY{n}{verbose}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{validation\PYZus{}split}\PY{o}{=}\PY{l+m+mf}{0.2}\PY{p}{)}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{mylog}\PY{o}{.}\PY{n}{add\PYZus{}savepoint}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{END FITTING}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{fit}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{mylog}\PY{o}{.}\PY{n}{add\PYZus{}duration}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{fit}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[Parallel(n\_jobs=1)]: Using backend SequentialBackend with 1 concurrent workers.
+WARNING: Logging before flag parsing goes to stderr.
+W0713 05:12:41.348032 140582811764608 deprecation\_wrapper.py:119] From
+/usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow\_backend.py:74:
+The name tf.get\_default\_graph is deprecated. Please use
+tf.compat.v1.get\_default\_graph instead.
+
+W0713 05:12:41.400704 140582811764608 deprecation\_wrapper.py:119] From
+/usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow\_backend.py:517:
+The name tf.placeholder is deprecated. Please use tf.compat.v1.placeholder
+instead.
+
+W0713 05:12:41.409335 140582811764608 deprecation\_wrapper.py:119] From
+/usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow\_backend.py:4138:
+The name tf.random\_uniform is deprecated. Please use tf.random.uniform instead.
+
+W0713 05:12:41.464263 140582811764608 deprecation\_wrapper.py:119] From
+/usr/local/lib/python3.6/dist-packages/keras/optimizers.py:790: The name
+tf.train.Optimizer is deprecated. Please use tf.compat.v1.train.Optimizer
+instead.
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[2019-07-13 05:12:41] START FITTING
+Fitting 1 folds for each of 54 candidates, totalling 54 fits
+54>
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+W0713 05:12:42.024242 140582811764608 deprecation\_wrapper.py:119] From
+/usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow\_backend.py:986:
+The name tf.assign\_add is deprecated. Please use tf.compat.v1.assign\_add
+instead.
+
+W0713 05:12:42.117183 140582811764608 deprecation\_wrapper.py:119] From
+/usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow\_backend.py:973:
+The name tf.assign is deprecated. Please use tf.compat.v1.assign instead.
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+53>52>51>
+50>49>48>47>46>45>44>43>42>41>
+40>39>38>37>36>35>34>33>32>31>
+30>29>28>27>26>25>24>23>22>21>
+20>19>18>17>16>15>14>13>12>11>
+10>9>8>7>6>5>4>3>2>1>
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[Parallel(n\_jobs=1)]: Done  54 out of  54 | elapsed:  5.5min finished
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+0>[2019-07-13 05:18:28] END FITTING
+0:5:46
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Menyimpan object keras di final\PYZus{}model}
+\PY{n}{final\PYZus{}model} \PY{o}{=} \PY{n}{grid\PYZus{}search}\PY{o}{.}\PY{n}{best\PYZus{}estimator\PYZus{}}\PY{o}{.}\PY{n}{model}
+
+\PY{c+c1}{\PYZsh{} Simpan hasil grid search pada dataframe}
+\PY{n}{df\PYZus{}cv} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{grid\PYZus{}search}\PY{o}{.}\PY{n}{cv\PYZus{}results\PYZus{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{saving}{%
+\subsubsection{\texorpdfstring{3.3.2
+\emph{Saving}}{3.3.2 Saving}}\label{saving}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Save Model in JSON}
+\PY{n}{fmodel\PYZus{}json} \PY{o}{=} \PY{n}{final\PYZus{}model}\PY{o}{.}\PY{n}{to\PYZus{}json}\PY{p}{(}\PY{p}{)}
+\PY{n}{fmodel\PYZus{}j\PYZus{}path} \PY{o}{=} \PY{n}{drop\PYZus{}path} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{/}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{.json}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{project\PYZus{}title}\PY{p}{)}
+\PY{k}{with} \PY{n+nb}{open}\PY{p}{(}\PY{n}{fmodel\PYZus{}j\PYZus{}path}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{w}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} \PY{k}{as} \PY{n}{json\PYZus{}file}\PY{p}{:}
+    \PY{n}{json\PYZus{}file}\PY{o}{.}\PY{n}{write}\PY{p}{(}\PY{n}{fmodel\PYZus{}json}\PY{p}{)}
+\PY{n}{mylog}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Model JSON disimpan di }\PY{l+s+si}{\PYZob{}}\PY{n}{fmodel\PYZus{}j\PYZus{}path}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{save: }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{fmodel\PYZus{}j\PYZus{}path}\PY{p}{)}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Save Weights of model}
+\PY{n}{fmodel\PYZus{}w\PYZus{}path} \PY{o}{=} \PY{n}{drop\PYZus{}path} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{/}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{\PYZus{}weights.h5}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{project\PYZus{}title}\PY{p}{)}
+\PY{n}{final\PYZus{}model}\PY{o}{.}\PY{n}{save\PYZus{}weights}\PY{p}{(}\PY{n}{fmodel\PYZus{}w\PYZus{}path}\PY{p}{)}
+\PY{n}{mylog}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Model Weights disimpan di }\PY{l+s+si}{\PYZob{}}\PY{n}{fmodel\PYZus{}w\PYZus{}path}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{save: }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{fmodel\PYZus{}w\PYZus{}path}\PY{p}{)}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Simpan model dan grid\PYZus{}search object}
+\PY{n}{save\PYZus{}model\PYZus{}path} \PY{o}{=} \PY{n}{drop\PYZus{}path} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{/}\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{n}{project\PYZus{}title} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.h5}\PY{l+s+s1}{\PYZsq{}}
+\PY{n}{final\PYZus{}model}\PY{o}{.}\PY{n}{save}\PY{p}{(}\PY{n}{save\PYZus{}model\PYZus{}path}\PY{p}{)}
+\PY{n}{mylog}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Model disimpan di }\PY{l+s+si}{\PYZob{}}\PY{n}{save\PYZus{}model\PYZus{}path}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{save: }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{save\PYZus{}model\PYZus{}path}\PY{p}{)}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Simpan hasil GridSearch}
+\PY{n}{save\PYZus{}grid\PYZus{}path} \PY{o}{=} \PY{n}{drop\PYZus{}path} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{/}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{.csv}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{project\PYZus{}title}\PY{p}{)}
+\PY{n}{df\PYZus{}cv}\PY{o}{.}\PY{n}{to\PYZus{}csv}\PY{p}{(}\PY{n}{save\PYZus{}grid\PYZus{}path}\PY{p}{)}
+\PY{n}{mylog}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Tabel GridSearch disimpan di }\PY{l+s+si}{\PYZob{}}\PY{n}{save\PYZus{}grid\PYZus{}path}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{save: }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{save\PYZus{}grid\PYZus{}path}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+save: /content/gdrive/My Drive/Colab
+Notebooks/\_dropbox/20190713\_0507\_kualitas\_air\_ann\_so\_2.0.0.json
+save: /content/gdrive/My Drive/Colab
+Notebooks/\_dropbox/20190713\_0507\_kualitas\_air\_ann\_so\_2.0.0\_weights.h5
+save: /content/gdrive/My Drive/Colab
+Notebooks/\_dropbox/20190713\_0507\_kualitas\_air\_ann\_so\_2.0.0.h5
+save: /content/gdrive/My Drive/Colab
+Notebooks/\_dropbox/20190713\_0507\_kualitas\_air\_ann\_so\_2.0.0.csv
+    \end{Verbatim}
+
+    \hypertarget{loading-jika-sudah-disimpan-model-dan-hasil-grid-search}{%
+\subsubsection{\texorpdfstring{3.3.3 Loading (Jika sudah disimpan Model
+dan Hasil \emph{grid
+search})}{3.3.3 Loading (Jika sudah disimpan Model dan Hasil grid search)}}\label{loading-jika-sudah-disimpan-model-dan-hasil-grid-search}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} load\PYZus{}model\PYZus{}path = drop\PYZus{}path + \PYZsq{}/20190512\PYZus{}2037\PYZus{}kualitas\PYZus{}air\PYZus{}ann\PYZus{}so.h5\PYZsq{}}
+\PY{c+c1}{\PYZsh{} load\PYZus{}cvgrid\PYZus{}path = drop\PYZus{}path + \PYZsq{}/20190512\PYZus{}2037\PYZus{}kualitas\PYZus{}air\PYZus{}ann\PYZus{}so.csv\PYZsq{}}
+
+\PY{c+c1}{\PYZsh{} from keras.models import load\PYZus{}model}
+\PY{c+c1}{\PYZsh{} final\PYZus{}model = load\PYZus{}model(load\PYZus{}model\PYZus{}path)}
+
+\PY{c+c1}{\PYZsh{} df\PYZus{}cv = pd.read\PYZus{}csv(load\PYZus{}cvgrid\PYZus{}path, index\PYZus{}col=[0])}
+\PY{c+c1}{\PYZsh{} df\PYZus{}cv.head()}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{tahap-4-evaluate-model}{%
+\section{\texorpdfstring{Tahap 4: \emph{Evaluate
+Model}}{Tahap 4: Evaluate Model}}\label{tahap-4-evaluate-model}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \emph{Data preprocessing} pada \emph{test set}.
+\item
+  Memprediksi nilai dengan model yang terbaik hasil \emph{Grid Search}.
+\item
+  Mengembalikan ke skala aslinya.
+\item
+  Evaluasi Model pada \emph{test set}.
+\item
+  Nilai beda prediksi dan observasi.
+\end{enumerate}
+
+    \hypertarget{data-preprocessing-pada-test-set}{%
+\subsection{\texorpdfstring{4.1 \emph{Data preprocessing} pada
+\emph{test
+set}}{4.1 Data preprocessing pada test set}}\label{data-preprocessing-pada-test-set}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} Menampilkan test dataset}
+\PY{n}{test\PYZus{}dataset}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+            temp\_udara  lama\_sinar  {\ldots}  out\_nitrat  out\_amonia
+date                                {\ldots}
+2015-01-14        25.5    4.500000  {\ldots}    0.261190    0.088036
+2015-02-16        25.6    3.833333  {\ldots}    0.152798    0.578571
+2015-03-16        25.4    5.500000  {\ldots}    0.109405    0.153452
+2015-04-14        25.4    3.500000  {\ldots}    0.308036    0.102560
+2015-05-12        23.2    9.666667  {\ldots}    0.069940    0.165476
+
+[5 rows x 14 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} pandas.DataFrame ke numpy.array}
+\PY{n}{array\PYZus{}test} \PY{o}{=} \PY{n}{test\PYZus{}dataset}\PY{o}{.}\PY{n}{values}
+\PY{n}{array\PYZus{}test} \PY{o}{=} \PY{n}{sc}\PY{o}{.}\PY{n}{transform}\PY{p}{(}\PY{n}{array\PYZus{}test}\PY{p}{)}
+
+\PY{n}{test\PYZus{}dataset\PYZus{}scale} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}
+    \PY{n}{data}\PY{o}{=}\PY{n}{array\PYZus{}test}\PY{p}{,}
+    \PY{n}{columns}\PY{o}{=}\PY{n}{test\PYZus{}dataset}\PY{o}{.}\PY{n}{columns}\PY{p}{,}
+    \PY{n}{index}\PY{o}{=}\PY{n}{test\PYZus{}dataset}\PY{o}{.}\PY{n}{index}
+\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} timestep table}
+\PY{n}{df\PYZus{}test} \PY{o}{=} \PY{n}{timeseries}\PY{o}{.}\PY{n}{timestep\PYZus{}table}\PY{p}{(}\PY{n}{test\PYZus{}dataset\PYZus{}scale}\PY{p}{,} \PY{n}{timesteps}\PY{o}{=}\PY{n}{n\PYZus{}timesteps}\PY{p}{)}
+\PY{n}{array\PYZus{}test\PYZus{}ts} \PY{o}{=} \PY{n}{df\PYZus{}test}\PY{o}{.}\PY{n}{values}
+\PY{n}{df\PYZus{}test}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+            temp\_udara\_tmin0  {\ldots}  out\_amonia\_tmin2
+date                          {\ldots}
+2015-03-16          0.491803  {\ldots}          0.039086
+2015-04-14          0.491803  {\ldots}          0.256877
+2015-05-12          0.131148  {\ldots}          0.068130
+2015-06-15          0.131148  {\ldots}          0.045535
+2015-07-08          0.147541  {\ldots}          0.073469
+
+[5 rows x 42 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} Pembagian X\PYZus{}test dan y\PYZus{}test untuk }
+\PY{c+c1}{\PYZsh{}\PYZsh{} Kasus Single\PYZhy{}Output Regression Neural Network}
+\PY{c+c1}{\PYZsh{}\PYZsh{} Meninjau output\PYZus{}amonia }
+
+\PY{n}{df\PYZus{}X\PYZus{}test} \PY{o}{=} \PY{n}{df\PYZus{}test}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{n}{drop\PYZus{}col}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{df\PYZus{}y\PYZus{}test} \PY{o}{=} \PY{n}{df\PYZus{}test}\PY{p}{[}\PY{n}{target\PYZus{}col}\PY{p}{]}
+\PY{n}{X\PYZus{}test} \PY{o}{=} \PY{n}{df\PYZus{}X\PYZus{}test}\PY{o}{.}\PY{n}{values}
+\PY{n}{y\PYZus{}test} \PY{o}{=} \PY{n}{df\PYZus{}y\PYZus{}test}\PY{o}{.}\PY{n}{values}\PY{o}{.}\PY{n}{flatten}\PY{p}{(}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Dimensi X\PYZus{}test = }\PY{l+s+si}{\PYZob{}}\PY{n}{X\PYZus{}test}\PY{o}{.}\PY{n}{shape}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Dimensi y\PYZus{}test = }\PY{l+s+si}{\PYZob{}}\PY{n}{y\PYZus{}test}\PY{o}{.}\PY{n}{shape}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Dimensi X\_test = (34, 39)
+Dimensi y\_test = (34,)
+    \end{Verbatim}
+
+    \hypertarget{prediksi-model-dari-parameter-terbaik-hasil-grid-search}{%
+\subsection{\texorpdfstring{4.2 Prediksi model dari parameter terbaik
+hasil \emph{Grid
+Search}}{4.2 Prediksi model dari parameter terbaik hasil Grid Search}}\label{prediksi-model-dari-parameter-terbaik-hasil-grid-search}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Prediksi}
+\PY{n}{predict} \PY{o}{=} \PY{n}{final\PYZus{}model}\PY{o}{.}\PY{n}{predict}\PY{p}{(}\PY{n}{X\PYZus{}test}\PY{p}{)}
+\PY{n}{truth} \PY{o}{=} \PY{n}{y\PYZus{}test}
+\end{Verbatim}
+\end{tcolorbox}
+
+    digunakan istilah \emph{predict} sebagai nilai prediksi dari
+\texttt{final\_model}, dan \emph{truth} sebagai nilai observasi di
+stasiun B.
+
+    \hypertarget{mengembalikan-ke-skala-aslinya}{%
+\subsection{4.3 Mengembalikan ke skala
+aslinya}\label{mengembalikan-ke-skala-aslinya}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Transfer attribute from MinMax Scaler (specific for last column (output) only)}
+
+\PY{n}{sc\PYZus{}test} \PY{o}{=} \PY{n}{MinMaxScaler}\PY{p}{(}\PY{p}{)}
+\PY{n}{sc\PYZus{}test}\PY{o}{.}\PY{n}{min\PYZus{}}\PY{p}{,} \PY{n}{sc\PYZus{}test}\PY{o}{.}\PY{n}{scale\PYZus{}}\PY{p}{,} \PY{n}{sc\PYZus{}test}\PY{o}{.}\PY{n}{data\PYZus{}min\PYZus{}}\PY{p}{,} \PY{n}{sc\PYZus{}test}\PY{o}{.}\PY{n}{data\PYZus{}max\PYZus{}} \PY{o}{=} \PY{n}{sc}\PY{o}{.}\PY{n}{min\PYZus{}}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{sc}\PY{o}{.}\PY{n}{scale\PYZus{}}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{sc}\PY{o}{.}\PY{n}{data\PYZus{}min\PYZus{}}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{sc}\PY{o}{.}\PY{n}{data\PYZus{}max\PYZus{}}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}
+
+\PY{c+c1}{\PYZsh{} Mengembalikan ke skala original}
+\PY{n}{predict\PYZus{}real} \PY{o}{=} \PY{n}{sc\PYZus{}test}\PY{o}{.}\PY{n}{inverse\PYZus{}transform}\PY{p}{(}\PY{n}{predict}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+\PY{n}{truth\PYZus{}real} \PY{o}{=} \PY{n}{sc\PYZus{}test}\PY{o}{.}\PY{n}{inverse\PYZus{}transform}\PY{p}{(}\PY{n}{truth}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Nilai \texttt{-1} menunjukkan posisi kolom \texttt{out\_amonia} saat
+melakukan proses \texttt{fit} pada \emph{object} \texttt{sc}
+(\texttt{MinMaxScaler}).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Dalam bentuk pandas.DataFrame}
+\PY{n}{diff\PYZus{}table} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n+nb}{dict}\PY{p}{(}\PY{n}{predict}\PY{o}{=}\PY{n}{predict\PYZus{}real}\PY{o}{.}\PY{n}{flatten}\PY{p}{(}\PY{p}{)}\PY{p}{,}
+                               \PY{n}{truth}\PY{o}{=}\PY{n}{truth\PYZus{}real}\PY{o}{.}\PY{n}{flatten}\PY{p}{(}\PY{p}{)}\PY{p}{,}
+                              \PY{p}{)}\PY{p}{)}
+\PY{n}{diff\PYZus{}table}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{diff}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{p}{(}\PY{n}{diff\PYZus{}table}\PY{o}{.}\PY{n}{predict} \PY{o}{\PYZhy{}} \PY{n}{diff\PYZus{}table}\PY{o}{.}\PY{n}{truth}\PY{p}{)}\PY{o}{.}\PY{n}{abs}\PY{p}{(}\PY{p}{)}
+\PY{n}{diff\PYZus{}table}\PY{o}{.}\PY{n}{T}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+               0         1         2   {\ldots}        31        32        33
+predict  0.134772  0.007490  0.126282  {\ldots}  0.125497  0.073648 -0.202659
+truth    0.153452  0.102560  0.165476  {\ldots}  0.052371  0.025548  0.013155
+diff     0.018681  0.095069  0.039195  {\ldots}  0.073126  0.048101  0.215814
+
+[3 rows x 34 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{evaluasi-model-test-set}{%
+\subsection{\texorpdfstring{4.4 Evaluasi Model \emph{test
+set}}{4.4 Evaluasi Model test set}}\label{evaluasi-model-test-set}}
+
+    \hypertarget{metrik}{%
+\subsubsection{4.4.1 Metrik}\label{metrik}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{metrics\PYZus{}train} \PY{o}{=} \PY{n}{final\PYZus{}model}\PY{o}{.}\PY{n}{evaluate}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}train}\PY{p}{,} \PY{n}{verbose}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{metrics\PYZus{}test} \PY{o}{=} \PY{n}{final\PYZus{}model}\PY{o}{.}\PY{n}{evaluate}\PY{p}{(}\PY{n}{X\PYZus{}test}\PY{p}{,} \PY{n}{y\PYZus{}test}\PY{p}{,} \PY{n}{verbose}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+
+\PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{n}{metrics} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{final\PYZus{}model}\PY{o}{.}\PY{n}{metrics\PYZus{}names}\PY{p}{)}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Metrics: }\PY{l+s+si}{\PYZob{}}\PY{n}{metrics}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Train: }\PY{l+s+si}{\PYZob{}}\PY{n}{metrics\PYZus{}train}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{l+s+si}{:}\PY{l+s+s2}{.5f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Test: }\PY{l+s+si}{\PYZob{}}\PY{n}{metrics\PYZus{}test}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{l+s+si}{:}\PY{l+s+s2}{.5f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Metrics: loss
+Train: 0.00403
+Test: 0.02630
+
+Metrics: mean\_squared\_error
+Train: 0.00403
+Test: 0.02630
+
+Metrics: mean\_absolute\_error
+Train: 0.04247
+Test: 0.10324
+
+    \end{Verbatim}
+
+    Fungsi \texttt{loss} yang digunakan saat training adalah
+\texttt{mean\_squared\ error}. Dari informasi diatas diketahui bahwa
+nilai \emph{MSE} dan \emph{MAE} pada saat \emph{training} hampir
+mendekati 0. Perlu dicatat bahwa nilai tersebut berdasarkan nilai yang
+telah ditransformasi dengan metode \texttt{MinMaxScaler}.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} menghitung MSE dan MAE test set dengan skala original}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{metrics} \PY{k+kn}{import} \PY{n}{mean\PYZus{}squared\PYZus{}error}\PY{p}{,} \PY{n}{mean\PYZus{}absolute\PYZus{}error}
+
+\PY{n}{mse\PYZus{}real} \PY{o}{=} \PY{n}{mean\PYZus{}squared\PYZus{}error}\PY{p}{(}\PY{n}{truth\PYZus{}real}\PY{p}{,} \PY{n}{predict\PYZus{}real}\PY{p}{)}
+\PY{n}{mae\PYZus{}real} \PY{o}{=} \PY{n}{mean\PYZus{}absolute\PYZus{}error}\PY{p}{(}\PY{n}{truth\PYZus{}real}\PY{p}{,} \PY{n}{predict\PYZus{}real}\PY{p}{)}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{MSE (Original Scale): }\PY{l+s+si}{\PYZob{}}\PY{n}{mse\PYZus{}real}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{MAE (Original Scale): }\PY{l+s+si}{\PYZob{}}\PY{n}{mae\PYZus{}real}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+MSE (Original Scale): 0.1334
+MAE (Original Scale): 0.2325
+    \end{Verbatim}
+
+    \hypertarget{visualiasi}{%
+\subsubsection{4.4.2 Visualiasi}\label{visualiasi}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{}\PYZsh{} PLOT OUT\PYZus{}AMONIA PREDICTION AND TRUTH (OBSERVED VALUE)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{truth\PYZus{}real}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{truth}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{predict\PYZus{}real}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{predict}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Grafik Nilai Prediksi dan Observasi}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{taruma_LI01_ann_ka_files/taruma_LI01_ann_ka_76_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Dari grafik diatas diketahui bahwa \texttt{final\_model} mampu mengikuti
+fluktuasi data observasi.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} PLOT TRUTH vs. PREDICT}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{scatter}\PY{p}{(}\PY{n}{y}\PY{o}{=}\PY{n}{predict\PYZus{}real}\PY{p}{,} \PY{n}{x}\PY{o}{=}\PY{n}{truth\PYZus{}real}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Truth Value}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Prediction Value}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Plot Titik Prediksi dan Observasi}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{taruma_LI01_ann_ka_files/taruma_LI01_ann_ka_78_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Menggunakan seaborn}
+
+\PY{n}{sns}\PY{o}{.}\PY{n}{jointplot}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{truth}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{predict}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{kind}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{reg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{data}\PY{o}{=}\PY{n}{diff\PYZus{}table}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{taruma_LI01_ann_ka_files/taruma_LI01_ann_ka_79_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Dari dua grafik diatas terlihat bahwa terdapat hasil prediksi yang
+negatif meski pada kejadian nyata bahwa nilai negatif tidak mungkin
+untuk kualitas air.
+
+    \hypertarget{nilai-beda-prediksi-dan-observasi}{%
+\subsection{4.5 Nilai beda prediksi dan
+observasi}\label{nilai-beda-prediksi-dan-observasi}}
+
+    \hypertarget{metrik}{%
+\subsubsection{4.5.1 Metrik}\label{metrik}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} statistik deskriptif nilai Beda (Residu)}
+\PY{n}{diff\PYZus{}table}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{diff}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{describe}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+count    34.000000
+mean      0.232529
+std       0.285942
+min       0.014104
+25\%       0.048180
+50\%       0.123307
+75\%       0.326472
+max       1.175157
+Name: diff, dtype: float64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{visualisasi}{%
+\subsubsection{4.5.2 Visualisasi}\label{visualisasi}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} plot histogram}
+\PY{n}{diff} \PY{o}{=} \PY{n}{diff\PYZus{}table}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{diff}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{values}
+\PY{n}{plt}\PY{o}{.}\PY{n}{hist}\PY{p}{(}\PY{n}{diff}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Nilai Beda/Residu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Frekuensi}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Histogram Residu Nilai Prediksi dan Asli}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{taruma_LI01_ann_ka_files/taruma_LI01_ann_ka_85_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{tahap-5-conclusion-and-interpretation}{%
+\section{\texorpdfstring{Tahap 5: \emph{Conclusion and
+Interpretation}}{Tahap 5: Conclusion and Interpretation}}\label{tahap-5-conclusion-and-interpretation}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Interpretasi model ANN
+\item
+  Evaluasi hasil GridSearch
+\item
+  Ringkasan
+\item
+  Saran dan langkah selanjutnya
+\end{enumerate}
+
+    \hypertarget{interpretasi-model-neural-networks}{%
+\subsection{\texorpdfstring{5.1 Interpretasi Model \emph{Neural
+Networks}}{5.1 Interpretasi Model Neural Networks}}\label{interpretasi-model-neural-networks}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} menghilangkan [] pada hidden layers di df\PYZus{}cv}
+\PY{n}{df\PYZus{}cv}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{param\PYZus{}hidden\PYZus{}layers}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{df\PYZus{}cv}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{param\PYZus{}hidden\PYZus{}layers}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{apply}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{p}{(}\PY{n+nb}{str}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)} \PY{k}{if} \PY{n+nb}{str}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{[}\PY{l+s+s1}{\PYZsq{}} \PY{k}{else} \PY{n}{x}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} memilih kolom yang akan digunakan untuk interpretasi}
+\PY{n}{col\PYZus{}grid} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{param\PYZus{}activation}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{param\PYZus{}batch\PYZus{}size}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{param\PYZus{}epochs}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+            \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{param\PYZus{}first\PYZus{}layer}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{param\PYZus{}hidden\PYZus{}layers}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{param\PYZus{}optimizer}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+            \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mean\PYZus{}test\PYZus{}score}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rank\PYZus{}test\PYZus{}score}\PY{l+s+s1}{\PYZsq{}}
+           \PY{p}{]}
+\PY{n}{df\PYZus{}grid} \PY{o}{=} \PY{n}{df\PYZus{}cv}\PY{p}{[}\PY{n}{col\PYZus{}grid}\PY{p}{]}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{df\PYZus{}grid}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+\PY{n}{df\PYZus{}grid}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+(54, 8)
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+  param\_activation param\_batch\_size  {\ldots} mean\_test\_score rank\_test\_score
+0          sigmoid                5  {\ldots}       -0.004687              22
+1          sigmoid                5  {\ldots}       -0.005299              31
+2          sigmoid                5  {\ldots}       -0.004517              17
+3          sigmoid                5  {\ldots}       -0.004670              21
+4          sigmoid                5  {\ldots}       -0.006117              37
+
+[5 rows x 8 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} mengurutkan berdasarkan mean\PYZus{}test\PYZus{}score / rank\PYZus{}test\PYZus{}score}
+\PY{n}{df\PYZus{}grid\PYZus{}sorted} \PY{o}{=} \PY{n}{df\PYZus{}grid}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rank\PYZus{}test\PYZus{}score}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{df\PYZus{}grid\PYZus{}sorted}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+   param\_activation param\_batch\_size  {\ldots} mean\_test\_score rank\_test\_score
+14          sigmoid                5  {\ldots}       -0.003704               1
+16          sigmoid                5  {\ldots}       -0.003746               2
+17          sigmoid                5  {\ldots}       -0.003886               3
+13          sigmoid                5  {\ldots}       -0.003978               4
+29          sigmoid               10  {\ldots}       -0.004032               5
+
+[5 rows x 8 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} hasil grid terburuk}
+\PY{n}{df\PYZus{}grid\PYZus{}sorted}\PY{o}{.}\PY{n}{tail}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+   param\_activation param\_batch\_size  {\ldots} mean\_test\_score rank\_test\_score
+40          sigmoid               20  {\ldots}       -0.008445              50
+42          sigmoid               20  {\ldots}       -0.009949              51
+18          sigmoid               10  {\ldots}       -0.009951              52
+36          sigmoid               20  {\ldots}       -0.010798              53
+37          sigmoid               20  {\ldots}       -0.012189              54
+
+[5 rows x 8 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{evaluasi-hasil-gridsearchcv}{%
+\subsection{\texorpdfstring{5.2 Evaluasi hasil
+\texttt{GridSearchCV}}{5.2 Evaluasi hasil GridSearchCV}}\label{evaluasi-hasil-gridsearchcv}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} evaluasi 20 hasil terbaik}
+\PY{n}{df\PYZus{}grid\PYZus{}top} \PY{o}{=} \PY{n}{df\PYZus{}grid\PYZus{}sorted}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{20}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} menghitung nilai unik tiap kolom}
+\PY{k}{for} \PY{n}{col} \PY{o+ow}{in} \PY{n}{df\PYZus{}grid\PYZus{}top}\PY{o}{.}\PY{n}{columns}\PY{p}{[}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{df\PYZus{}grid\PYZus{}top}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+sigmoid    20
+Name: param\_activation, dtype: int64
+5     10
+10     8
+20     2
+Name: param\_batch\_size, dtype: int64
+200    10
+150     7
+100     3
+Name: param\_epochs, dtype: int64
+30    9
+10    6
+20    5
+Name: param\_first\_layer, dtype: int64
+20    13
+30     7
+Name: param\_hidden\_layers, dtype: int64
+adam    20
+Name: param\_optimizer, dtype: int64
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Grafik antara rank\PYZus{}test\PYZus{}score dan mean\PYZus{}test\PYZus{}score}
+\PY{n}{sns}\PY{o}{.}\PY{n}{set}\PY{p}{(}\PY{n}{style}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ticks}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{relplot} \PY{o}{=} \PY{n}{sns}\PY{o}{.}\PY{n}{relplot}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rank\PYZus{}test\PYZus{}score}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mean\PYZus{}test\PYZus{}score}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{data}\PY{o}{=}\PY{n}{df\PYZus{}grid}\PY{p}{,} \PY{n}{kind}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{line}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{gca}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Kurva antara rank\PYZus{}test\PYZus{}score dengan mean\PYZus{}test\PYZus{}score}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{gca}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{invert\PYZus{}xaxis}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{taruma_LI01_ann_ka_files/taruma_LI01_ann_ka_93_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{ringkasan}{%
+\subsection{5.3 Ringkasan}\label{ringkasan}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Model terbaik diperoleh dengan parameter:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    activation: \texttt{sigmoid}
+  \item
+    batch\_size: \texttt{5}
+  \item
+    epochs: \texttt{200}
+  \item
+    first\_layer: \texttt{20}
+  \item
+    hidden\_layer: \texttt{20}
+  \item
+    optimizer: \texttt{adam}
+  \end{itemize}
+\item
+  Dalam evaluasi model dengan \emph{test set} diperoleh informasi:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    MSE dan MAE sebesar \(0.1334\) dan \(0.2325\) (dalam skala
+    original).
+  \item
+    Nilai rata-rata nilai beda (\texttt{diff}) sebesar \(0.232529\)
+    (MAE), dengan standar deviasi sebesar \(0.285942\).
+  \end{itemize}
+\end{enumerate}
+
+    \hypertarget{saran-dan-langkah-selanjutnya}{%
+\subsection{5.4 Saran dan Langkah
+Selanjutnya}\label{saran-dan-langkah-selanjutnya}}
+
+\begin{itemize}
+\tightlist
+\item
+  Diketahui bahwa terdapat nilai negatif pada prediksi, sehingga untuk
+  model selanjutnya lebih baik bahwa pada \emph{output layer}
+  menggunakan aktivasi \texttt{relu} sehingga tidak mengeluarkan hasil
+  negatif.
+\item
+  Mengurangi vektor \emph{input}, dengan menentukan kolom yang dirasa
+  penting saja untuk pemberian kolom tambahan \emph{timesteps}.
+\item
+  Mengevaluasi pengisian data kosong, karena pendekatan \emph{linear}
+  belum tentu tepat.
+\item
+  Memeriksa kondisi \emph{outlier}. Dipilihnya \emph{output} amonia
+  karena pada nitrogen dan nitrat terdapat kondisi \emph{outlier}.
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Log summary}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{mylog}\PY{o}{.}\PY{n}{summary}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[2019-07-13 05:12:41] START FITTING
+[2019-07-13 05:18:28] END FITTING
+[2019-07-13 05:18:28] Duration: 0:5:46
+[2019-07-13 05:18:39] Model JSON disimpan di /content/gdrive/My Drive/Colab
+Notebooks/\_dropbox/20190713\_0507\_kualitas\_air\_ann\_so\_2.0.0.json
+[2019-07-13 05:18:40] Model Weights disimpan di /content/gdrive/My Drive/Colab
+Notebooks/\_dropbox/20190713\_0507\_kualitas\_air\_ann\_so\_2.0.0\_weights.h5
+[2019-07-13 05:18:42] Model disimpan di /content/gdrive/My Drive/Colab
+Notebooks/\_dropbox/20190713\_0507\_kualitas\_air\_ann\_so\_2.0.0.h5
+[2019-07-13 05:18:42] Tabel GridSearch disimpan di /content/gdrive/My
+Drive/Colab Notebooks/\_dropbox/20190713\_0507\_kualitas\_air\_ann\_so\_2.0.0.csv
+    \end{Verbatim}
+
+    \hypertarget{changelog}{%
+\section{Changelog}\label{changelog}}
+
+\begin{verbatim}
+- 20190713 - 2.0.0 - Use hidrokit 0.2.0. refactoring document/code.
+- 20190622 - 1.1.0 - Copyright/License notice
+- 20190414 - 1.0.0 - Initial
+\end{verbatim}
+
+    \hypertarget{copyright-2019-taruma-sakti-megariansyah}{%
+\paragraph{\texorpdfstring{Copyright © 2019
+\href{https://taruma.github.io}{Taruma Sakti
+Megariansyah}}{Copyright © 2019 Taruma Sakti Megariansyah}}\label{copyright-2019-taruma-sakti-megariansyah}}
+
+Source code in this notebook is licensed under a
+\href{https://opensource.org/licenses/MIT}{MIT License}. Data in this
+notebook is licensed under a
+\href{https://choosealicense.com/licenses/cc-by-4.0/}{Creative Common
+Attribution 4.0 International}.
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}

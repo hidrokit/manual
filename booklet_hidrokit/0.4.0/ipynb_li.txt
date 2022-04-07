@@ -1,0 +1,5 @@
+c:\_github\manual\booklet_hidrokit\0.4.0\ipynb\laporan_implementasi\taruma_LI01_ann_ka.ipynb
+c:\_github\manual\booklet_hidrokit\0.4.0\ipynb\laporan_implementasi\taruma_LI02_lstm_debit_aliran.ipynb
+c:\_github\manual\booklet_hidrokit\0.4.0\ipynb\laporan_implementasi\taruma_LI03_analisis_hidrologi.ipynb
+c:\_github\manual\booklet_hidrokit\0.4.0\ipynb\laporan_implementasi\taruma_LI04_perbandingan_model_rnn_debit_aliran.ipynb
+c:\_github\manual\booklet_hidrokit\0.4.0\ipynb\laporan_implementasi\taruma_LI05_analisis_frekuensi_uji_distribusi.ipynb
